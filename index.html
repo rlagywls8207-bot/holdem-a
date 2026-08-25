@@ -656,3 +656,72 @@ async function loadHome() {
     .getElementById("homeScreen")
     .classList.remove("hidden");
 }
+// =====================================================
+// 로그아웃
+// =====================================================
+
+async function logout() {
+
+  const { error } =
+    await db.auth.signOut();
+
+  if (error) {
+
+    alert(
+      "로그아웃 오류\n\n" +
+      error.message
+    );
+
+    return;
+  }
+
+  showLogin();
+}
+
+
+// =====================================================
+// 페이지 처음 열었을 때
+// 기존 로그인 상태 확인
+// =====================================================
+
+async function start() {
+
+  const {
+    data,
+    error
+  } =
+    await db.auth.getSession();
+
+
+  if (error) {
+
+    alert(
+      "세션 확인 오류\n\n" +
+      error.message
+    );
+
+    showLogin();
+
+    return;
+  }
+
+
+  if (data.session) {
+
+    await loadHome();
+
+  } else {
+
+    showLogin();
+
+  }
+}
+
+
+// 앱 시작
+start();
+
+</script>
+
+</body>
+</html>
