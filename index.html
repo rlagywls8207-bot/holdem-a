@@ -541,117 +541,118 @@
   // 홈 정보 불러오기
   // =====================================================
 
-  async function loadHome() {
+async function loadHome() {
 
-    const {
-      data: userData
-    } =
-      await db.auth.getUser();
-
-
-    const user =
-      userData.user;
+  const {
+    data: userData,
+    error: userError
+  } =
+    await db.auth.getUser();
 
 
-    if (!user) {
+  if (userError) {
 
-      showLogin();
+    alert(
+      "사용자 정보 오류\n\n" +
+      userError.message
+    );
 
-      return;
-    }
-
-
-    const {
-      data: profile,
-      error
-    } =
-      await db
-        .from("profiles")
-        .select(
-          "nickname, balance_per, bank_per, loan_per"
-        )
-        .eq(
-          "id",
-          user.id
-        )
-        .single();
-
-
-    if (error) {
-
-      console.error(error);
-
-      alert(
-        "프로필을 불러오지 못했습니다."
-      );
-
-      return;
-    }
-
-
-    document.getElementById(
-      "homeNickname"
-    ).textContent =
-      profile.nickname;
-
-
-    document.getElementById(
-      "homePer"
-    ).textContent =
-      Number(
-        profile.balance_per
-      ).toLocaleString()
-      + " 퍼";
-
-
-    hideAll();
-
-    document
-      .getElementById("homeScreen")
-      .classList.remove("hidden");
-  }
-
-
-  // =====================================================
-  // 로그아웃
-  // =====================================================
-
-  async function logout() {
-
-    await db.auth.signOut();
+    console.error(
+      "getUser error:",
+      userError
+    );
 
     showLogin();
+
+    return;
   }
 
 
-  // =====================================================
-  // 페이지 처음 열었을 때
-  // 기존 로그인 확인
-  // =====================================================
-
-  async function start() {
-
-    const {
-      data
-    } =
-      await db.auth.getSession();
+  const user =
+    userData.user;
 
 
-    if (data.session) {
+  if (!user) {
 
-      await loadHome();
+    alert(
+      "로그인된 사용자 정보를 찾지 못했습니다."
+    );
 
-    } else {
+    showLogin();
 
-      showLogin();
-
-    }
+    return;
   }
 
 
-  start();
+  const {
+    data: profile,
+    error: profileError
+  } =
+    await db
+      .from("profiles")
+      .select(
+        "nickname, balance_per, bank_per, loan_per"
+      )
+      .eq(
+        "id",
+        user.id
+      )
+      .single();
 
-</script>
 
-</body>
-</html>
+  if (profileError) {
+
+    console.error(
+      "profile error:",
+      profileError
+    );
+
+    alert(
+      "프로필 불러오기 실패\n\n" +
+      "message: " +
+      profileError.message +
+      "\n\ncode: " +
+      profileError.code +
+      "\n\ndetails: " +
+      profileError.details +
+      "\n\nhint: " +
+      profileError.hint
+    );
+
+    return;
+  }
+
+
+  if (!profile) {
+
+    alert(
+      "프로필 데이터가 없습니다.\n\n" +
+      "사용자 ID: " +
+      user.id
+    );
+
+    return;
+  }
+
+
+  document.getElementById(
+    "homeNickname"
+  ).textContent =
+    profile.nickname;
+
+
+  document.getElementById(
+    "homePer"
+  ).textContent =
+    Number(
+      profile.balance_per
+    ).toLocaleString()
+    + " 퍼";
+
+
+  hideAll();
+
+  document
+    .getElementById("homeScreen")
+    .classList.remove("hidden");
+}
