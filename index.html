@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Holdem A</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: min(92%, 420px);
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 38px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #aaa;
+      margin-bottom: 35px;
+    }
+
+    .card {
+      background: #1c1c1c;
+      border: 1px solid #333;
+      border-radius: 18px;
+      padding: 24px;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 12px;
+
+      background: #111;
+      color: white;
+
+      border: 1px solid #444;
+      border-radius: 10px;
+
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 8px;
+
+      border: 0;
+      border-radius: 10px;
+
+      font-size: 16px;
+      font-weight: bold;
+
+      cursor: pointer;
+    }
+
+    .primary {
+      background: white;
+      color: black;
+    }
+
+    .secondary {
+      background: #333;
+      color: white;
+    }
+
+    .switch {
+      margin-top: 20px;
+      text-align: center;
+      color: #aaa;
+      cursor: pointer;
+    }
+
+    .message {
+      min-height: 24px;
+      margin-top: 15px;
+      text-align: center;
+      color: #ff8080;
+    }
+
+    .per {
+      font-size: 34px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+
+    .nickname {
+      color: #aaa;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="logo">HOLDEM A</div>
+  <div class="subtitle">홀덤 보조 게임</div>
+
+
+  <!-- 로그인 화면 -->
+  <div id="loginScreen" class="card">
+
+    <h2>로그인</h2>
+
+    <input
+      id="loginNickname"
+      type="text"
+      placeholder="닉네임"
+      autocomplete="username"
+    >
+
+    <input
+      id="loginPassword"
+      type="password"
+      placeholder="비밀번호"
+      autocomplete="current-password"
+    >
+
+    <button
+      class="primary"
+      onclick="login()"
+    >
+      로그인
+    </button>
+
+    <div
+      class="switch"
+      onclick="showSignup()"
+    >
+      처음이신가요? 회원가입
+    </div>
+
+    <div
+      id="loginMessage"
+      class="message"
+    ></div>
+
+  </div>
+
+
+  <!-- 회원가입 화면 -->
+  <div id="signupScreen" class="card hidden">
+
+    <h2>회원가입</h2>
+
+    <input
+      id="signupNickname"
+      type="text"
+      placeholder="닉네임"
+      maxlength="20"
+      autocomplete="username"
+    >
+
+    <input
+      id="signupPassword"
+      type="password"
+      placeholder="비밀번호"
+      autocomplete="new-password"
+    >
+
+    <input
+      id="signupPassword2"
+      type="password"
+      placeholder="비밀번호 확인"
+      autocomplete="new-password"
+    >
+
+    <button
+      class="primary"
+      onclick="signup()"
+    >
+      가입하기
+    </button>
+
+    <div
+      class="switch"
+      onclick="showLogin()"
+    >
+      이미 계정이 있나요? 로그인
+    </div>
+
+    <div
+      id="signupMessage"
+      class="message"
+    ></div>
+
+  </div>
+
+
+  <!-- 로그인 성공 화면 -->
+  <div id="homeScreen" class="card hidden">
+
+    <div class="nickname">
+      로그인 중
+    </div>
+
+    <h2 id="homeNickname">
+      -
+    </h2>
+
+    <div class="nickname">
+      보유 퍼
+    </div>
+
+    <div
+      id="homePer"
+      class="per"
+    >
+      0 퍼
+    </div>
+
+    <button
+      class="secondary"
+      onclick="logout()"
+    >
+      로그아웃
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  // =====================================================
+  // ★ 여기 두 줄만 네 Supabase 값으로 교체
+  // =====================================================
+
+  const SUPABASE_URL =
+    "https://wuvbsntbtnvxmudluraq.supabase.co/rest/v1/";
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_CtBML_wKT9KLliZJZXVkbg_H3Bg3ppI";
+
+
+  // Supabase 연결
+  const db = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+
+  // =====================================================
+  // 닉네임을 Supabase 내부 이메일 형식으로 변환
+  //
+  // 사용자는 이메일을 볼 필요 없음.
+  // =====================================================
+
+  function nicknameToEmail(nickname) {
+
+    const normalized =
+      nickname
+        .trim()
+        .toLowerCase();
+
+    const encoded =
+      encodeURIComponent(normalized)
+        .replaceAll("%", "");
+
+    return encoded + "@holdem-a.invalid";
+  }
+
+
+  // =====================================================
+  // 화면 전환
+  // =====================================================
+
+  function hideAll() {
+
+    document
+      .getElementById("loginScreen")
+      .classList.add("hidden");
+
+    document
+      .getElementById("signupScreen")
+      .classList.add("hidden");
+
+    document
+      .getElementById("homeScreen")
+      .classList.add("hidden");
+  }
+
+
+  function showLogin() {
+
+    hideAll();
+
+    document
+      .getElementById("loginScreen")
+      .classList.remove("hidden");
+
+    document.getElementById(
+      "loginMessage"
+    ).textContent = "";
+  }
+
+
+  function showSignup() {
+
+    hideAll();
+
+    document
+      .getElementById("signupScreen")
+      .classList.remove("hidden");
+
+    document.getElementById(
+      "signupMessage"
+    ).textContent = "";
+  }
+
+
+  // =====================================================
+  // 회원가입
+  // =====================================================
+
+  async function signup() {
+
+    const nickname =
+      document
+        .getElementById("signupNickname")
+        .value
+        .trim();
+
+    const password =
+      document
+        .getElementById("signupPassword")
+        .value;
+
+    const password2 =
+      document
+        .getElementById("signupPassword2")
+        .value;
+
+    const message =
+      document.getElementById(
+        "signupMessage"
+      );
+
+
+    message.style.color = "#ff8080";
+    message.textContent = "";
+
+
+    if (!nickname) {
+
+      message.textContent =
+        "닉네임을 입력해주세요.";
+
+      return;
+    }
+
+
+    if (nickname.length > 20) {
+
+      message.textContent =
+        "닉네임은 20자 이하로 입력해주세요.";
+
+      return;
+    }
+
+
+    if (password.length < 6) {
+
+      message.textContent =
+        "비밀번호는 최소 6자 이상이어야 합니다.";
+
+      return;
+    }
+
+
+    if (password !== password2) {
+
+      message.textContent =
+        "비밀번호가 서로 다릅니다.";
+
+      return;
+    }
+
+
+    message.style.color = "#aaa";
+
+    message.textContent =
+      "계정을 만드는 중...";
+
+
+    const email =
+      nicknameToEmail(nickname);
+
+
+    const {
+      data,
+      error
+    } =
+      await db.auth.signUp({
+
+        email: email,
+
+        password: password,
+
+        options: {
+
+          data: {
+            nickname: nickname
+          }
+
+        }
+
+      });
+
+
+    if (error) {
+
+      message.style.color = "#ff8080";
+
+      message.textContent =
+        "회원가입 실패: " +
+        error.message;
+
+      return;
+    }
+
+
+    message.style.color = "#8cff9b";
+
+    message.textContent =
+      "회원가입 성공!";
+
+
+    await loadHome();
+  }
+
+
+  // =====================================================
+  // 로그인
+  // =====================================================
+
+  async function login() {
+
+    const nickname =
+      document
+        .getElementById("loginNickname")
+        .value
+        .trim();
+
+    const password =
+      document
+        .getElementById("loginPassword")
+        .value;
+
+    const message =
+      document.getElementById(
+        "loginMessage"
+      );
+
+
+    message.style.color = "#ff8080";
+    message.textContent = "";
+
+
+    if (!nickname || !password) {
+
+      message.textContent =
+        "닉네임과 비밀번호를 입력해주세요.";
+
+      return;
+    }
+
+
+    message.style.color = "#aaa";
+
+    message.textContent =
+      "로그인 중...";
+
+
+    const email =
+      nicknameToEmail(nickname);
+
+
+    const {
+      data,
+      error
+    } =
+      await db.auth.signInWithPassword({
+
+        email: email,
+
+        password: password
+
+      });
+
+
+    if (error) {
+
+      message.style.color = "#ff8080";
+
+      message.textContent =
+        "닉네임 또는 비밀번호를 확인해주세요.";
+
+      return;
+    }
+
+
+    await loadHome();
+  }
+
+
+  // =====================================================
+  // 홈 정보 불러오기
+  // =====================================================
+
+  async function loadHome() {
+
+    const {
+      data: userData
+    } =
+      await db.auth.getUser();
+
+
+    const user =
+      userData.user;
+
+
+    if (!user) {
+
+      showLogin();
+
+      return;
+    }
+
+
+    const {
+      data: profile,
+      error
+    } =
+      await db
+        .from("profiles")
+        .select(
+          "nickname, balance_per, bank_per, loan_per"
+        )
+        .eq(
+          "id",
+          user.id
+        )
+        .single();
+
+
+    if (error) {
+
+      console.error(error);
+
+      alert(
+        "프로필을 불러오지 못했습니다."
+      );
+
+      return;
+    }
+
+
+    document.getElementById(
+      "homeNickname"
+    ).textContent =
+      profile.nickname;
+
+
+    document.getElementById(
+      "homePer"
+    ).textContent =
+      Number(
+        profile.balance_per
+      ).toLocaleString()
+      + " 퍼";
+
+
+    hideAll();
+
+    document
+      .getElementById("homeScreen")
+      .classList.remove("hidden");
+  }
+
+
+  // =====================================================
+  // 로그아웃
+  // =====================================================
+
+  async function logout() {
+
+    await db.auth.signOut();
+
+    showLogin();
+  }
+
+
+  // =====================================================
+  // 페이지 처음 열었을 때
+  // 기존 로그인 확인
+  // =====================================================
+
+  async function start() {
+
+    const {
+      data
+    } =
+      await db.auth.getSession();
+
+
+    if (data.session) {
+
+      await loadHome();
+
+    } else {
+
+      showLogin();
+
+    }
+  }
+
+
+  start();
+
+</script>
+
+</body>
+</html>
