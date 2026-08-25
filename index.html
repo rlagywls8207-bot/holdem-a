@@ -1,3372 +1,3142 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Holdem A</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <title>Holdem A</title>
+<style>
+*{box-sizing:border-box}
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial,sans-serif;
+  background:#111;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+}
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+.container{
+  width:min(92%,450px);
+  padding:30px 0;
+}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
+.logo{
+  text-align:center;
+  font-size:38px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
 
-    .container {
-      width: min(92%, 450px);
-      padding: 30px 0;
-    }
+.subtitle{
+  text-align:center;
+  color:#aaa;
+  margin-bottom:28px;
+}
 
-    .logo {
-      text-align: center;
-      font-size: 38px;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
+.card{
+  background:#1c1c1c;
+  border:1px solid #333;
+  border-radius:18px;
+  padding:22px;
+}
 
-    .subtitle {
-      text-align: center;
-      color: #aaa;
-      margin-bottom: 28px;
-    }
+h2,h3{margin-top:0}
 
-    .card {
-      background: #1c1c1c;
-      border: 1px solid #333;
-      border-radius: 18px;
-      padding: 22px;
-    }
+input{
+  width:100%;
+  padding:14px;
+  margin-bottom:12px;
+  background:#111;
+  color:#fff;
+  border:1px solid #444;
+  border-radius:10px;
+  font-size:16px;
+}
 
-    h2,
-    h3 {
-      margin-top: 0;
-    }
+button{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:0;
+  border-radius:11px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-    input {
-      width: 100%;
-      padding: 14px;
-      margin-bottom: 12px;
-      background: #111;
-      color: white;
-      border: 1px solid #444;
-      border-radius: 10px;
-      font-size: 16px;
-    }
+button:disabled{
+  opacity:.35;
+  cursor:default;
+}
 
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 10px;
-      border: 0;
-      border-radius: 11px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.primary{
+  background:#fff;
+  color:#111;
+}
 
-    button:disabled {
-      opacity: 0.4;
-      cursor: default;
-    }
+.secondary{
+  background:#333;
+  color:#fff;
+}
 
-    .primary {
-      background: white;
-      color: black;
-    }
+.danger{
+  background:#652b2b;
+  color:#fff;
+}
 
-    .secondary {
-      background: #333;
-      color: white;
-    }
+.ready{
+  background:#eee;
+  color:#111;
+}
 
-    .danger {
-      background: #652b2b;
-      color: white;
-    }
+.readyCancel{
+  background:#474747;
+  color:#fff;
+}
 
-    .ready {
-      background: #e8e8e8;
-      color: #111;
-    }
+.hidden{
+  display:none!important;
+}
 
-    .readyCancel {
-      background: #474747;
-      color: white;
-    }
+.menuButton{
+  background:#252525;
+  color:#fff;
+  border:1px solid #3d3d3d;
+  text-align:left;
+  padding:18px;
+  font-size:18px;
+}
 
-    .menuButton {
-      background: #252525;
-      color: white;
-      border: 1px solid #3d3d3d;
-      text-align: left;
-      padding: 18px;
-      font-size: 18px;
-    }
+.menuButton small{
+  display:block;
+  color:#999;
+  font-size:12px;
+  font-weight:normal;
+  margin-top:6px;
+}
 
-    .menuButton small {
-      display: block;
-      color: #999;
-      font-size: 12px;
-      font-weight: normal;
-      margin-top: 6px;
-    }
+.switch{
+  margin-top:20px;
+  text-align:center;
+  color:#aaa;
+  cursor:pointer;
+}
 
-    .switch {
-      margin-top: 20px;
-      text-align: center;
-      color: #aaa;
-      cursor: pointer;
-    }
+.message{
+  min-height:24px;
+  margin-top:15px;
+  text-align:center;
+  color:#ff8080;
+  white-space:pre-line;
+}
 
-    .message {
-      min-height: 24px;
-      margin-top: 15px;
-      text-align: center;
-      color: #ff8080;
-      white-space: pre-line;
-    }
+.accountBar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#1b1b1b;
+  border:1px solid #333;
+  border-radius:14px;
+  padding:14px 16px;
+  margin-bottom:18px;
+}
 
-    .hidden {
-      display: none !important;
-    }
+.accountName,
+.accountPer{
+  font-weight:bold;
+}
 
-    .accountBar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #1b1b1b;
-      border: 1px solid #333;
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-bottom: 18px;
-    }
+.backButton{
+  width:auto;
+  padding:10px 14px;
+  margin:0 0 18px;
+}
 
-    .accountName {
-      font-weight: bold;
-    }
+.balanceBox,
+.roomCard,
+.exchangeBox,
+.gameInfoBox{
+  background:#111;
+  border:1px solid #333;
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:12px;
+}
 
-    .accountPer {
-      font-weight: bold;
-    }
+.balanceLabel,
+.smallStatLabel{
+  color:#999;
+  font-size:12px;
+}
 
-    .backButton {
-      width: auto;
-      padding: 10px 14px;
-      margin: 0 0 18px 0;
-    }
+.balanceValue{
+  font-size:27px;
+  font-weight:bold;
+  margin-top:5px;
+}
 
-    .balanceBox {
-      background: #111;
-      border-radius: 14px;
-      padding: 18px;
-      margin-bottom: 12px;
-    }
+.fieldLabel{
+  display:block;
+  color:#ddd;
+  font-size:14px;
+  font-weight:bold;
+  margin:12px 0 7px 2px;
+}
 
-    .balanceLabel {
-      color: #999;
-      font-size: 13px;
-    }
+.fieldHelp{
+  color:#888;
+  font-size:12px;
+  margin:-4px 0 14px 3px;
+}
 
-    .balanceValue {
-      font-size: 27px;
-      font-weight: bold;
-      margin-top: 5px;
-    }
+.roomCardTitle{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:5px;
+}
 
-    .ruleBox {
-      background: #111;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 12px;
-      line-height: 1.6;
-    }
+.roomCode{
+  font-family:monospace;
+  letter-spacing:2px;
+  color:#ddd;
+}
 
-    .ruleBox strong {
-      display: block;
-      margin-bottom: 6px;
-    }
+.roomInfo{
+  color:#aaa;
+  font-size:13px;
+  line-height:1.7;
+  margin-top:8px;
+}
 
-    .fieldLabel {
-      display: block;
-      color: #ddd;
-      font-size: 14px;
-      font-weight: bold;
-      margin: 12px 0 7px 2px;
-    }
+.playerRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#111;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:8px;
+}
 
-    .fieldHelp {
-      color: #888;
-      font-size: 12px;
-      margin: -4px 0 14px 3px;
-    }
+.playerNickname{
+  font-weight:bold;
+}
 
-    .roomCard {
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 12px;
-    }
+.playerPer,
+.playerSub{
+  color:#aaa;
+  font-size:12px;
+  margin-top:4px;
+}
 
-    .roomCardTitle {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
+.playerChip{
+  font-weight:bold;
+  text-align:right;
+}
 
-    .roomCode {
-      font-family: monospace;
-      letter-spacing: 2px;
-      color: #ddd;
-    }
+.readyText{
+  color:#a8ffb3;
+  font-size:12px;
+  margin-top:4px;
+}
 
-    .roomInfo {
-      color: #aaa;
-      font-size: 13px;
-      line-height: 1.7;
-      margin-top: 8px;
-    }
+.notReadyText{
+  color:#888;
+  font-size:12px;
+  margin-top:4px;
+}
 
-    .playerRow {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #111;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 8px;
-    }
+.sectionLine{
+  height:1px;
+  background:#333;
+  margin:20px 0;
+}
 
-    .playerNickname {
-      font-weight: bold;
-    }
+.emptyText{
+  text-align:center;
+  color:#888;
+  padding:25px 5px;
+}
 
-    .playerPer {
-      color: #aaa;
-      font-size: 13px;
-      margin-top: 4px;
-    }
+.refreshText{
+  color:#777;
+  font-size:12px;
+  text-align:center;
+  margin-top:12px;
+}
 
-    .playerChip {
-      font-weight: bold;
-      text-align: right;
-    }
+.exchangeSummary{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:14px;
+}
 
-    .readyText {
-      color: #9dffab;
-      font-size: 12px;
-      margin-top: 4px;
-    }
+.smallStat{
+  background:#1d1d1d;
+  border-radius:10px;
+  padding:11px;
+}
 
-    .notReadyText {
-      color: #888;
-      font-size: 12px;
-      margin-top: 4px;
-    }
+.smallStatValue{
+  margin-top:3px;
+  font-weight:bold;
+}
 
-    .sectionLine {
-      height: 1px;
-      background: #333;
-      margin: 20px 0;
-    }
+.quickButtons{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:7px;
+  margin-bottom:8px;
+}
 
-    .emptyText {
-      text-align: center;
-      color: #888;
-      padding: 25px 5px;
-    }
+.quickButtons button{
+  margin:0;
+  padding:11px 5px;
+  font-size:13px;
+}
 
-    .refreshText {
-      color: #777;
-      font-size: 12px;
-      text-align: center;
-      margin-top: 12px;
-    }
+.exchangePreview{
+  background:#1c1c1c;
+  padding:12px;
+  border-radius:10px;
+  color:#ccc;
+  line-height:1.6;
+  font-size:13px;
+  margin-bottom:10px;
+  white-space:pre-line;
+}
 
-    .exchangeBox {
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 14px;
-      padding: 16px;
-      margin-top: 18px;
-    }
+.allReady{
+  background:#1d3222;
+  border:1px solid #335d3d;
+  color:#baffc4;
+  border-radius:12px;
+  padding:12px;
+  text-align:center;
+  margin-top:14px;
+  font-weight:bold;
+}
 
-    .exchangeSummary {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
+.ruleBox{
+  background:#111;
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:12px;
+  line-height:1.6;
+}
 
-    .smallStat {
-      background: #1d1d1d;
-      border-radius: 10px;
-      padding: 11px;
-    }
+.ruleBox strong{
+  display:block;
+  margin-bottom:6px;
+}
 
-    .smallStatLabel {
-      color: #888;
-      font-size: 11px;
-    }
+.gameTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
 
-    .smallStatValue {
-      margin-top: 3px;
-      font-weight: bold;
-    }
+.handNumber{
+  color:#aaa;
+  font-size:13px;
+}
 
-    .quickButtons {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 7px;
-      margin-bottom: 8px;
-    }
+.pot{
+  text-align:center;
+  font-size:17px;
+  color:#aaa;
+}
 
-    .quickButtons button {
-      margin: 0;
-      padding: 11px 6px;
-      font-size: 13px;
-    }
+.pot strong{
+  display:block;
+  color:#fff;
+  font-size:40px;
+  margin-top:4px;
+}
 
-    .exchangePreview {
-      background: #1c1c1c;
-      padding: 12px;
-      border-radius: 10px;
-      color: #ccc;
-      line-height: 1.6;
-      font-size: 13px;
-      margin-bottom: 10px;
-    }
+.diceBox{
+  background:#151515;
+  border:1px solid #444;
+  border-radius:14px;
+  padding:18px;
+  margin:16px 0;
+}
 
-    .allReady {
-      background: #1d3222;
-      border: 1px solid #335d3d;
-      color: #baffc4;
-      border-radius: 12px;
-      padding: 12px;
-      text-align: center;
-      margin-top: 14px;
-      font-weight: bold;
-    }
+.diceTitle{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:7px;
+}
 
-    .modalBackdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      z-index: 1000;
-    }
+.diceHelp{
+  color:#aaa;
+  font-size:13px;
+  line-height:1.6;
+  margin-bottom:14px;
+}
 
-    .modal {
-      width: min(92%, 420px);
-      max-height: 80vh;
-      overflow-y: auto;
-      background: #1c1c1c;
-      border: 1px solid #444;
-      border-radius: 18px;
-      padding: 22px;
-    }
+.diceButtons{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
 
-    .modalClose {
-      float: right;
-      width: auto;
-      margin: 0;
-      padding: 6px 10px;
-      background: #333;
-      color: white;
-    }
-  </style>
+.diceButtons button{
+  margin:0;
+  font-size:22px;
+}
+
+.turnBox{
+  background:#242424;
+  border:1px solid #555;
+  border-radius:14px;
+  padding:16px;
+  text-align:center;
+  margin:16px 0;
+}
+
+.turnName{
+  font-size:23px;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+.currentTurn{
+  border:1px solid #eee;
+}
+
+.diceResult{
+  font-size:22px;
+  font-weight:bold;
+}
+
+.modalBackdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  z-index:1000;
+}
+
+.modal{
+  width:min(92%,420px);
+  max-height:80vh;
+  overflow-y:auto;
+  background:#1c1c1c;
+  border:1px solid #444;
+  border-radius:18px;
+  padding:22px;
+}
+
+.modalClose{
+  float:right;
+  width:auto;
+  margin:0;
+  padding:6px 10px;
+  background:#333;
+  color:#fff;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <div class="logo">
-    HOLDEM A
-  </div>
-
-  <div class="subtitle">
-    홀덤 보조 게임
-  </div>
-
-
-  <!-- 로그인 -->
-
-  <div
-    id="loginScreen"
-    class="card"
-  >
-
-    <h2>로그인</h2>
-
-    <input
-      id="loginNickname"
-      type="text"
-      placeholder="닉네임"
-      autocomplete="username"
-    >
-
-    <input
-      id="loginPassword"
-      type="password"
-      placeholder="비밀번호"
-      autocomplete="current-password"
-    >
-
-    <button
-      class="primary"
-      onclick="login()"
-    >
-      로그인
-    </button>
-
-    <div
-      class="switch"
-      onclick="showSignup()"
-    >
-      처음이신가요? 회원가입
-    </div>
-
-    <div
-      id="loginMessage"
-      class="message"
-    ></div>
-
-  </div>
-
-
-  <!-- 회원가입 -->
-
-  <div
-    id="signupScreen"
-    class="card hidden"
-  >
-
-    <h2>회원가입</h2>
-
-    <input
-      id="signupNickname"
-      type="text"
-      placeholder="닉네임"
-      maxlength="20"
-    >
-
-    <input
-      id="signupPassword"
-      type="password"
-      placeholder="비밀번호"
-    >
-
-    <input
-      id="signupPassword2"
-      type="password"
-      placeholder="비밀번호 확인"
-    >
-
-    <button
-      class="primary"
-      onclick="signup()"
-    >
-      가입하기
-    </button>
-
-    <div
-      class="switch"
-      onclick="showLogin()"
-    >
-      이미 계정이 있나요? 로그인
-    </div>
-
-    <div
-      id="signupMessage"
-      class="message"
-    ></div>
-
-  </div>
+<div class="logo">HOLDEM A</div>
+<div class="subtitle">홀덤 보조 게임</div>
 
 
-  <!-- 홈 -->
+<!-- 로그인 -->
+<div id="loginScreen" class="card">
 
-  <div
-    id="homeScreen"
-    class="hidden"
-  >
-
-    <div class="accountBar">
+<h2>로그인</h2>
 
-      <div
-        id="homeNickname"
-        class="accountName"
-      >
-        -
-      </div>
+<input id="loginNickname" type="text"
+placeholder="닉네임" autocomplete="username">
 
-      <div
-        id="homePer"
-        class="accountPer"
-      >
-        0 퍼
-      </div>
+<input id="loginPassword" type="password"
+placeholder="비밀번호"
+autocomplete="current-password">
 
-    </div>
+<button class="primary" onclick="login()">
+로그인
+</button>
 
-    <div class="card">
+<div class="switch" onclick="showSignup()">
+처음이신가요? 회원가입
+</div>
 
-      <h2>홈</h2>
+<div id="loginMessage" class="message"></div>
 
-      <button
-        class="menuButton"
-        onclick="showGameMenu()"
-      >
-        🎮 게임 시작
+</div>
 
-        <small>
-          방을 만들거나 참가합니다.
-        </small>
-      </button>
 
-      <button
-        class="menuButton"
-        onclick="showRules()"
-      >
-        📖 룰 설명
+<!-- 회원가입 -->
+<div id="signupScreen" class="card hidden">
 
-        <small>
-          홀덤(변형 A)의 규칙을 확인합니다.
-        </small>
-      </button>
+<h2>회원가입</h2>
 
-      <button
-        class="menuButton"
-        onclick="showBank()"
-      >
-        🏦 은행
+<input id="signupNickname"
+type="text"
+placeholder="닉네임"
+maxlength="20">
 
-        <small>
-          퍼, 예금, 대출을 관리합니다.
-        </small>
-      </button>
-
-      <button
-        class="secondary"
-        onclick="logout()"
-      >
-        로그아웃
-      </button>
+<input id="signupPassword"
+type="password"
+placeholder="비밀번호">
 
-    </div>
-
-  </div>
+<input id="signupPassword2"
+type="password"
+placeholder="비밀번호 확인">
 
-
-  <!-- 게임 메뉴 -->
-
-  <div
-    id="gameMenuScreen"
-    class="card hidden"
-  >
-
-    <button
-      class="secondary backButton"
-      onclick="showHome()"
-    >
-      ← 홈
-    </button>
-
-    <h2>게임 시작</h2>
-
-    <button
-      class="menuButton"
-      onclick="showCreateRoom()"
-    >
-      방 만들기
-
-      <small>
-        새 게임방을 생성합니다.
-      </small>
-    </button>
-
-    <button
-      class="menuButton"
-      onclick="showJoinRoom()"
-    >
-      방 참가
-
-      <small>
-        현재 열려 있는 방을 확인합니다.
-      </small>
-    </button>
-
-  </div>
-
-
-  <!-- 방 만들기 -->
-
-  <div
-    id="createRoomScreen"
-    class="card hidden"
-  >
-
-    <button
-      class="secondary backButton"
-      onclick="showGameMenu()"
-    >
-      ← 게임 메뉴
-    </button>
-
-    <h2>방 만들기</h2>
-
-
-    <label class="fieldLabel">
-      방 이름
-    </label>
-
-    <input
-      id="createRoomName"
-      type="text"
-      placeholder="방 이름을 입력하세요"
-      maxlength="30"
-    >
-
-
-    <label
-      id="chipValueLabel"
-      class="fieldLabel"
-    >
-      칩 가치 (100칩 = 1,000퍼)
-    </label>
-
-    <input
-      id="createChipValue"
-      type="number"
-      inputmode="numeric"
-      min="1"
-      value="10"
-      oninput="updateChipPreview()"
-    >
+<button class="primary" onclick="signup()">
+가입하기
+</button>
 
-    <div
-      id="singleChipPreview"
-      class="fieldHelp"
-    >
-      1칩 = 10퍼
-    </div>
+<div class="switch" onclick="showLogin()">
+이미 계정이 있나요? 로그인
+</div>
 
+<div id="signupMessage" class="message"></div>
 
-    <label class="fieldLabel">
-      최소 환전 칩
-    </label>
+</div>
 
-    <input
-      id="createMinBuyin"
-      type="number"
-      inputmode="numeric"
-      min="1"
-      value="50"
-    >
 
+<!-- 홈 -->
+<div id="homeScreen" class="hidden">
 
-    <label class="fieldLabel">
-      최대 환전 칩
-    </label>
+<div class="accountBar">
+<div id="homeNickname" class="accountName">-</div>
+<div id="homePer" class="accountPer">0 퍼</div>
+</div>
 
-    <input
-      id="createMaxBuyin"
-      type="number"
-      inputmode="numeric"
-      min="1"
-      value="100"
-      oninput="updateChipPreview()"
-    >
+<div class="card">
 
-    <div
-      id="maxBuyinPreview"
-      class="fieldHelp"
-    >
-      최대 환전 시 1,000퍼 필요
-    </div>
+<h2>홈</h2>
 
+<button class="menuButton" onclick="showGameMenu()">
+🎮 게임 시작
+<small>방을 만들거나 참가합니다.</small>
+</button>
 
-    <button
-      id="createRoomButton"
-      class="primary"
-      onclick="createRoom()"
-    >
-      방 생성
-    </button>
+<button class="menuButton" onclick="showRules()">
+📖 룰 설명
+<small>홀덤(변형 A)의 규칙을 확인합니다.</small>
+</button>
 
-    <div
-      id="createRoomMessage"
-      class="message"
-    ></div>
+<button class="menuButton" onclick="showBank()">
+🏦 은행
+<small>퍼, 예금, 대출을 관리합니다.</small>
+</button>
 
-  </div>
+<button class="secondary" onclick="logout()">
+로그아웃
+</button>
 
+</div>
+</div>
 
-  <!-- 방 참가 -->
 
-  <div
-    id="joinRoomScreen"
-    class="card hidden"
-  >
+<!-- 게임 메뉴 -->
+<div id="gameMenuScreen" class="card hidden">
 
-    <button
-      class="secondary backButton"
-      onclick="showGameMenu()"
-    >
-      ← 게임 메뉴
-    </button>
+<button class="secondary backButton"
+onclick="showHome()">
+← 홈
+</button>
 
-    <h2>열린 방</h2>
+<h2>게임 시작</h2>
 
-    <button
-      class="secondary"
-      onclick="loadRooms()"
-    >
-      새로고침
-    </button>
+<button class="menuButton"
+onclick="showCreateRoom()">
+방 만들기
+<small>새 게임방을 생성합니다.</small>
+</button>
 
-    <div class="sectionLine"></div>
+<button class="menuButton"
+onclick="showJoinRoom()">
+방 참가
+<small>현재 열려 있는 방을 확인합니다.</small>
+</button>
 
-    <div id="roomList">
+</div>
 
-      <div class="emptyText">
-        방 목록을 불러오는 중...
-      </div>
 
-    </div>
+<!-- 방 만들기 -->
+<div id="createRoomScreen" class="card hidden">
 
-  </div>
+<button class="secondary backButton"
+onclick="showGameMenu()">
+← 게임 메뉴
+</button>
 
+<h2>방 만들기</h2>
 
-  <!-- 대기실 -->
+<label class="fieldLabel">방 이름</label>
+<input id="createRoomName"
+type="text"
+placeholder="방 이름을 입력하세요"
+maxlength="30">
 
-  <div
-    id="roomLobbyScreen"
-    class="card hidden"
-  >
+<label id="chipValueLabel" class="fieldLabel">
+칩 가치 (100칩 = 1,000퍼)
+</label>
 
-    <h2 id="lobbyRoomName">
-      방
-    </h2>
+<input id="createChipValue"
+type="number"
+inputmode="numeric"
+min="1"
+value="10"
+oninput="updateChipPreview()">
 
+<div id="singleChipPreview" class="fieldHelp">
+1칩 = 10퍼
+</div>
 
-    <div class="roomCard">
+<label class="fieldLabel">최소 환전 칩</label>
 
-      <div>
-        방 코드
-      </div>
+<input id="createMinBuyin"
+type="number"
+inputmode="numeric"
+min="1"
+value="50">
 
-      <div
-        id="lobbyRoomCode"
-        class="roomCode"
-      >
-        ------
-      </div>
+<label class="fieldLabel">최대 환전 칩</label>
 
-      <div
-        id="lobbyRoomSettings"
-        class="roomInfo"
-      ></div>
+<input id="createMaxBuyin"
+type="number"
+inputmode="numeric"
+min="1"
+value="100"
+oninput="updateChipPreview()">
 
-    </div>
+<div id="maxBuyinPreview" class="fieldHelp">
+최대 환전 시 1,000퍼 필요
+</div>
 
+<button id="createRoomButton"
+class="primary"
+onclick="createRoom()">
+방 생성
+</button>
 
-    <!-- 환전 -->
+<div id="createRoomMessage"
+class="message"></div>
 
-    <div class="exchangeBox">
+</div>
 
-      <h3>
-        칩 환전
-      </h3>
 
-      <div class="exchangeSummary">
+<!-- 방 참가 -->
+<div id="joinRoomScreen" class="card hidden">
 
-        <div class="smallStat">
+<button class="secondary backButton"
+onclick="showGameMenu()">
+← 게임 메뉴
+</button>
 
-          <div class="smallStatLabel">
-            보유 퍼
-          </div>
+<h2>열린 방</h2>
 
-          <div
-            id="lobbyMyPer"
-            class="smallStatValue"
-          >
-            0퍼
-          </div>
+<button class="secondary"
+onclick="loadRooms()">
+새로고침
+</button>
 
-        </div>
+<div class="sectionLine"></div>
 
-        <div class="smallStat">
+<div id="roomList">
+<div class="emptyText">방 목록을 불러오는 중...</div>
+</div>
 
-          <div class="smallStatLabel">
-            현재 칩
-          </div>
+</div>
 
-          <div
-            id="lobbyMyChips"
-            class="smallStatValue"
-          >
-            0칩
-          </div>
 
-        </div>
+<!-- 대기실 -->
+<div id="roomLobbyScreen" class="card hidden">
 
-      </div>
+<h2 id="lobbyRoomName">방</h2>
 
+<div class="roomCard">
 
-      <label class="fieldLabel">
-        환전 후 보유할 칩
-      </label>
+<div>방 코드</div>
 
-      <input
-        id="targetChipInput"
-        type="number"
-        inputmode="numeric"
-        min="0"
-        value="0"
-        oninput="updateExchangePreview()"
-      >
+<div id="lobbyRoomCode"
+class="roomCode">
+------
+</div>
 
+<div id="lobbyRoomSettings"
+class="roomInfo"></div>
 
-      <div class="quickButtons">
+</div>
 
-        <button
-          class="secondary"
-          onclick="setTargetMin()"
-        >
-          최소
-        </button>
 
-        <button
-          class="secondary"
-          onclick="setTargetMax()"
-        >
-          최대
-        </button>
+<div class="exchangeBox">
 
-        <button
-          class="secondary"
-          onclick="setTargetZero()"
-        >
-          전액 환전
-        </button>
+<h3>칩 환전</h3>
 
-      </div>
+<div class="exchangeSummary">
 
+<div class="smallStat">
+<div class="smallStatLabel">보유 퍼</div>
+<div id="lobbyMyPer" class="smallStatValue">0퍼</div>
+</div>
 
-      <div
-        id="exchangePreview"
-        class="exchangePreview"
-      >
-        칩 수를 입력해주세요.
-      </div>
+<div class="smallStat">
+<div class="smallStatLabel">현재 칩</div>
+<div id="lobbyMyChips" class="smallStatValue">0칩</div>
+</div>
 
+</div>
 
-      <button
-        id="exchangeButton"
-        class="primary"
-        onclick="exchangeChips()"
-      >
-        환전 적용
-      </button>
+<label class="fieldLabel">
+환전 후 보유할 칩
+</label>
 
-    </div>
+<input id="targetChipInput"
+type="number"
+inputmode="numeric"
+min="0"
+value="0"
+oninput="updateExchangePreview()">
 
+<div class="quickButtons">
 
-    <div class="sectionLine"></div>
+<button class="secondary" onclick="setTargetMin()">
+최소
+</button>
 
+<button class="secondary" onclick="setTargetMax()">
+최대
+</button>
 
-    <h3>
-      대기 인원
-    </h3>
+<button class="secondary" onclick="setTargetZero()">
+전액 환전
+</button>
 
-    <div id="lobbyPlayers">
+</div>
 
-      <div class="emptyText">
-        참가자를 불러오는 중...
-      </div>
+<div id="exchangePreview"
+class="exchangePreview">
+칩 수를 입력해주세요.
+</div>
 
-    </div>
+<button id="exchangeButton"
+class="primary"
+onclick="exchangeChips()">
+환전 적용
+</button>
 
+</div>
 
-    <div
-      id="allReadyNotice"
-      class="allReady hidden"
-    >
-      모든 플레이어가 준비되었습니다!
-    </div>
 
+<div class="sectionLine"></div>
 
-    <button
-      id="readyButton"
-      class="ready"
-      onclick="toggleReady()"
-    >
-      준비 완료
-    </button>
+<h3>대기 인원</h3>
 
+<div id="lobbyPlayers">
+<div class="emptyText">불러오는 중...</div>
+</div>
 
-    <div class="refreshText">
-      참가자 상태는 약 3초마다 자동 갱신됩니다.
-    </div>
+<div id="allReadyNotice"
+class="allReady hidden">
+모든 플레이어가 준비되었습니다!
+</div>
 
+<button id="readyButton"
+class="ready"
+onclick="toggleReady()">
+준비 완료
+</button>
 
-    <button
-      class="secondary"
-      onclick="refreshLobby()"
-    >
-      지금 새로고침
-    </button>
+<button id="startGameButton"
+class="primary hidden"
+disabled
+onclick="startGame()">
+게임 시작
+</button>
 
+<div class="refreshText">
+참가자 상태는 약 3초마다 자동 갱신됩니다.
+</div>
 
-    <button
-      id="leaveRoomButton"
-      class="secondary hidden"
-      onclick="leaveRoom()"
-    >
-      방 나가기
-    </button>
+<button class="secondary"
+onclick="refreshLobby()">
+지금 새로고침
+</button>
 
+<button id="leaveRoomButton"
+class="secondary hidden"
+onclick="leaveRoom()">
+방 나가기
+</button>
 
-    <button
-      id="destroyRoomButton"
-      class="danger hidden"
-      onclick="destroyRoom()"
-    >
-      방 폭파
-    </button>
+<button id="destroyRoomButton"
+class="danger hidden"
+onclick="destroyRoom()">
+방 폭파
+</button>
 
-  </div>
+</div>
 
 
-  <!-- 룰 -->
+<!-- 실제 게임 -->
+<div id="gameScreen" class="card hidden">
 
-  <div
-    id="rulesScreen"
-    class="card hidden"
-  >
+<div class="gameTop">
 
-    <button
-      class="secondary backButton"
-      onclick="showHome()"
-    >
-      ← 홈
-    </button>
+<div>
+<h2 style="margin-bottom:3px">
+게임 진행
+</h2>
 
-    <h2>홀덤(변형 A)</h2>
+<div id="gameHandNumber"
+class="handNumber">
+1번째 판
+</div>
+</div>
 
-    <div class="ruleBox">
+<div id="gameStatus"
+class="handNumber">
+-
+</div>
 
-      <strong>
-        게임 방식
-      </strong>
+</div>
 
-      실제 카드는 오프라인에서 사용하고,
-      앱은 칩과 베팅 및 정산을 관리합니다.
 
-    </div>
+<div class="gameInfoBox">
 
-    <div class="ruleBox">
+<div class="pot">
+현재 팟
+<strong id="gamePot">0칩</strong>
+</div>
 
-      <strong>
-        기본베팅
-      </strong>
+</div>
 
-      한 판이 시작되면
-      모든 참가자가 1칩씩 냅니다.
 
-    </div>
+<div id="diceSection"
+class="diceBox hidden">
 
-    <div class="ruleBox">
+<div id="diceTitle"
+class="diceTitle">
+첫 행동자 결정
+</div>
 
-      <strong>
-        행동 방향
-      </strong>
+<div id="diceHelp"
+class="diceHelp">
+실제 주사위를 굴린 뒤 나온 숫자를 입력하세요.
+</div>
 
-      행동은 시계 방향으로 진행합니다.
+<div id="diceButtons"
+class="diceButtons">
 
-    </div>
+<button class="secondary" onclick="submitDice(1)">1</button>
+<button class="secondary" onclick="submitDice(2)">2</button>
+<button class="secondary" onclick="submitDice(3)">3</button>
+<button class="secondary" onclick="submitDice(4)">4</button>
+<button class="secondary" onclick="submitDice(5)">5</button>
+<button class="secondary" onclick="submitDice(6)">6</button>
 
-    <div class="ruleBox">
+</div>
 
-      <strong>
-        사이드팟 없음
-      </strong>
+</div>
 
-      살아 있는 플레이어 중
-      총 투입 가능한 칩이 가장 적은 사람을 기준으로
-      베팅 상한이 정해집니다.
 
-    </div>
+<div id="turnSection"
+class="turnBox hidden">
 
-  </div>
+<div>
+첫 행동자
+</div>
 
+<div id="starterName"
+class="turnName">
+-
+</div>
 
-  <!-- 은행 -->
+</div>
 
-  <div
-    id="bankScreen"
-    class="card hidden"
-  >
 
-    <button
-      class="secondary backButton"
-      onclick="showHome()"
-    >
-      ← 홈
-    </button>
+<h3>플레이어</h3>
 
-    <h2>은행</h2>
+<div id="gamePlayers">
+<div class="emptyText">
+게임 정보를 불러오는 중...
+</div>
+</div>
 
-    <div class="balanceBox">
 
-      <div class="balanceLabel">
-        보유 퍼
-      </div>
+<div id="bettingComingSoon"
+class="ruleBox hidden">
 
-      <div
-        id="bankBalance"
-        class="balanceValue"
-      >
-        0 퍼
-      </div>
+<strong>
+베팅 준비 완료
+</strong>
 
-    </div>
+첫 행동자까지 결정되었습니다.
 
-    <div class="balanceBox">
+다음 단계에서
+폴드 / 체크 / 콜 / 레이즈와
+실시간 턴 시스템을 연결합니다.
 
-      <div class="balanceLabel">
-        예금
-      </div>
+</div>
 
-      <div
-        id="bankDeposit"
-        class="balanceValue"
-      >
-        0 퍼
-      </div>
+</div>
 
-    </div>
 
-    <div class="balanceBox">
+<!-- 룰 -->
+<div id="rulesScreen" class="card hidden">
 
-      <div class="balanceLabel">
-        대출
-      </div>
+<button class="secondary backButton"
+onclick="showHome()">
+← 홈
+</button>
 
-      <div
-        id="bankLoan"
-        class="balanceValue"
-      >
-        0 퍼
-      </div>
+<h2>홀덤(변형 A)</h2>
 
-    </div>
+<div class="ruleBox">
+<strong>게임 방식</strong>
+실제 카드는 오프라인에서 사용하고 앱은 칩과 베팅 및 정산을 관리합니다.
+</div>
 
-  </div>
+<div class="ruleBox">
+<strong>기본베팅</strong>
+한 판 시작 시 모든 참가자가 1칩을 냅니다.
+</div>
+
+<div class="ruleBox">
+<strong>첫 행동자</strong>
+첫 판은 주사위 최고 숫자 플레이어부터 시작합니다.
+동점이면 최고 숫자 동점자끼리 다시 굴립니다.
+</div>
+
+<div class="ruleBox">
+<strong>행동 방향</strong>
+시계 방향으로 진행합니다.
+</div>
+
+<div class="ruleBox">
+<strong>사이드팟 없음</strong>
+살아 있는 플레이어 중 총 투입 가능 칩이 가장 적은 플레이어를 기준으로 베팅 상한을 정합니다.
+</div>
+
+</div>
+
+
+<!-- 은행 -->
+<div id="bankScreen" class="card hidden">
+
+<button class="secondary backButton"
+onclick="showHome()">
+← 홈
+</button>
+
+<h2>은행</h2>
+
+<div class="balanceBox">
+<div class="balanceLabel">보유 퍼</div>
+<div id="bankBalance" class="balanceValue">0 퍼</div>
+</div>
+
+<div class="balanceBox">
+<div class="balanceLabel">예금</div>
+<div id="bankDeposit" class="balanceValue">0 퍼</div>
+</div>
+
+<div class="balanceBox">
+<div class="balanceLabel">대출</div>
+<div id="bankLoan" class="balanceValue">0 퍼</div>
+</div>
+
+</div>
 
 </div>
 
 
 <!-- 팝업 -->
+<div id="simpleModal"
+class="modalBackdrop hidden">
 
-<div
-  id="simpleModal"
-  class="modalBackdrop hidden"
->
+<div class="modal">
 
-  <div class="modal">
+<button class="modalClose"
+onclick="closeModal()">
+×
+</button>
 
-    <button
-      class="modalClose"
-      onclick="closeModal()"
-    >
-      ×
-    </button>
+<h3 id="modalTitle">안내</h3>
 
-    <h3 id="modalTitle">
-      안내
-    </h3>
+<div id="modalText"
+style="white-space:pre-line"></div>
 
-    <div
-      id="modalText"
-      style="white-space: pre-line;"
-    ></div>
-
-  </div>
-
+</div>
 </div>
 
 
 <script>
 
-  // =====================================================
-  // Supabase
-  // =====================================================
+const SUPABASE_URL =
+"https://wuvbsntbtnvxmudluraq.supabase.co";
 
-  const SUPABASE_URL =
-    "https://wuvbsntbtnvxmudluraq.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_CtBML_wKT9KLliZJZXVkbg_H3Bg3ppI";
 
-  const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_CtBML_wKT9KLliZJZXVkbg_H3Bg3ppI";
+const db =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_PUBLISHABLE_KEY
+);
 
 
-  const db =
-    supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY
-    );
+let currentProfile = null;
+let currentUser = null;
+let currentRoom = null;
+let currentLobbyPlayer = null;
 
+let currentGameState = null;
+let currentHandPlayers = [];
 
-  let currentProfile = null;
+let lobbyRefreshTimer = null;
+let gameRefreshTimer = null;
 
-  let currentUser = null;
 
-  let currentRoom = null;
+/* =========================
+   로그인용 내부 이메일
+========================= */
 
-  let currentLobbyPlayer = null;
+function nicknameToEmail(nickname){
 
-  let lobbyRefreshTimer = null;
+const normalized =
+nickname.trim().toLowerCase();
 
+const encoded =
+encodeURIComponent(normalized)
+.replaceAll("%","");
 
-  // =====================================================
-  // 닉네임 → 내부 이메일
-  // =====================================================
+return encoded +
+"@holdem-a.invalid";
 
-  function nicknameToEmail(
-    nickname
-  ) {
+}
 
-    const normalized =
-      nickname
-        .trim()
-        .toLowerCase();
 
+/* =========================
+   타이머
+========================= */
 
-    const encoded =
-      encodeURIComponent(
-        normalized
-      ).replaceAll(
-        "%",
-        ""
-      );
+function stopLobbyTimer(){
 
+if(lobbyRefreshTimer){
 
-    return encoded +
-      "@holdem-a.invalid";
-  }
+clearInterval(lobbyRefreshTimer);
+lobbyRefreshTimer = null;
 
+}
 
-  // =====================================================
-  // 화면
-  // =====================================================
+}
 
-  function stopLobbyTimer() {
 
-    if (
-      lobbyRefreshTimer
-    ) {
+function stopGameTimer(){
 
-      clearInterval(
-        lobbyRefreshTimer
-      );
+if(gameRefreshTimer){
 
-      lobbyRefreshTimer =
-        null;
-    }
-  }
+clearInterval(gameRefreshTimer);
+gameRefreshTimer = null;
 
+}
 
-  function hideAllScreens() {
+}
 
-    stopLobbyTimer();
 
+/* =========================
+   화면
+========================= */
 
-    const screens = [
+function hideAllScreens(){
 
-      "loginScreen",
-      "signupScreen",
-      "homeScreen",
-      "gameMenuScreen",
-      "createRoomScreen",
-      "joinRoomScreen",
-      "roomLobbyScreen",
-      "rulesScreen",
-      "bankScreen"
+stopLobbyTimer();
+stopGameTimer();
 
-    ];
+[
+"loginScreen",
+"signupScreen",
+"homeScreen",
+"gameMenuScreen",
+"createRoomScreen",
+"joinRoomScreen",
+"roomLobbyScreen",
+"gameScreen",
+"rulesScreen",
+"bankScreen"
 
+].forEach(id=>{
 
-    screens.forEach(
-      id => {
+document
+.getElementById(id)
+.classList.add("hidden");
 
-        document
-          .getElementById(
-            id
-          )
-          .classList.add(
-            "hidden"
-          );
+});
 
-      }
-    );
-  }
+}
 
 
-  function showLogin() {
+function showLogin(){
 
-    hideAllScreens();
+hideAllScreens();
 
-    document
-      .getElementById(
-        "loginScreen"
-      )
-      .classList.remove(
-        "hidden"
-      );
-  }
+document
+.getElementById("loginScreen")
+.classList.remove("hidden");
 
+}
 
-  function showSignup() {
 
-    hideAllScreens();
+function showSignup(){
 
-    document
-      .getElementById(
-        "signupScreen"
-      )
-      .classList.remove(
-        "hidden"
-      );
-  }
+hideAllScreens();
 
+document
+.getElementById("signupScreen")
+.classList.remove("hidden");
 
-  function showHome() {
+}
 
-    currentRoom = null;
-    currentLobbyPlayer = null;
 
-    hideAllScreens();
+function showHome(){
 
-    updateHomeValues();
+currentRoom = null;
+currentLobbyPlayer = null;
+currentGameState = null;
+currentHandPlayers = [];
 
-    document
-      .getElementById(
-        "homeScreen"
-      )
-      .classList.remove(
-        "hidden"
-      );
-  }
+hideAllScreens();
 
+updateHomeValues();
 
-  function showGameMenu() {
+document
+.getElementById("homeScreen")
+.classList.remove("hidden");
 
-    hideAllScreens();
+}
 
-    document
-      .getElementById(
-        "gameMenuScreen"
-      )
-      .classList.remove(
-        "hidden"
-      );
-  }
 
+function showGameMenu(){
 
-  function showCreateRoom() {
+hideAllScreens();
 
-    hideAllScreens();
+document
+.getElementById("gameMenuScreen")
+.classList.remove("hidden");
 
-    document
-      .getElementById(
-        "createRoomMessage"
-      )
-      .textContent =
-        "";
+}
 
 
-    document
-      .getElementById(
-        "createRoomScreen"
-      )
-      .classList.remove(
-        "hidden"
-      );
+function showCreateRoom(){
 
+hideAllScreens();
 
-    updateChipPreview();
-  }
+document
+.getElementById("createRoomMessage")
+.textContent="";
 
+document
+.getElementById("createRoomScreen")
+.classList.remove("hidden");
 
-  async function showJoinRoom() {
+updateChipPreview();
 
-    hideAllScreens();
+}
 
-    document
-      .getElementById(
-        "joinRoomScreen"
-      )
-      .classList.remove(
-        "hidden"
-      );
 
+async function showJoinRoom(){
 
-    await loadRooms();
-  }
+hideAllScreens();
 
+document
+.getElementById("joinRoomScreen")
+.classList.remove("hidden");
 
-  function showRules() {
+await loadRooms();
 
-    hideAllScreens();
+}
 
-    document
-      .getElementById(
-        "rulesScreen"
-      )
-      .classList.remove(
-        "hidden"
-      );
-  }
 
+function showRules(){
 
-  function showBank() {
+hideAllScreens();
 
-    hideAllScreens();
+document
+.getElementById("rulesScreen")
+.classList.remove("hidden");
 
-    updateBankValues();
+}
 
-    document
-      .getElementById(
-        "bankScreen"
-      )
-      .classList.remove(
-        "hidden"
-      );
-  }
 
+function showBank(){
 
-  // =====================================================
-  // 방 생성 미리보기
-  // =====================================================
+hideAllScreens();
 
-  function updateChipPreview() {
+updateBankValues();
 
-    const chipValue =
-      Number(
-        document
-          .getElementById(
-            "createChipValue"
-          )
-          .value
-      );
+document
+.getElementById("bankScreen")
+.classList.remove("hidden");
 
+}
 
-    const maxBuyin =
-      Number(
-        document
-          .getElementById(
-            "createMaxBuyin"
-          )
-          .value
-      );
 
+/* =========================
+   방 생성 미리보기
+========================= */
 
-    const safeChipValue =
-      Number.isFinite(
-        chipValue
-      )
-      ?
-      Math.max(
-        chipValue,
-        0
-      )
-      :
-      0;
+function updateChipPreview(){
 
+const chipValue =
+Number(
+document
+.getElementById("createChipValue")
+.value
+);
 
-    const safeMax =
-      Number.isFinite(
-        maxBuyin
-      )
-      ?
-      Math.max(
-        maxBuyin,
-        0
-      )
-      :
-      0;
+const maxBuyin =
+Number(
+document
+.getElementById("createMaxBuyin")
+.value
+);
 
+const cv =
+Number.isFinite(chipValue)
+? Math.max(chipValue,0)
+: 0;
 
-    const total =
-      safeChipValue *
-      safeMax;
+const mb =
+Number.isFinite(maxBuyin)
+? Math.max(maxBuyin,0)
+: 0;
 
+const total =
+cv * mb;
 
-    document
-      .getElementById(
-        "chipValueLabel"
-      )
-      .textContent =
+document
+.getElementById("chipValueLabel")
+.textContent =
+`칩 가치 (${mb.toLocaleString()}칩 = ${total.toLocaleString()}퍼)`;
 
-      "칩 가치 (" +
-      safeMax.toLocaleString() +
-      "칩 = " +
-      total.toLocaleString() +
-      "퍼)";
+document
+.getElementById("singleChipPreview")
+.textContent =
+`1칩 = ${cv.toLocaleString()}퍼`;
 
+document
+.getElementById("maxBuyinPreview")
+.textContent =
+`최대 환전 시 ${total.toLocaleString()}퍼 필요`;
 
-    document
-      .getElementById(
-        "singleChipPreview"
-      )
-      .textContent =
+}
 
-      "1칩 = " +
-      safeChipValue.toLocaleString() +
-      "퍼";
 
+/* =========================
+   오류 팝업
+========================= */
 
-    document
-      .getElementById(
-        "maxBuyinPreview"
-      )
-      .textContent =
+function showError(title,error){
 
-      "최대 환전 시 " +
-      total.toLocaleString() +
-      "퍼 필요";
-  }
+document
+.getElementById("modalTitle")
+.textContent =
+title;
 
+let text =
+error?.message ??
+"알 수 없는 오류";
 
-  // =====================================================
-  // 오류
-  // =====================================================
+if(error?.code)
+text +=
+"\n\ncode: " +
+error.code;
 
-  function showError(
-    title,
-    error
-  ) {
+if(error?.details)
+text +=
+"\n\ndetails: " +
+error.details;
 
-    document
-      .getElementById(
-        "modalTitle"
-      )
-      .textContent =
-        title;
+if(error?.hint)
+text +=
+"\n\nhint: " +
+error.hint;
 
+document
+.getElementById("modalText")
+.textContent =
+text;
 
-    let text =
-      error?.message ??
-      "알 수 없는 오류";
+document
+.getElementById("simpleModal")
+.classList.remove("hidden");
 
+}
 
-    if (
-      error?.code
-    ) {
 
-      text +=
-        "\n\ncode: " +
-        error.code;
-    }
+function closeModal(){
 
+document
+.getElementById("simpleModal")
+.classList.add("hidden");
 
-    if (
-      error?.details
-    ) {
+const old =
+document
+.getElementById("modalJoinButton");
 
-      text +=
-        "\n\ndetails: " +
-        error.details;
-    }
+if(old)
+old.remove();
 
+}
 
-    if (
-      error?.hint
-    ) {
 
-      text +=
-        "\n\nhint: " +
-        error.hint;
-    }
+/* =========================
+   회원가입
+========================= */
 
+async function signup(){
 
-    document
-      .getElementById(
-        "modalText"
-      )
-      .textContent =
-        text;
+const nickname =
+document
+.getElementById("signupNickname")
+.value.trim();
 
+const password =
+document
+.getElementById("signupPassword")
+.value;
 
-    document
-      .getElementById(
-        "simpleModal"
-      )
-      .classList.remove(
-        "hidden"
-      );
-  }
+const password2 =
+document
+.getElementById("signupPassword2")
+.value;
 
+const message =
+document
+.getElementById("signupMessage");
 
-  function closeModal() {
+message.textContent="";
 
-    document
-      .getElementById(
-        "simpleModal"
-      )
-      .classList.add(
-        "hidden"
-      );
+if(!nickname){
 
+message.textContent =
+"닉네임을 입력해주세요.";
 
-    const joinButton =
-      document
-        .getElementById(
-          "modalJoinButton"
-        );
+return;
 
+}
 
-    if (
-      joinButton
-    ) {
+if(password.length < 6){
 
-      joinButton.remove();
-    }
-  }
+message.textContent =
+"비밀번호는 6자 이상이어야 합니다.";
 
+return;
 
-  // =====================================================
-  // 회원가입
-  // =====================================================
+}
 
-  async function signup() {
+if(password !== password2){
 
-    const nickname =
-      document
-        .getElementById(
-          "signupNickname"
-        )
-        .value
-        .trim();
+message.textContent =
+"비밀번호가 서로 다릅니다.";
 
+return;
 
-    const password =
-      document
-        .getElementById(
-          "signupPassword"
-        )
-        .value;
+}
 
+const email =
+nicknameToEmail(nickname);
 
-    const password2 =
-      document
-        .getElementById(
-          "signupPassword2"
-        )
-        .value;
+const {error} =
+await db.auth.signUp({
 
+email,
+password,
 
-    const message =
-      document
-        .getElementById(
-          "signupMessage"
-        );
+options:{
+data:{nickname}
+}
 
+});
 
-    message.textContent =
-      "";
+if(error){
 
+message.textContent =
+"회원가입 실패: " +
+error.message;
 
-    if (
-      !nickname
-    ) {
+return;
 
-      message.textContent =
-        "닉네임을 입력해주세요.";
+}
 
-      return;
-    }
+await loadHome();
 
+}
 
-    if (
-      password.length < 6
-    ) {
 
-      message.textContent =
-        "비밀번호는 6자 이상이어야 합니다.";
+/* =========================
+   로그인
+========================= */
 
-      return;
-    }
+async function login(){
 
+const nickname =
+document
+.getElementById("loginNickname")
+.value.trim();
 
-    if (
-      password !==
-      password2
-    ) {
+const password =
+document
+.getElementById("loginPassword")
+.value;
 
-      message.textContent =
-        "비밀번호가 서로 다릅니다.";
+const message =
+document
+.getElementById("loginMessage");
 
-      return;
-    }
+message.textContent="";
 
+if(!nickname || !password){
 
-    const email =
-      nicknameToEmail(
-        nickname
-      );
+message.textContent =
+"닉네임과 비밀번호를 입력해주세요.";
 
+return;
 
-    const {
-      error
-    } =
-      await db.auth.signUp({
+}
 
-        email,
+const email =
+nicknameToEmail(nickname);
 
-        password,
+const {error} =
+await db.auth.signInWithPassword({
+email,
+password
+});
 
-        options: {
+if(error){
 
-          data: {
-            nickname
-          }
+message.textContent =
+"닉네임 또는 비밀번호를 확인해주세요.";
 
-        }
+return;
 
-      });
+}
 
+await loadHome();
 
-    if (
-      error
-    ) {
+}
 
-      message.textContent =
-        "회원가입 실패: " +
-        error.message;
 
-      return;
-    }
+/* =========================
+   프로필
+========================= */
 
+async function refreshCurrentProfile(){
 
-    await loadHome();
-  }
+if(!currentUser)
+return false;
 
+const {data,error} =
+await db
+.from("profiles")
+.select(
+"nickname, balance_per, bank_per, loan_per"
+)
+.eq(
+"id",
+currentUser.id
+)
+.single();
 
-  // =====================================================
-  // 로그인
-  // =====================================================
+if(error){
 
-  async function login() {
+showError(
+"프로필 오류",
+error
+);
 
-    const nickname =
-      document
-        .getElementById(
-          "loginNickname"
-        )
-        .value
-        .trim();
+return false;
 
+}
 
-    const password =
-      document
-        .getElementById(
-          "loginPassword"
-        )
-        .value;
+currentProfile = data;
 
+return true;
 
-    const message =
-      document
-        .getElementById(
-          "loginMessage"
-        );
+}
 
 
-    message.textContent =
-      "";
+async function loadHome(){
 
+const {
+data:userData,
+error:userError
+} =
+await db.auth.getUser();
 
-    if (
-      !nickname ||
-      !password
-    ) {
+if(userError){
 
-      message.textContent =
-        "닉네임과 비밀번호를 입력해주세요.";
+showError(
+"사용자 정보 오류",
+userError
+);
 
-      return;
-    }
+return;
 
+}
 
-    const email =
-      nicknameToEmail(
-        nickname
-      );
+currentUser =
+userData.user;
 
+if(!currentUser){
 
-    const {
-      error
-    } =
-      await db.auth.signInWithPassword({
+showLogin();
+return;
 
-        email,
+}
 
-        password
+const success =
+await refreshCurrentProfile();
 
-      });
+if(!success)
+return;
 
+showHome();
 
-    if (
-      error
-    ) {
+}
 
-      message.textContent =
-        "닉네임 또는 비밀번호를 확인해주세요.";
 
-      return;
-    }
+function updateHomeValues(){
 
+if(!currentProfile)
+return;
 
-    await loadHome();
-  }
+document
+.getElementById("homeNickname")
+.textContent =
+currentProfile.nickname;
 
+document
+.getElementById("homePer")
+.textContent =
+Number(
+currentProfile.balance_per
+).toLocaleString() +
+" 퍼";
 
-  // =====================================================
-  // 프로필
-  // =====================================================
+}
 
-  async function refreshCurrentProfile() {
 
-    if (
-      !currentUser
-    ) {
-      return false;
-    }
+function updateBankValues(){
 
+if(!currentProfile)
+return;
 
-    const {
-      data,
-      error
-    } =
-      await db
-        .from(
-          "profiles"
-        )
-        .select(
-          "nickname, balance_per, bank_per, loan_per"
-        )
-        .eq(
-          "id",
-          currentUser.id
-        )
-        .single();
+document
+.getElementById("bankBalance")
+.textContent =
+Number(
+currentProfile.balance_per
+).toLocaleString() +
+" 퍼";
 
+document
+.getElementById("bankDeposit")
+.textContent =
+Number(
+currentProfile.bank_per
+).toLocaleString() +
+" 퍼";
 
-    if (
-      error
-    ) {
+document
+.getElementById("bankLoan")
+.textContent =
+Number(
+currentProfile.loan_per
+).toLocaleString() +
+" 퍼";
 
-      showError(
-        "프로필 오류",
-        error
-      );
+}
 
-      return false;
-    }
 
+/* =========================
+   방 생성
+========================= */
 
-    currentProfile =
-      data;
+async function createRoom(){
 
+const roomName =
+document
+.getElementById("createRoomName")
+.value.trim();
 
-    return true;
-  }
+const chipValue =
+Number(
+document
+.getElementById("createChipValue")
+.value
+);
 
+const minBuyin =
+Number(
+document
+.getElementById("createMinBuyin")
+.value
+);
 
-  async function loadHome() {
+const maxBuyin =
+Number(
+document
+.getElementById("createMaxBuyin")
+.value
+);
 
-    const {
-      data: userData,
-      error: userError
-    } =
-      await db.auth.getUser();
+const message =
+document
+.getElementById("createRoomMessage");
 
+if(!roomName){
 
-    if (
-      userError
-    ) {
+message.textContent =
+"방 이름을 입력해주세요.";
 
-      showError(
-        "사용자 정보 오류",
-        userError
-      );
+return;
 
-      return;
-    }
+}
 
+if(
+chipValue <= 0 ||
+minBuyin <= 0 ||
+maxBuyin < minBuyin
+){
 
-    currentUser =
-      userData.user;
+message.textContent =
+"방 설정값을 확인해주세요.";
 
+return;
 
-    if (
-      !currentUser
-    ) {
+}
 
-      showLogin();
+message.textContent =
+"방 생성 중...";
 
-      return;
-    }
+const {data,error} =
+await db.rpc(
+"create_game_room",
+{
 
+p_room_name:roomName,
+p_chip_value_per:chipValue,
+p_min_buyin_chips:minBuyin,
+p_max_buyin_chips:maxBuyin
 
-    const success =
-      await refreshCurrentProfile();
+}
+);
 
+if(error){
 
-    if (
-      !success
-    ) {
-      return;
-    }
+message.textContent="";
 
+showError(
+"방 생성 오류",
+error
+);
 
-    showHome();
-  }
+return;
 
+}
 
-  function updateHomeValues() {
+const created =
+data?.[0];
 
-    if (
-      !currentProfile
-    ) {
-      return;
-    }
+currentRoom = {
 
+room_id:created.room_id,
+room_code:created.room_code,
+room_name:roomName,
+host_nickname:
+currentProfile.nickname,
+chip_value_per:chipValue,
+min_buyin_chips:minBuyin,
+max_buyin_chips:maxBuyin,
+is_host:true
 
-    document
-      .getElementById(
-        "homeNickname"
-      )
-      .textContent =
-        currentProfile.nickname;
+};
 
+await enterLobby();
 
-    document
-      .getElementById(
-        "homePer"
-      )
-      .textContent =
+}
 
-      Number(
-        currentProfile.balance_per
-      ).toLocaleString() +
-      " 퍼";
-  }
 
+/* =========================
+   방 목록
+========================= */
 
-  function updateBankValues() {
+async function loadRooms(){
 
-    if (
-      !currentProfile
-    ) {
-      return;
-    }
+const list =
+document
+.getElementById("roomList");
 
+list.innerHTML =
+'<div class="emptyText">불러오는 중...</div>';
 
-    document
-      .getElementById(
-        "bankBalance"
-      )
-      .textContent =
+const {data,error} =
+await db.rpc(
+"get_waiting_rooms"
+);
 
-      Number(
-        currentProfile.balance_per
-      ).toLocaleString() +
-      " 퍼";
+if(error){
 
+showError(
+"방 목록 오류",
+error
+);
 
-    document
-      .getElementById(
-        "bankDeposit"
-      )
-      .textContent =
+return;
 
-      Number(
-        currentProfile.bank_per
-      ).toLocaleString() +
-      " 퍼";
+}
 
+if(!data || data.length===0){
 
-    document
-      .getElementById(
-        "bankLoan"
-      )
-      .textContent =
+list.innerHTML =
+'<div class="emptyText">열려 있는 방이 없습니다.</div>';
 
-      Number(
-        currentProfile.loan_per
-      ).toLocaleString() +
-      " 퍼";
-  }
+return;
 
+}
 
-  // =====================================================
-  // 방 생성
-  // =====================================================
+list.innerHTML="";
 
-  async function createRoom() {
+data.forEach(room=>{
 
-    const roomName =
-      document
-        .getElementById(
-          "createRoomName"
-        )
-        .value
-        .trim();
+const div =
+document.createElement("div");
 
+div.className =
+"roomCard";
 
-    const chipValue =
-      Number(
-        document
-          .getElementById(
-            "createChipValue"
-          )
-          .value
-      );
+div.innerHTML = `
 
+<div class="roomCardTitle">
+${escapeHtml(room.room_name)}
+</div>
 
-    const minBuyin =
-      Number(
-        document
-          .getElementById(
-            "createMinBuyin"
-          )
-          .value
-      );
+<div class="roomCode">
+${escapeHtml(room.room_code)}
+</div>
 
+<div class="roomInfo">
 
-    const maxBuyin =
-      Number(
-        document
-          .getElementById(
-            "createMaxBuyin"
-          )
-          .value
-      );
+방장:
+${escapeHtml(room.host_nickname)}
+<br>
 
+대기:
+${Number(room.player_count)}명
+<br>
 
-    const message =
-      document
-        .getElementById(
-          "createRoomMessage"
-        );
+1칩 =
+${Number(room.chip_value_per).toLocaleString()}퍼
+<br>
 
+환전:
+${Number(room.min_buyin_chips).toLocaleString()}
+~
+${Number(room.max_buyin_chips).toLocaleString()}칩
 
-    if (
-      !roomName
-    ) {
+</div>
+`;
 
-      message.textContent =
-        "방 이름을 입력해주세요.";
+const button =
+document.createElement("button");
 
-      return;
-    }
+button.className =
+"primary";
 
+button.textContent =
+"방 정보 보기";
 
-    if (
-      chipValue <= 0 ||
-      minBuyin <= 0 ||
-      maxBuyin < minBuyin
-    ) {
+button.onclick =
+()=>previewRoom(room);
 
-      message.textContent =
-        "방 설정값을 확인해주세요.";
+div.appendChild(button);
 
-      return;
-    }
+list.appendChild(div);
 
+});
 
-    message.textContent =
-      "방 생성 중...";
+}
 
 
-    const {
-      data,
-      error
-    } =
-      await db.rpc(
-        "create_game_room",
-        {
+/* =========================
+   방 미리보기
+========================= */
 
-          p_room_name:
-            roomName,
+async function previewRoom(room){
 
-          p_chip_value_per:
-            chipValue,
+const {data,error} =
+await db.rpc(
+"get_room_lobby_players",
+{
+p_room_id:
+room.room_id
+}
+);
 
-          p_min_buyin_chips:
-            minBuyin,
+if(error){
 
-          p_max_buyin_chips:
-            maxBuyin
+showError(
+"방 정보 오류",
+error
+);
 
-        }
-      );
+return;
 
+}
 
-    if (
-      error
-    ) {
+let text =
 
-      message.textContent =
-        "";
+`방 이름: ${room.room_name}
+방 코드: ${room.room_code}
+방장: ${room.host_nickname}
 
-      showError(
-        "방 생성 오류",
-        error
-      );
+1칩 = ${Number(room.chip_value_per).toLocaleString()}퍼
+환전: ${Number(room.min_buyin_chips).toLocaleString()} ~ ${Number(room.max_buyin_chips).toLocaleString()}칩
 
-      return;
-    }
+대기 인원`;
 
+data.forEach(player=>{
 
-    const created =
-      data?.[0];
+text +=
+`\n• ${player.nickname} — ${Number(player.balance_per).toLocaleString()}퍼`;
 
+});
 
-    currentRoom = {
+document
+.getElementById("modalTitle")
+.textContent =
+"방 참가";
 
-      room_id:
-        created.room_id,
+document
+.getElementById("modalText")
+.textContent =
+text;
 
-      room_code:
-        created.room_code,
+const modal =
+document.querySelector(
+"#simpleModal .modal"
+);
 
-      room_name:
-        roomName,
+const joinButton =
+document.createElement("button");
 
-      host_nickname:
-        currentProfile.nickname,
+joinButton.id =
+"modalJoinButton";
 
-      chip_value_per:
-        chipValue,
+joinButton.className =
+"primary";
 
-      min_buyin_chips:
-        minBuyin,
+joinButton.textContent =
+"이 방에 참가";
 
-      max_buyin_chips:
-        maxBuyin,
+joinButton.onclick =
+async()=>{
 
-      is_host:
-        true
+joinButton.disabled=true;
 
-    };
+await joinRoom(room);
 
+joinButton.disabled=false;
 
-    await enterLobby();
-  }
+};
 
+modal.appendChild(
+joinButton
+);
 
-  // =====================================================
-  // 열린 방
-  // =====================================================
+document
+.getElementById("simpleModal")
+.classList.remove("hidden");
 
-  async function loadRooms() {
+}
 
-    const list =
-      document
-        .getElementById(
-          "roomList"
-        );
 
+async function joinRoom(room){
 
-    list.innerHTML =
-      '<div class="emptyText">불러오는 중...</div>';
+const {error} =
+await db.rpc(
+"join_game_room",
+{
+p_room_id:
+room.room_id
+}
+);
 
+if(error){
 
-    const {
-      data,
-      error
-    } =
-      await db.rpc(
-        "get_waiting_rooms"
-      );
+showError(
+"방 참가 오류",
+error
+);
 
+return;
 
-    if (
-      error
-    ) {
+}
 
-      showError(
-        "방 목록 오류",
-        error
-      );
+currentRoom = {
 
-      return;
-    }
+...room,
 
+is_host:
+room.host_nickname ===
+currentProfile.nickname
 
-    if (
-      !data ||
-      data.length === 0
-    ) {
+};
 
-      list.innerHTML =
-        '<div class="emptyText">열려 있는 방이 없습니다.</div>';
+closeModal();
 
-      return;
-    }
+await enterLobby();
 
+}
 
-    list.innerHTML = "";
 
+/* =========================
+   대기실 입장
+========================= */
 
-    data.forEach(
-      room => {
+async function enterLobby(){
 
-        const div =
-          document
-            .createElement(
-              "div"
-            );
+hideAllScreens();
 
+document
+.getElementById("roomLobbyScreen")
+.classList.remove("hidden");
 
-        div.className =
-          "roomCard";
+document
+.getElementById("lobbyRoomName")
+.textContent =
+currentRoom.room_name;
 
+document
+.getElementById("lobbyRoomCode")
+.textContent =
+currentRoom.room_code;
 
-        div.innerHTML = `
+document
+.getElementById("lobbyRoomSettings")
+.innerHTML =
 
-          <div class="roomCardTitle">
-            ${escapeHtml(room.room_name)}
-          </div>
+"방장: " +
+escapeHtml(
+currentRoom.host_nickname
+) +
 
-          <div class="roomCode">
-            ${escapeHtml(room.room_code)}
-          </div>
+"<br>1칩 = " +
+Number(
+currentRoom.chip_value_per
+).toLocaleString() +
+"퍼" +
 
-          <div class="roomInfo">
+"<br>환전: " +
+Number(
+currentRoom.min_buyin_chips
+).toLocaleString() +
+" ~ " +
+Number(
+currentRoom.max_buyin_chips
+).toLocaleString() +
+"칩";
 
-            방장:
-            ${escapeHtml(room.host_nickname)}
-            <br>
+document
+.getElementById("targetChipInput")
+.max =
+currentRoom.max_buyin_chips;
 
-            대기:
-            ${Number(room.player_count)}명
-            <br>
+const destroy =
+document
+.getElementById("destroyRoomButton");
 
-            1칩 =
-            ${Number(room.chip_value_per).toLocaleString()}퍼
-            <br>
+const leave =
+document
+.getElementById("leaveRoomButton");
 
-            환전:
-            ${Number(room.min_buyin_chips).toLocaleString()}
-            ~
-            ${Number(room.max_buyin_chips).toLocaleString()}
-            칩
+const start =
+document
+.getElementById("startGameButton");
 
-          </div>
-        `;
+if(currentRoom.is_host){
 
+destroy.classList.remove("hidden");
+leave.classList.add("hidden");
+start.classList.remove("hidden");
 
-        const button =
-          document
-            .createElement(
-              "button"
-            );
+}else{
 
+destroy.classList.add("hidden");
+leave.classList.remove("hidden");
+start.classList.add("hidden");
 
-        button.className =
-          "primary";
+}
 
+await refreshCurrentProfile();
+await refreshLobby();
 
-        button.textContent =
-          "방 정보 보기";
+lobbyRefreshTimer =
+setInterval(
+refreshLobby,
+3000
+);
 
+}
 
-        button.onclick =
-          () =>
-            previewRoom(
-              room
-            );
 
+/* =========================
+   대기실 갱신
+========================= */
 
-        div.appendChild(
-          button
-        );
+async function refreshLobby(){
 
+if(!currentRoom)
+return;
 
-        list.appendChild(
-          div
-        );
 
-      }
-    );
-  }
+/* 게임이 이미 시작됐는지 먼저 확인 */
 
+const {
+data:gameStateData,
+error:gameStateError
+} =
+await db.rpc(
+"get_current_game_state",
+{
+p_room_id:
+currentRoom.room_id
+}
+);
 
-  async function previewRoom(
-    room
-  ) {
+if(!gameStateError &&
+gameStateData &&
+gameStateData.length > 0){
 
-    const {
-      data,
-      error
-    } =
-      await db.rpc(
-        "get_room_lobby_players",
-        {
-          p_room_id:
-            room.room_id
-        }
-      );
+const state =
+gameStateData[0];
 
+if(
+state.hand_status === "dice" ||
+state.hand_status === "betting"
+){
 
-    if (
-      error
-    ) {
+await enterGameScreen();
+return;
 
-      showError(
-        "방 정보 오류",
-        error
-      );
+}
 
-      return;
-    }
+}
 
 
-    let text =
+/* 대기 인원 */
 
-      "방 이름: " +
-      room.room_name +
+const {data,error} =
+await db.rpc(
+"get_room_lobby_players",
+{
+p_room_id:
+currentRoom.room_id
+}
+);
 
-      "\n방 코드: " +
-      room.room_code +
+if(error){
 
-      "\n방장: " +
-      room.host_nickname +
+console.error(error);
+return;
 
-      "\n\n1칩 = " +
-      Number(
-        room.chip_value_per
-      ).toLocaleString() +
-      "퍼" +
+}
 
-      "\n환전: " +
-      Number(
-        room.min_buyin_chips
-      ).toLocaleString() +
-      " ~ " +
-      Number(
-        room.max_buyin_chips
-      ).toLocaleString() +
-      "칩" +
+if(!data || data.length===0){
 
-      "\n\n대기 인원";
+stopLobbyTimer();
 
+alert(
+"방이 종료되었습니다."
+);
 
-    data.forEach(
-      player => {
+await loadHome();
 
-        text +=
-          "\n• " +
-          player.nickname +
-          " — " +
-          Number(
-            player.balance_per
-          ).toLocaleString() +
-          "퍼";
+return;
 
-      }
-    );
+}
 
+currentLobbyPlayer =
+data.find(
+player =>
+player.profile_id ===
+currentUser.id
+);
 
-    document
-      .getElementById(
-        "modalTitle"
-      )
-      .textContent =
-        "방 참가";
+if(!currentLobbyPlayer){
 
+stopLobbyTimer();
 
-    document
-      .getElementById(
-        "modalText"
-      )
-      .textContent =
-        text;
+alert(
+"현재 방에 참가하고 있지 않습니다."
+);
 
+await loadHome();
 
-    const modal =
-      document.querySelector(
-        "#simpleModal .modal"
-      );
+return;
 
+}
 
-    const old =
-      document
-        .getElementById(
-          "modalJoinButton"
-        );
+document
+.getElementById("lobbyMyPer")
+.textContent =
+Number(
+currentProfile.balance_per
+).toLocaleString() +
+"퍼";
 
+document
+.getElementById("lobbyMyChips")
+.textContent =
+Number(
+currentLobbyPlayer.chips
+).toLocaleString() +
+"칩";
 
-    if (
-      old
-    ) {
-      old.remove();
-    }
+const input =
+document
+.getElementById("targetChipInput");
 
+if(
+document.activeElement !== input
+){
 
-    const joinButton =
-      document
-        .createElement(
-          "button"
-        );
+input.value =
+currentLobbyPlayer.chips;
 
+}
 
-    joinButton.id =
-      "modalJoinButton";
+updateExchangePreview();
+updateReadyButton();
 
 
-    joinButton.className =
-      "primary";
+const box =
+document
+.getElementById("lobbyPlayers");
 
+box.innerHTML="";
 
-    joinButton.textContent =
-      "이 방에 참가";
+data.forEach(player=>{
 
+const row =
+document.createElement("div");
 
-    joinButton.onclick =
-      async () => {
+row.className =
+"playerRow";
 
-        joinButton.disabled =
-          true;
+const readyText =
+player.is_ready
+?
+'<div class="readyText">✓ 준비 완료</div>'
+:
+'<div class="notReadyText">준비 중</div>';
 
+row.innerHTML = `
 
-        await joinRoom(
-          room
-        );
+<div>
 
+<div class="playerNickname">
+${escapeHtml(player.nickname)}
+</div>
 
-        joinButton.disabled =
-          false;
-      };
+<div class="playerPer">
+보유 퍼:
+${Number(player.balance_per).toLocaleString()}퍼
+</div>
 
+${readyText}
 
-    modal.appendChild(
-      joinButton
-    );
+</div>
 
+<div class="playerChip">
+${Number(player.chips).toLocaleString()}칩
+</div>
+`;
 
-    document
-      .getElementById(
-        "simpleModal"
-      )
-      .classList.remove(
-        "hidden"
-      );
-  }
+box.appendChild(row);
 
+});
 
-  async function joinRoom(
-    room
-  ) {
 
-    const {
-      error
-    } =
-      await db.rpc(
-        "join_game_room",
-        {
-          p_room_id:
-            room.room_id
-        }
-      );
+const everybodyReady =
 
+data.length >= 2 &&
+data.every(
+player =>
+player.is_ready
+);
 
-    if (
-      error
-    ) {
 
-      showError(
-        "방 참가 오류",
-        error
-      );
+document
+.getElementById("allReadyNotice")
+.classList.toggle(
+"hidden",
+!everybodyReady
+);
 
-      return;
-    }
 
+if(currentRoom.is_host){
 
-    currentRoom = {
+const startButton =
+document
+.getElementById("startGameButton");
 
-      ...room,
+startButton.disabled =
+!everybodyReady;
 
-      is_host:
-        room.host_nickname ===
-        currentProfile.nickname
+}
 
-    };
+}
 
 
-    closeModal();
+/* =========================
+   환전
+========================= */
 
+function updateExchangePreview(){
 
-    await enterLobby();
-  }
+if(!currentRoom ||
+!currentLobbyPlayer)
+return;
 
+const target =
+Number(
+document
+.getElementById("targetChipInput")
+.value
+);
 
-  // =====================================================
-  // 대기실
-  // =====================================================
+const box =
+document
+.getElementById("exchangePreview");
 
-  async function enterLobby() {
+if(
+!Number.isInteger(target) ||
+target < 0
+){
 
-    hideAllScreens();
+box.textContent =
+"0 이상의 정수 칩을 입력해주세요.";
 
+return;
 
-    document
-      .getElementById(
-        "roomLobbyScreen"
-      )
-      .classList.remove(
-        "hidden"
-      );
+}
 
+if(
+target !== 0 &&
+(
+target <
+currentRoom.min_buyin_chips ||
+target >
+currentRoom.max_buyin_chips
+)
+){
 
-    document
-      .getElementById(
-        "lobbyRoomName"
-      )
-      .textContent =
-        currentRoom.room_name;
+box.textContent =
+`0칩 또는 ${currentRoom.min_buyin_chips}~${currentRoom.max_buyin_chips}칩 사이로 설정해주세요.`;
 
+return;
 
-    document
-      .getElementById(
-        "lobbyRoomCode"
-      )
-      .textContent =
-        currentRoom.room_code;
+}
 
+const current =
+Number(
+currentLobbyPlayer.chips
+);
 
-    document
-      .getElementById(
-        "lobbyRoomSettings"
-      )
-      .innerHTML =
+const difference =
+target-current;
 
-      "방장: " +
-      escapeHtml(
-        currentRoom.host_nickname
-      ) +
+const per =
+Math.abs(difference) *
+Number(
+currentRoom.chip_value_per
+);
 
-      "<br>1칩 = " +
-      Number(
-        currentRoom.chip_value_per
-      ).toLocaleString() +
-      "퍼" +
+if(difference>0){
 
-      "<br>환전: " +
-      Number(
-        currentRoom.min_buyin_chips
-      ).toLocaleString() +
-      " ~ " +
-      Number(
-        currentRoom.max_buyin_chips
-      ).toLocaleString() +
-      "칩";
+box.textContent =
+`${current}칩 → ${target}칩
+${per.toLocaleString()}퍼를 사용합니다.`;
 
+}else if(difference<0){
 
-    document
-      .getElementById(
-        "targetChipInput"
-      )
-      .max =
-        currentRoom.max_buyin_chips;
+box.textContent =
+`${current}칩 → ${target}칩
+${per.toLocaleString()}퍼를 돌려받습니다.`;
 
+}else{
 
-    const destroyButton =
-      document
-        .getElementById(
-          "destroyRoomButton"
-        );
+box.textContent =
+"현재 칩 수와 같습니다.";
 
+}
 
-    const leaveButton =
-      document
-        .getElementById(
-          "leaveRoomButton"
-        );
+}
 
 
-    if (
-      currentRoom.is_host
-    ) {
+function setTargetMin(){
 
-      destroyButton
-        .classList.remove(
-          "hidden"
-        );
+document
+.getElementById("targetChipInput")
+.value =
+currentRoom.min_buyin_chips;
 
-      leaveButton
-        .classList.add(
-          "hidden"
-        );
+updateExchangePreview();
 
-    } else {
+}
 
-      destroyButton
-        .classList.add(
-          "hidden"
-        );
 
-      leaveButton
-        .classList.remove(
-          "hidden"
-        );
-    }
+function setTargetMax(){
 
+document
+.getElementById("targetChipInput")
+.value =
+currentRoom.max_buyin_chips;
 
-    await refreshCurrentProfile();
+updateExchangePreview();
 
-    await refreshLobby();
+}
 
 
-    lobbyRefreshTimer =
-      setInterval(
-        refreshLobby,
-        3000
-      );
-  }
+function setTargetZero(){
 
+document
+.getElementById("targetChipInput")
+.value=0;
 
-  async function refreshLobby() {
+updateExchangePreview();
 
-    if (
-      !currentRoom
-    ) {
-      return;
-    }
+}
 
 
-    const {
-      data,
-      error
-    } =
-      await db.rpc(
-        "get_room_lobby_players",
-        {
-          p_room_id:
-            currentRoom.room_id
-        }
-      );
+async function exchangeChips(){
 
+if(!currentRoom ||
+!currentLobbyPlayer)
+return;
 
-    if (
-      error
-    ) {
+const target =
+Number(
+document
+.getElementById("targetChipInput")
+.value
+);
 
-      console.error(
-        error
-      );
+if(
+!Number.isInteger(target) ||
+target<0
+){
 
-      return;
-    }
+alert(
+"올바른 칩 수를 입력해주세요."
+);
 
+return;
 
-    if (
-      !data ||
-      data.length === 0
-    ) {
+}
 
-      stopLobbyTimer();
+const button =
+document
+.getElementById("exchangeButton");
 
-      alert(
-        "방이 종료되었습니다."
-      );
+button.disabled=true;
 
-      await loadHome();
+const {error} =
+await db.rpc(
+"set_lobby_chips",
+{
 
-      return;
-    }
+p_room_id:
+currentRoom.room_id,
 
+p_target_chips:
+target
 
-    currentLobbyPlayer =
-      data.find(
-        player =>
-          player.profile_id ===
-          currentUser.id
-      );
+}
+);
 
+button.disabled=false;
 
-    if (
-      !currentLobbyPlayer
-    ) {
+if(error){
 
-      stopLobbyTimer();
+showError(
+"환전 오류",
+error
+);
 
-      alert(
-        "현재 방에 참가하고 있지 않습니다."
-      );
+return;
 
-      await loadHome();
+}
 
-      return;
-    }
+await refreshCurrentProfile();
+await refreshLobby();
 
+}
 
-    document
-      .getElementById(
-        "lobbyMyPer"
-      )
-      .textContent =
 
-      Number(
-        currentProfile.balance_per
-      ).toLocaleString() +
-      "퍼";
+/* =========================
+   준비
+========================= */
 
+function updateReadyButton(){
 
-    document
-      .getElementById(
-        "lobbyMyChips"
-      )
-      .textContent =
+if(!currentLobbyPlayer)
+return;
 
-      Number(
-        currentLobbyPlayer.chips
-      ).toLocaleString() +
-      "칩";
+const button =
+document
+.getElementById("readyButton");
 
+if(currentLobbyPlayer.is_ready){
 
-    const input =
-      document
-        .getElementById(
-          "targetChipInput"
-        );
+button.textContent =
+"준비 취소";
 
+button.className =
+"readyCancel";
 
-    if (
-      document.activeElement !==
-      input
-    ) {
+}else{
 
-      input.value =
-        currentLobbyPlayer.chips;
-    }
+button.textContent =
+"준비 완료";
 
+button.className =
+"ready";
 
-    updateExchangePreview();
+}
 
-    updateReadyButton();
+}
 
 
-    const box =
-      document
-        .getElementById(
-          "lobbyPlayers"
-        );
+async function toggleReady(){
 
+if(!currentRoom ||
+!currentLobbyPlayer)
+return;
 
-    box.innerHTML =
-      "";
+const next =
+!currentLobbyPlayer.is_ready;
 
+const button =
+document
+.getElementById("readyButton");
 
-    data.forEach(
-      player => {
+button.disabled=true;
 
-        const row =
-          document
-            .createElement(
-              "div"
-            );
+const {error} =
+await db.rpc(
+"set_player_ready",
+{
 
+p_room_id:
+currentRoom.room_id,
 
-        row.className =
-          "playerRow";
+p_ready:
+next
 
+}
+);
 
-        const readyText =
-          player.is_ready
-          ?
-          '<div class="readyText">✓ 준비 완료</div>'
-          :
-          '<div class="notReadyText">준비 중</div>';
+button.disabled=false;
 
+if(error){
 
-        row.innerHTML = `
+showError(
+"준비 상태 변경 오류",
+error
+);
 
-          <div>
+return;
 
-            <div class="playerNickname">
-              ${escapeHtml(player.nickname)}
-            </div>
+}
 
-            <div class="playerPer">
-              보유 퍼:
-              ${Number(player.balance_per).toLocaleString()}퍼
-            </div>
+await refreshLobby();
 
-            ${readyText}
+}
 
-          </div>
 
-          <div class="playerChip">
-            ${Number(player.chips).toLocaleString()}칩
-          </div>
+/* =========================
+   게임 시작
+========================= */
 
-        `;
+async function startGame(){
 
+if(!currentRoom ||
+!currentRoom.is_host)
+return;
 
-        box.appendChild(
-          row
-        );
+const button =
+document
+.getElementById("startGameButton");
 
-      }
-    );
+button.disabled=true;
 
+const {data,error} =
+await db.rpc(
+"start_next_hand",
+{
+p_room_id:
+currentRoom.room_id
+}
+);
 
-    const everybodyReady =
-      data.length > 0 &&
-      data.every(
-        player =>
-          player.is_ready
-      );
+if(error){
 
+button.disabled=false;
 
-    document
-      .getElementById(
-        "allReadyNotice"
-      )
-      .classList.toggle(
-        "hidden",
-        !everybodyReady
-      );
-  }
+showError(
+"게임 시작 오류",
+error
+);
 
+return;
 
-  // =====================================================
-  // 환전 미리보기
-  // =====================================================
+}
 
-  function updateExchangePreview() {
+await enterGameScreen();
 
-    if (
-      !currentRoom ||
-      !currentLobbyPlayer
-    ) {
-      return;
-    }
+}
 
 
-    const target =
-      Number(
-        document
-          .getElementById(
-            "targetChipInput"
-          )
-          .value
-      );
+/* =========================
+   게임 화면 진입
+========================= */
 
+async function enterGameScreen(){
 
-    const box =
-      document
-        .getElementById(
-          "exchangePreview"
-        );
+stopLobbyTimer();
 
+hideAllScreens();
 
-    if (
-      !Number.isInteger(target) ||
-      target < 0
-    ) {
+document
+.getElementById("gameScreen")
+.classList.remove("hidden");
 
-      box.textContent =
-        "0 이상의 정수 칩을 입력해주세요.";
+await refreshGame();
 
-      return;
-    }
+gameRefreshTimer =
+setInterval(
+refreshGame,
+2000
+);
 
+}
 
-    if (
-      target !== 0 &&
-      (
-        target <
-        currentRoom.min_buyin_chips
-        ||
-        target >
-        currentRoom.max_buyin_chips
-      )
-    ) {
 
-      box.textContent =
+/* =========================
+   게임 상태 갱신
+========================= */
 
-        "0칩 또는 " +
-        Number(
-          currentRoom.min_buyin_chips
-        ).toLocaleString() +
-        "~" +
-        Number(
-          currentRoom.max_buyin_chips
-        ).toLocaleString() +
-        "칩 사이로 설정해주세요.";
+async function refreshGame(){
 
-      return;
-    }
+if(!currentRoom)
+return;
 
 
-    const current =
-      Number(
-        currentLobbyPlayer.chips
-      );
+const {
+data:stateData,
+error:stateError
+} =
+await db.rpc(
+"get_current_game_state",
+{
+p_room_id:
+currentRoom.room_id
+}
+);
 
+if(stateError){
 
-    const difference =
-      target -
-      current;
+console.error(stateError);
+return;
 
+}
 
-    const per =
-      Math.abs(
-        difference
-      ) *
-      Number(
-        currentRoom.chip_value_per
-      );
 
+if(
+!stateData ||
+stateData.length===0
+){
 
-    if (
-      difference > 0
-    ) {
+return;
 
-      box.textContent =
+}
 
-        current.toLocaleString() +
-        "칩 → " +
-        target.toLocaleString() +
-        "칩\n" +
 
-        per.toLocaleString() +
-        "퍼를 사용합니다.";
+currentGameState =
+stateData[0];
 
-    } else if (
-      difference < 0
-    ) {
 
-      box.textContent =
+const {
+data:players,
+error:playersError
+} =
+await db.rpc(
+"get_current_hand_players",
+{
+p_room_id:
+currentRoom.room_id
+}
+);
 
-        current.toLocaleString() +
-        "칩 → " +
-        target.toLocaleString() +
-        "칩\n" +
 
-        per.toLocaleString() +
-        "퍼를 돌려받습니다.";
+if(playersError){
 
-    } else {
+console.error(playersError);
+return;
 
-      box.textContent =
-        "현재 칩 수와 같습니다.";
-    }
-  }
+}
 
 
-  function setTargetMin() {
+currentHandPlayers =
+players ?? [];
 
-    document
-      .getElementById(
-        "targetChipInput"
-      )
-      .value =
-        currentRoom
-          .min_buyin_chips;
 
+renderGame();
 
-    updateExchangePreview();
-  }
+}
 
 
-  function setTargetMax() {
+/* =========================
+   게임 화면 출력
+========================= */
 
-    document
-      .getElementById(
-        "targetChipInput"
-      )
-      .value =
-        currentRoom
-          .max_buyin_chips;
+function renderGame(){
 
+if(!currentGameState)
+return;
 
-    updateExchangePreview();
-  }
 
+document
+.getElementById("gameHandNumber")
+.textContent =
+`${currentGameState.hand_number}번째 판`;
 
-  function setTargetZero() {
 
-    document
-      .getElementById(
-        "targetChipInput"
-      )
-      .value =
-        0;
+document
+.getElementById("gamePot")
+.textContent =
+Number(
+currentGameState.pot
+).toLocaleString() +
+"칩";
 
 
-    updateExchangePreview();
-  }
+const statusText =
 
+currentGameState.hand_status === "dice"
+? "주사위 결정 중"
 
-  async function exchangeChips() {
+: currentGameState.hand_status === "betting"
+? "베팅 준비"
 
-    if (
-      !currentRoom ||
-      !currentLobbyPlayer
-    ) {
-      return;
-    }
+: currentGameState.hand_status;
 
 
-    const target =
-      Number(
-        document
-          .getElementById(
-            "targetChipInput"
-          )
-          .value
-      );
+document
+.getElementById("gameStatus")
+.textContent =
+statusText;
 
 
-    if (
-      !Number.isInteger(target) ||
-      target < 0
-    ) {
+/* 플레이어 */
 
-      alert(
-        "올바른 칩 수를 입력해주세요."
-      );
+const box =
+document
+.getElementById("gamePlayers");
 
-      return;
-    }
+box.innerHTML="";
 
 
-    const button =
-      document
-        .getElementById(
-          "exchangeButton"
-        );
+currentHandPlayers.forEach(player=>{
 
+const row =
+document.createElement("div");
 
-    button.disabled =
-      true;
+row.className =
+"playerRow";
 
 
-    const {
-      data,
-      error
-    } =
-      await db.rpc(
-        "set_lobby_chips",
-        {
+if(
+currentGameState.current_actor_profile_id ===
+player.profile_id
+){
 
-          p_room_id:
-            currentRoom.room_id,
+row.classList.add(
+"currentTurn"
+);
 
-          p_target_chips:
-            target
+}
 
-        }
-      );
 
+let sub =
+`${player.total_bet}칩 베팅`;
 
-    button.disabled =
-      false;
 
+if(
+currentGameState.hand_status === "dice"
+){
 
-    if (
-      error
-    ) {
+if(player.dice_roll !== null){
 
-      showError(
-        "환전 오류",
-        error
-      );
+sub +=
+` · 주사위 ${player.dice_roll}`;
 
-      return;
-    }
+}else if(player.dice_active){
 
+sub +=
+" · 주사위 대기";
 
-    await refreshCurrentProfile();
+}else{
 
-    await refreshLobby();
-  }
+sub +=
+" · 재굴림 대상 아님";
 
+}
 
-  // =====================================================
-  // 준비
-  // =====================================================
+}
 
-  function updateReadyButton() {
 
-    if (
-      !currentLobbyPlayer
-    ) {
-      return;
-    }
+row.innerHTML = `
 
+<div>
 
-    const button =
-      document
-        .getElementById(
-          "readyButton"
-        );
+<div class="playerNickname">
+${escapeHtml(player.nickname)}
+</div>
 
+<div class="playerSub">
+${sub}
+</div>
 
-    if (
-      currentLobbyPlayer.is_ready
-    ) {
+</div>
 
-      button.textContent =
-        "준비 취소";
+<div class="playerChip">
+${Number(player.chips).toLocaleString()}칩
+</div>
+`;
 
-      button.className =
-        "readyCancel";
 
-    } else {
+box.appendChild(row);
 
-      button.textContent =
-        "준비 완료";
+});
 
-      button.className =
-        "ready";
-    }
-  }
 
+/* 주사위 단계 */
 
-  async function toggleReady() {
+const diceSection =
+document
+.getElementById("diceSection");
 
-    if (
-      !currentRoom ||
-      !currentLobbyPlayer
-    ) {
-      return;
-    }
+const turnSection =
+document
+.getElementById("turnSection");
 
+const coming =
+document
+.getElementById("bettingComingSoon");
 
-    const nextReady =
-      !currentLobbyPlayer
-        .is_ready;
 
+if(
+currentGameState.hand_status === "dice"
+){
 
-    const button =
-      document
-        .getElementById(
-          "readyButton"
-        );
+diceSection.classList.remove("hidden");
+turnSection.classList.add("hidden");
+coming.classList.add("hidden");
 
 
-    button.disabled =
-      true;
+const me =
+currentHandPlayers.find(
+player =>
+player.profile_id ===
+currentUser.id
+);
 
 
-    const {
-      error
-    } =
-      await db.rpc(
-        "set_player_ready",
-        {
+const diceButtons =
+document
+.querySelectorAll(
+"#diceButtons button"
+);
 
-          p_room_id:
-            currentRoom.room_id,
 
-          p_ready:
-            nextReady
+if(!me){
 
-        }
-      );
+document
+.getElementById("diceHelp")
+.textContent =
+"게임 정보를 불러오는 중입니다.";
 
+diceButtons.forEach(
+button =>
+button.disabled=true
+);
 
-    button.disabled =
-      false;
+return;
 
+}
 
-    if (
-      error
-    ) {
 
-      showError(
-        "준비 상태 변경 오류",
-        error
-      );
+/* 이번 재굴림 대상 아님 */
 
-      return;
-    }
+if(!me.dice_active){
 
+document
+.getElementById("diceHelp")
+.textContent =
+"현재 최고 숫자 동점자들의 재굴림을 기다리고 있습니다.";
 
-    await refreshLobby();
-  }
+diceButtons.forEach(
+button =>
+button.disabled=true
+);
 
+}
 
-  // =====================================================
-  // 나가기 / 폭파
-  // =====================================================
 
-  async function leaveRoom() {
+/* 제출 완료 */
 
-    if (
-      !currentRoom
-    ) {
-      return;
-    }
+else if(
+me.dice_roll !== null
+){
 
+document
+.getElementById("diceHelp")
+.textContent =
+`주사위 ${me.dice_roll} 제출 완료.
+다른 플레이어를 기다리는 중입니다.`;
 
-    const ok =
-      confirm(
-        "방에서 나가시겠습니까?\n\n남아 있는 칩은 퍼로 자동 환전됩니다."
-      );
+diceButtons.forEach(
+button =>
+button.disabled=true
+);
 
+}
 
-    if (
-      !ok
-    ) {
-      return;
-    }
 
+/* 입력 가능 */
 
-    const {
-      error
-    } =
-      await db.rpc(
-        "leave_game_room",
-        {
-          p_room_id:
-            currentRoom.room_id
-        }
-      );
+else{
 
+document
+.getElementById("diceTitle")
+.textContent =
+currentGameState.dice_round === 1
+?
+"첫 행동자 결정"
+:
+`${currentGameState.dice_round}차 재굴림`;
 
-    if (
-      error
-    ) {
 
-      showError(
-        "방 나가기 오류",
-        error
-      );
+document
+.getElementById("diceHelp")
+.textContent =
+"실제 주사위를 굴린 뒤 나온 숫자를 눌러주세요.";
 
-      return;
-    }
 
+diceButtons.forEach(
+button =>
+button.disabled=false
+);
 
-    await refreshCurrentProfile();
+}
 
-    currentRoom =
-      null;
+}
 
 
-    await loadHome();
-  }
+/* 베팅 상태 */
 
+else if(
+currentGameState.hand_status === "betting"
+){
 
-  async function destroyRoom() {
+diceSection.classList.add("hidden");
+turnSection.classList.remove("hidden");
+coming.classList.remove("hidden");
 
-    if (
-      !currentRoom
-    ) {
-      return;
-    }
 
+const starter =
+currentHandPlayers.find(
+player =>
+player.profile_id ===
+currentGameState.starter_profile_id
+);
 
-    const ok =
-      confirm(
-        "정말 이 방을 폭파하시겠습니까?\n\n모든 참가자의 남은 칩은 퍼로 환전되고 방이 삭제됩니다."
-      );
 
+document
+.getElementById("starterName")
+.textContent =
+starter
+?
+starter.nickname
+:
+"-";
 
-    if (
-      !ok
-    ) {
-      return;
-    }
+}
 
+}
 
-    const {
-      error
-    } =
-      await db.rpc(
-        "destroy_game_room",
-        {
-          p_room_id:
-            currentRoom.room_id
-        }
-      );
 
+/* =========================
+   주사위 제출
+========================= */
 
-    if (
-      error
-    ) {
+async function submitDice(number){
 
-      showError(
-        "방 폭파 오류",
-        error
-      );
+if(
+!currentRoom ||
+!currentGameState
+)
+return;
 
-      return;
-    }
 
+document
+.querySelectorAll(
+"#diceButtons button"
+)
+.forEach(
+button =>
+button.disabled=true
+);
 
-    await refreshCurrentProfile();
 
-    currentRoom =
-      null;
+const {data,error} =
+await db.rpc(
+"submit_dice_roll",
+{
 
+p_room_id:
+currentRoom.room_id,
 
-    await loadHome();
-  }
+p_roll:
+number
 
+}
+);
 
-  // =====================================================
-  // HTML 보호
-  // =====================================================
 
-  function escapeHtml(
-    value
-  ) {
+if(error){
 
-    return String(
-      value
-    )
-      .replaceAll(
-        "&",
-        "&amp;"
-      )
-      .replaceAll(
-        "<",
-        "&lt;"
-      )
-      .replaceAll(
-        ">",
-        "&gt;"
-      )
-      .replaceAll(
-        '"',
-        "&quot;"
-      )
-      .replaceAll(
-        "'",
-        "&#039;"
-      );
-  }
+showError(
+"주사위 입력 오류",
+error
+);
 
+await refreshGame();
 
-  // =====================================================
-  // 로그아웃
-  // =====================================================
+return;
 
-  async function logout() {
+}
 
-    stopLobbyTimer();
 
+await refreshGame();
 
-    const {
-      error
-    } =
-      await db.auth.signOut();
+}
 
 
-    if (
-      error
-    ) {
+/* =========================
+   방 나가기 / 폭파
+========================= */
 
-      showError(
-        "로그아웃 오류",
-        error
-      );
+async function leaveRoom(){
 
-      return;
-    }
+if(!currentRoom)
+return;
 
+const ok =
+confirm(
+"방에서 나가시겠습니까?\n\n남은 칩은 퍼로 자동 환전됩니다."
+);
 
-    currentUser =
-      null;
+if(!ok)
+return;
 
-    currentProfile =
-      null;
+const {error} =
+await db.rpc(
+"leave_game_room",
+{
+p_room_id:
+currentRoom.room_id
+}
+);
 
-    currentRoom =
-      null;
+if(error){
 
-    currentLobbyPlayer =
-      null;
+showError(
+"방 나가기 오류",
+error
+);
 
+return;
 
-    showLogin();
-  }
+}
 
+await refreshCurrentProfile();
 
-  // =====================================================
-  // 시작
-  // =====================================================
+currentRoom=null;
 
-  async function start() {
+await loadHome();
 
-    const {
-      data,
-      error
-    } =
-      await db.auth.getSession();
+}
 
 
-    if (
-      error
-    ) {
+async function destroyRoom(){
 
-      showError(
-        "세션 오류",
-        error
-      );
+if(!currentRoom)
+return;
 
-      return;
-    }
+const ok =
+confirm(
+"정말 이 방을 폭파하시겠습니까?\n\n모든 참가자의 남은 칩은 퍼로 환전되고 방이 삭제됩니다."
+);
 
+if(!ok)
+return;
 
-    if (
-      data.session
-    ) {
+const {error} =
+await db.rpc(
+"destroy_game_room",
+{
+p_room_id:
+currentRoom.room_id
+}
+);
 
-      await loadHome();
+if(error){
 
-    } else {
+showError(
+"방 폭파 오류",
+error
+);
 
-      showLogin();
+return;
 
-    }
-  }
+}
 
+await refreshCurrentProfile();
 
-  updateChipPreview();
+currentRoom=null;
 
-  start();
+await loadHome();
+
+}
+
+
+/* =========================
+   HTML 보호
+========================= */
+
+function escapeHtml(value){
+
+return String(value)
+
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+
+/* =========================
+   로그아웃
+========================= */
+
+async function logout(){
+
+stopLobbyTimer();
+stopGameTimer();
+
+const {error} =
+await db.auth.signOut();
+
+if(error){
+
+showError(
+"로그아웃 오류",
+error
+);
+
+return;
+
+}
+
+currentUser=null;
+currentProfile=null;
+currentRoom=null;
+currentLobbyPlayer=null;
+currentGameState=null;
+currentHandPlayers=[];
+
+showLogin();
+
+}
+
+
+/* =========================
+   앱 시작
+========================= */
+
+async function start(){
+
+const {data,error} =
+await db.auth.getSession();
+
+if(error){
+
+showError(
+"세션 오류",
+error
+);
+
+return;
+
+}
+
+if(data.session){
+
+await loadHome();
+
+}else{
+
+showLogin();
+
+}
+
+}
+
+
+updateChipPreview();
+start();
 
 </script>
 
