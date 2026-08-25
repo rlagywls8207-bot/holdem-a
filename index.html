@@ -26,7 +26,8 @@
     }
 
     .container {
-      width: min(92%, 420px);
+      width: min(92%, 430px);
+      padding: 20px 0;
     }
 
     .logo {
@@ -39,7 +40,7 @@
     .subtitle {
       text-align: center;
       color: #aaa;
-      margin-bottom: 35px;
+      margin-bottom: 28px;
     }
 
     .card {
@@ -50,6 +51,10 @@
     }
 
     h2 {
+      margin-top: 0;
+    }
+
+    h3 {
       margin-top: 0;
     }
 
@@ -70,15 +75,20 @@
     button {
       width: 100%;
       padding: 15px;
-      margin-top: 8px;
+      margin-top: 10px;
 
       border: 0;
-      border-radius: 10px;
+      border-radius: 12px;
 
       font-size: 16px;
       font-weight: bold;
 
       cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: default;
     }
 
     .primary {
@@ -89,6 +99,23 @@
     .secondary {
       background: #333;
       color: white;
+    }
+
+    .menuButton {
+      background: #252525;
+      color: white;
+      border: 1px solid #3c3c3c;
+      text-align: left;
+      padding: 18px;
+      font-size: 18px;
+    }
+
+    .menuButton small {
+      display: block;
+      color: #999;
+      font-size: 12px;
+      margin-top: 6px;
+      font-weight: normal;
     }
 
     .switch {
@@ -103,20 +130,117 @@
       margin-top: 15px;
       text-align: center;
       color: #ff8080;
-    }
-
-    .per {
-      font-size: 34px;
-      font-weight: bold;
-      margin: 20px 0;
-    }
-
-    .nickname {
-      color: #aaa;
+      white-space: pre-line;
     }
 
     .hidden {
-      display: none;
+      display: none !important;
+    }
+
+    .accountBar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      background: #1b1b1b;
+      border: 1px solid #333;
+      border-radius: 14px;
+
+      padding: 14px 16px;
+      margin-bottom: 18px;
+    }
+
+    .accountName {
+      font-weight: bold;
+    }
+
+    .accountPer {
+      color: #ddd;
+      font-weight: bold;
+    }
+
+    .sectionTitle {
+      margin-bottom: 18px;
+    }
+
+    .backButton {
+      width: auto;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+    }
+
+    .balanceBox {
+      background: #111;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 12px;
+    }
+
+    .balanceLabel {
+      color: #999;
+      font-size: 13px;
+    }
+
+    .balanceValue {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .ruleBox {
+      background: #111;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .ruleBox strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .comingSoon {
+      color: #888;
+      text-align: center;
+      margin-top: 14px;
+      font-size: 13px;
+    }
+
+    .modalBackdrop {
+      position: fixed;
+      inset: 0;
+
+      background: rgba(0, 0, 0, 0.75);
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal {
+      width: min(92%, 420px);
+      max-height: 80vh;
+      overflow-y: auto;
+
+      background: #1c1c1c;
+      border: 1px solid #444;
+      border-radius: 18px;
+
+      padding: 22px;
+    }
+
+    .modalClose {
+      float: right;
+      width: auto;
+      margin: 0;
+      padding: 6px 10px;
+
+      background: #333;
+      color: white;
     }
   </style>
 </head>
@@ -219,34 +343,290 @@
   </div>
 
 
-  <!-- 로그인 성공 화면 -->
-  <div id="homeScreen" class="card hidden">
+  <!-- 홈 화면 -->
+  <div id="homeScreen" class="hidden">
 
-    <div class="nickname">
-      로그인 중
+    <div class="accountBar">
+
+      <div>
+        <div class="accountName" id="homeNickname">
+          -
+        </div>
+      </div>
+
+      <div
+        class="accountPer"
+        id="homePer"
+      >
+        0 퍼
+      </div>
+
     </div>
 
-    <h2 id="homeNickname">
-      -
+    <div class="card">
+
+      <h2 class="sectionTitle">
+        홈
+      </h2>
+
+      <button
+        class="menuButton"
+        onclick="showGameMenu()"
+      >
+        🎮 게임 시작
+
+        <small>
+          방을 만들거나 다른 사람의 방에 참가합니다.
+        </small>
+      </button>
+
+      <button
+        class="menuButton"
+        onclick="showRules()"
+      >
+        📖 룰 설명
+
+        <small>
+          홀덤(변형 A)의 기본 진행 방법을 확인합니다.
+        </small>
+      </button>
+
+      <button
+        class="menuButton"
+        onclick="showBank()"
+      >
+        🏦 은행
+
+        <small>
+          퍼, 예금, 대출을 관리합니다.
+        </small>
+      </button>
+
+      <button
+        class="secondary"
+        onclick="logout()"
+      >
+        로그아웃
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- 게임 시작 메뉴 -->
+  <div id="gameMenuScreen" class="card hidden">
+
+    <button
+      class="secondary backButton"
+      onclick="showHome()"
+    >
+      ← 홈
+    </button>
+
+    <h2>
+      게임 시작
     </h2>
 
-    <div class="nickname">
-      보유 퍼
+    <button
+      class="menuButton"
+      onclick="showComingSoon('방 만들기')"
+    >
+      방 만들기
+
+      <small>
+        새로운 게임방을 생성합니다.
+      </small>
+    </button>
+
+    <button
+      class="menuButton"
+      onclick="showComingSoon('방 참가')"
+    >
+      방 참가
+
+      <small>
+        열려 있는 방을 찾거나 코드로 참가합니다.
+      </small>
+    </button>
+
+    <div class="comingSoon">
+      방 시스템은 다음 단계에서 연결합니다.
     </div>
 
-    <div
-      id="homePer"
-      class="per"
+  </div>
+
+
+  <!-- 룰 설명 -->
+  <div id="rulesScreen" class="card hidden">
+
+    <button
+      class="secondary backButton"
+      onclick="showHome()"
     >
-      0 퍼
+      ← 홈
+    </button>
+
+    <h2>
+      홀덤(변형 A)
+    </h2>
+
+    <div class="ruleBox">
+      <strong>게임 방식</strong>
+
+      실제 카드는 오프라인에서 사용하고,
+      앱은 칩·베팅·턴·팟·정산을 관리합니다.
+    </div>
+
+    <div class="ruleBox">
+      <strong>기본베팅</strong>
+
+      한 판이 시작되면 모든 참가자가
+      기본베팅 1칩씩 팟에 냅니다.
+    </div>
+
+    <div class="ruleBox">
+      <strong>행동 순서</strong>
+
+      첫 판은 주사위 최고 숫자가 나온 사람부터 시작합니다.
+      동점이면 동점자끼리 다시 굴립니다.
+
+      이후 판은 직전 판의 승자부터 시작하며,
+      행동은 시계 방향으로 진행합니다.
+    </div>
+
+    <div class="ruleBox">
+      <strong>베팅</strong>
+
+      폴드 / 체크 / 콜 / 레이즈 / 올인을 사용할 수 있습니다.
+
+      최소 레이즈는 1칩입니다.
+    </div>
+
+    <div class="ruleBox">
+      <strong>사이드팟 없음</strong>
+
+      홀덤(변형 A)은 사이드팟을 사용하지 않습니다.
+
+      살아 있는 플레이어 중
+      이번 판에 넣을 수 있는 총 칩이 가장 적은 사람을 기준으로
+      베팅 상한이 결정됩니다.
+    </div>
+
+    <div class="ruleBox">
+      <strong>더 자세한 설명</strong>
+
+      카드 족보, 문양 서열, 베팅 예시 등은
+      이후 상세 룰 페이지로 확장할 예정입니다.
+    </div>
+
+  </div>
+
+
+  <!-- 은행 -->
+  <div id="bankScreen" class="card hidden">
+
+    <button
+      class="secondary backButton"
+      onclick="showHome()"
+    >
+      ← 홈
+    </button>
+
+    <h2>
+      은행
+    </h2>
+
+    <div class="balanceBox">
+
+      <div class="balanceLabel">
+        보유 퍼
+      </div>
+
+      <div
+        class="balanceValue"
+        id="bankBalance"
+      >
+        0 퍼
+      </div>
+
+    </div>
+
+    <div class="balanceBox">
+
+      <div class="balanceLabel">
+        예금
+      </div>
+
+      <div
+        class="balanceValue"
+        id="bankDeposit"
+      >
+        0 퍼
+      </div>
+
+    </div>
+
+    <div class="balanceBox">
+
+      <div class="balanceLabel">
+        대출
+      </div>
+
+      <div
+        class="balanceValue"
+        id="bankLoan"
+      >
+        0 퍼
+      </div>
+
     </div>
 
     <button
       class="secondary"
-      onclick="logout()"
+      onclick="showComingSoon('예금 / 출금')"
     >
-      로그아웃
+      예금 / 출금
     </button>
+
+    <button
+      class="secondary"
+      onclick="showComingSoon('대출 / 상환')"
+    >
+      대출 / 상환
+    </button>
+
+    <div class="comingSoon">
+      예금·대출 실제 거래 기능은 다음 단계에서 연결합니다.
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- 간단 팝업 -->
+<div
+  id="simpleModal"
+  class="modalBackdrop hidden"
+>
+
+  <div class="modal">
+
+    <button
+      class="modalClose"
+      onclick="closeModal()"
+    >
+      ×
+    </button>
+
+    <h3 id="modalTitle">
+      안내
+    </h3>
+
+    <div id="modalText">
+      준비 중입니다.
+    </div>
 
   </div>
 
@@ -256,7 +636,7 @@
 <script>
 
   // =====================================================
-  // ★ 여기 두 줄만 네 Supabase 값으로 교체
+  // Supabase
   // =====================================================
 
   const SUPABASE_URL =
@@ -266,17 +646,18 @@
     "sb_publishable_CtBML_wKT9KLliZJZXVkbg_H3Bg3ppI";
 
 
-  // Supabase 연결
-  const db = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-  );
+  const db =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+  let currentProfile = null;
 
 
   // =====================================================
-  // 닉네임을 Supabase 내부 이메일 형식으로 변환
-  //
-  // 사용자는 이메일을 볼 필요 없음.
+  // 닉네임 → 내부 로그인 이메일
   // =====================================================
 
   function nicknameToEmail(nickname) {
@@ -298,25 +679,30 @@
   // 화면 전환
   // =====================================================
 
-  function hideAll() {
+  function hideAllScreens() {
 
-    document
-      .getElementById("loginScreen")
-      .classList.add("hidden");
+    const screens = [
+      "loginScreen",
+      "signupScreen",
+      "homeScreen",
+      "gameMenuScreen",
+      "rulesScreen",
+      "bankScreen"
+    ];
 
-    document
-      .getElementById("signupScreen")
-      .classList.add("hidden");
+    screens.forEach(id => {
 
-    document
-      .getElementById("homeScreen")
-      .classList.add("hidden");
+      document
+        .getElementById(id)
+        .classList.add("hidden");
+
+    });
   }
 
 
   function showLogin() {
 
-    hideAll();
+    hideAllScreens();
 
     document
       .getElementById("loginScreen")
@@ -330,7 +716,7 @@
 
   function showSignup() {
 
-    hideAll();
+    hideAllScreens();
 
     document
       .getElementById("signupScreen")
@@ -339,6 +725,79 @@
     document.getElementById(
       "signupMessage"
     ).textContent = "";
+  }
+
+
+  function showHome() {
+
+    hideAllScreens();
+
+    updateHomeValues();
+
+    document
+      .getElementById("homeScreen")
+      .classList.remove("hidden");
+  }
+
+
+  function showGameMenu() {
+
+    hideAllScreens();
+
+    document
+      .getElementById("gameMenuScreen")
+      .classList.remove("hidden");
+  }
+
+
+  function showRules() {
+
+    hideAllScreens();
+
+    document
+      .getElementById("rulesScreen")
+      .classList.remove("hidden");
+  }
+
+
+  function showBank() {
+
+    hideAllScreens();
+
+    updateBankValues();
+
+    document
+      .getElementById("bankScreen")
+      .classList.remove("hidden");
+  }
+
+
+  // =====================================================
+  // 팝업
+  // =====================================================
+
+  function showComingSoon(title) {
+
+    document.getElementById(
+      "modalTitle"
+    ).textContent = title;
+
+    document.getElementById(
+      "modalText"
+    ).textContent =
+      "이 기능은 다음 개발 단계에서 연결할 예정입니다.";
+
+    document
+      .getElementById("simpleModal")
+      .classList.remove("hidden");
+  }
+
+
+  function closeModal() {
+
+    document
+      .getElementById("simpleModal")
+      .classList.add("hidden");
   }
 
 
@@ -421,7 +880,6 @@
 
 
     const {
-      data,
       error
     } =
       await db.auth.signUp({
@@ -510,7 +968,6 @@
 
 
     const {
-      data,
       error
     } =
       await db.auth.signInWithPassword({
@@ -538,188 +995,213 @@
 
 
   // =====================================================
-  // 홈 정보 불러오기
+  // 프로필 불러오기
   // =====================================================
 
-async function loadHome() {
+  async function loadHome() {
 
-  const {
-    data: userData,
-    error: userError
-  } =
-    await db.auth.getUser();
+    const {
+      data: userData,
+      error: userError
+    } =
+      await db.auth.getUser();
 
 
-  if (userError) {
+    if (userError) {
 
-    alert(
-      "사용자 정보 오류\n\n" +
-      userError.message
-    );
+      alert(
+        "사용자 정보 오류\n\n" +
+        userError.message
+      );
 
-    console.error(
-      "getUser error:",
-      userError
-    );
+      showLogin();
+
+      return;
+    }
+
+
+    const user =
+      userData.user;
+
+
+    if (!user) {
+
+      showLogin();
+
+      return;
+    }
+
+
+    const {
+      data: profile,
+      error: profileError
+    } =
+      await db
+        .from("profiles")
+        .select(
+          "nickname, balance_per, bank_per, loan_per"
+        )
+        .eq(
+          "id",
+          user.id
+        )
+        .single();
+
+
+    if (profileError) {
+
+      alert(
+        "프로필 불러오기 실패\n\n" +
+        "message: " +
+        profileError.message +
+        "\n\ncode: " +
+        profileError.code +
+        "\n\ndetails: " +
+        profileError.details +
+        "\n\nhint: " +
+        profileError.hint
+      );
+
+      return;
+    }
+
+
+    currentProfile = profile;
+
+    showHome();
+  }
+
+
+  // =====================================================
+  // 화면 숫자 갱신
+  // =====================================================
+
+  function updateHomeValues() {
+
+    if (!currentProfile) {
+      return;
+    }
+
+
+    document.getElementById(
+      "homeNickname"
+    ).textContent =
+      currentProfile.nickname;
+
+
+    document.getElementById(
+      "homePer"
+    ).textContent =
+      Number(
+        currentProfile.balance_per
+      ).toLocaleString()
+      + " 퍼";
+  }
+
+
+  function updateBankValues() {
+
+    if (!currentProfile) {
+      return;
+    }
+
+
+    document.getElementById(
+      "bankBalance"
+    ).textContent =
+      Number(
+        currentProfile.balance_per
+      ).toLocaleString()
+      + " 퍼";
+
+
+    document.getElementById(
+      "bankDeposit"
+    ).textContent =
+      Number(
+        currentProfile.bank_per
+      ).toLocaleString()
+      + " 퍼";
+
+
+    document.getElementById(
+      "bankLoan"
+    ).textContent =
+      Number(
+        currentProfile.loan_per
+      ).toLocaleString()
+      + " 퍼";
+  }
+
+
+  // =====================================================
+  // 로그아웃
+  // =====================================================
+
+  async function logout() {
+
+    const {
+      error
+    } =
+      await db.auth.signOut();
+
+
+    if (error) {
+
+      alert(
+        "로그아웃 오류\n\n" +
+        error.message
+      );
+
+      return;
+    }
+
+
+    currentProfile = null;
 
     showLogin();
-
-    return;
   }
 
 
-  const user =
-    userData.user;
+  // =====================================================
+  // 앱 시작
+  // =====================================================
+
+  async function start() {
+
+    const {
+      data,
+      error
+    } =
+      await db.auth.getSession();
 
 
-  if (!user) {
+    if (error) {
 
-    alert(
-      "로그인된 사용자 정보를 찾지 못했습니다."
-    );
+      alert(
+        "세션 확인 오류\n\n" +
+        error.message
+      );
 
-    showLogin();
+      showLogin();
 
-    return;
+      return;
+    }
+
+
+    if (data.session) {
+
+      await loadHome();
+
+    } else {
+
+      showLogin();
+
+    }
   }
 
 
-  const {
-    data: profile,
-    error: profileError
-  } =
-    await db
-      .from("profiles")
-      .select(
-        "nickname, balance_per, bank_per, loan_per"
-      )
-      .eq(
-        "id",
-        user.id
-      )
-      .single();
-
-
-  if (profileError) {
-
-    console.error(
-      "profile error:",
-      profileError
-    );
-
-    alert(
-      "프로필 불러오기 실패\n\n" +
-      "message: " +
-      profileError.message +
-      "\n\ncode: " +
-      profileError.code +
-      "\n\ndetails: " +
-      profileError.details +
-      "\n\nhint: " +
-      profileError.hint
-    );
-
-    return;
-  }
-
-
-  if (!profile) {
-
-    alert(
-      "프로필 데이터가 없습니다.\n\n" +
-      "사용자 ID: " +
-      user.id
-    );
-
-    return;
-  }
-
-
-  document.getElementById(
-    "homeNickname"
-  ).textContent =
-    profile.nickname;
-
-
-  document.getElementById(
-    "homePer"
-  ).textContent =
-    Number(
-      profile.balance_per
-    ).toLocaleString()
-    + " 퍼";
-
-
-  hideAll();
-
-  document
-    .getElementById("homeScreen")
-    .classList.remove("hidden");
-}
-// =====================================================
-// 로그아웃
-// =====================================================
-
-async function logout() {
-
-  const { error } =
-    await db.auth.signOut();
-
-  if (error) {
-
-    alert(
-      "로그아웃 오류\n\n" +
-      error.message
-    );
-
-    return;
-  }
-
-  showLogin();
-}
-
-
-// =====================================================
-// 페이지 처음 열었을 때
-// 기존 로그인 상태 확인
-// =====================================================
-
-async function start() {
-
-  const {
-    data,
-    error
-  } =
-    await db.auth.getSession();
-
-
-  if (error) {
-
-    alert(
-      "세션 확인 오류\n\n" +
-      error.message
-    );
-
-    showLogin();
-
-    return;
-  }
-
-
-  if (data.session) {
-
-    await loadHome();
-
-  } else {
-
-    showLogin();
-
-  }
-}
-
-
-// 앱 시작
-start();
+  start();
 
 </script>
 
