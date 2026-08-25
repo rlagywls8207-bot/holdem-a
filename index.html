@@ -3,19 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>Holdem A</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
   min-height:100vh;
+
   font-family:Arial,sans-serif;
+
   background:#111;
   color:#fff;
+
   display:flex;
   justify-content:center;
   align-items:flex-start;
@@ -48,32 +55,45 @@ body{
 
 .card{
   background:#1c1c1c;
+
   border:1px solid #333;
   border-radius:18px;
+
   padding:20px;
 }
 
-h2,h3{margin-top:0}
+h2,
+h3{
+  margin-top:0;
+}
 
 input{
   width:100%;
+
   padding:14px;
   margin-bottom:12px;
+
   background:#111;
   color:#fff;
+
   border:1px solid #444;
   border-radius:10px;
+
   font-size:16px;
 }
 
 button{
   width:100%;
+
   padding:14px;
   margin-top:9px;
+
   border:0;
   border-radius:11px;
+
   font-size:16px;
   font-weight:bold;
+
   cursor:pointer;
 }
 
@@ -104,32 +124,46 @@ button:disabled{
 .menuButton{
   background:#252525;
   color:#fff;
+
   border:1px solid #3d3d3d;
+
   text-align:left;
+
   padding:18px;
+
   font-size:18px;
 }
 
 .menuButton small{
   display:block;
+
   color:#999;
+
   font-size:12px;
   font-weight:normal;
+
   margin-top:6px;
 }
 
 .switch{
   margin-top:20px;
+
   text-align:center;
+
   color:#aaa;
+
   cursor:pointer;
 }
 
 .message{
   min-height:24px;
+
   margin-top:15px;
+
   text-align:center;
+
   color:#ff8585;
+
   white-space:pre-line;
 }
 
@@ -137,45 +171,62 @@ button:disabled{
   display:flex;
   justify-content:space-between;
   align-items:center;
+
   background:#1b1b1b;
+
   border:1px solid #333;
   border-radius:14px;
+
   padding:14px 16px;
+
   margin-bottom:16px;
 }
 
-.accountName,.accountPer{
+.accountName,
+.accountPer{
   font-weight:bold;
 }
 
 .backButton{
   width:auto;
+
   padding:10px 14px;
+
   margin:0 0 16px;
 }
 
 .fieldLabel{
   display:block;
+
   color:#ddd;
+
   font-size:14px;
   font-weight:bold;
+
   margin:12px 0 7px 2px;
 }
 
 .fieldHelp{
   color:#888;
+
   font-size:12px;
+
   margin:-4px 0 14px 3px;
 }
 
 .roomCard,
 .balanceBox,
 .exchangeBox,
-.gameBox{
+.gameBox,
+.bankActionBox,
+.transferBox{
   background:#111;
+
   border:1px solid #333;
   border-radius:14px;
+
   padding:15px;
+
   margin-bottom:12px;
 }
 
@@ -186,14 +237,19 @@ button:disabled{
 
 .roomCode{
   font-family:monospace;
+
   letter-spacing:2px;
+
   margin-top:5px;
 }
 
 .roomInfo{
   color:#aaa;
+
   font-size:13px;
+
   line-height:1.7;
+
   margin-top:8px;
 }
 
@@ -201,10 +257,14 @@ button:disabled{
   display:flex;
   justify-content:space-between;
   align-items:center;
+
   background:#111;
+
   border:1px solid transparent;
   border-radius:12px;
+
   padding:13px;
+
   margin-bottom:8px;
 }
 
@@ -222,8 +282,11 @@ button:disabled{
 
 .playerSub{
   color:#999;
+
   font-size:12px;
+
   margin-top:4px;
+
   line-height:1.5;
 }
 
@@ -234,98 +297,258 @@ button:disabled{
 
 .readyText{
   color:#a9ffb4;
+
   font-size:12px;
 }
 
 .sectionLine{
   height:1px;
+
   background:#333;
+
   margin:20px 0;
 }
 
 .emptyText{
   text-align:center;
+
   color:#888;
+
   padding:22px 5px;
 }
 
 .exchangeSummary{
   display:grid;
+
   grid-template-columns:1fr 1fr;
+
   gap:8px;
+
   margin-bottom:12px;
 }
 
 .smallStat{
   background:#1d1d1d;
+
   border-radius:10px;
+
   padding:11px;
 }
 
 .smallLabel{
   color:#888;
+
   font-size:11px;
 }
 
 .smallValue{
   font-weight:bold;
+
   margin-top:3px;
 }
 
 .quickButtons{
   display:grid;
+
   grid-template-columns:1fr 1fr 1fr;
+
   gap:7px;
 }
 
 .quickButtons button{
   margin:0;
+
   padding:11px 4px;
+
   font-size:13px;
 }
 
 .preview{
   background:#1d1d1d;
+
   border-radius:10px;
+
   padding:12px;
+
   color:#ccc;
+
   font-size:13px;
+
   line-height:1.6;
+
   white-space:pre-line;
+
   margin:10px 0;
 }
 
 .allReady{
   background:#1b3521;
+
   border:1px solid #35643e;
-  color:#baffc5;
   border-radius:12px;
+
+  color:#baffc5;
+
   padding:12px;
+
   text-align:center;
+
   margin:12px 0;
 }
 
 .balanceLabel{
   color:#999;
+
   font-size:12px;
 }
 
 .balanceValue{
   font-size:27px;
   font-weight:bold;
+
   margin-top:4px;
+}
+
+.loanDanger{
+  color:#ff9898;
+}
+
+.interestInfo{
+  background:#181818;
+
+  border-radius:12px;
+
+  padding:13px;
+
+  color:#aaa;
+
+  font-size:12px;
+
+  line-height:1.7;
+
+  margin-bottom:14px;
+}
+
+.interestDanger{
+  background:#351d1d;
+
+  border:1px solid #673434;
+
+  color:#ffb1b1;
+}
+
+.bankTabs{
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:8px;
+
+  margin-bottom:12px;
+}
+
+.bankTabs button{
+  margin:0;
+
+  font-size:14px;
+}
+
+.bankGrid{
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:8px;
+}
+
+.bankGrid button{
+  margin:0;
+}
+
+.bankActionTitle{
+  font-size:17px;
+  font-weight:bold;
+
+  margin-bottom:12px;
+}
+
+.transferRecipient{
+  background:#1d1d1d;
+
+  border-radius:10px;
+
+  padding:12px;
+
+  margin-bottom:10px;
+}
+
+.transferRecipientName{
+  font-weight:bold;
+
+  font-size:17px;
+}
+
+.transferRecipientHelp{
+  color:#888;
+
+  font-size:11px;
+
+  margin-top:4px;
+}
+
+.transferHistoryRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  background:#181818;
+
+  border-radius:10px;
+
+  padding:11px;
+
+  margin-bottom:7px;
+}
+
+.transferHistoryName{
+  font-weight:bold;
+}
+
+.transferHistorySub{
+  color:#888;
+
+  font-size:11px;
+
+  margin-top:3px;
+}
+
+.transferSent{
+  color:#ff9d9d;
+
+  font-weight:bold;
+}
+
+.transferReceived{
+  color:#a9ffb4;
+
+  font-weight:bold;
 }
 
 .ruleBox{
   background:#111;
+
   border-radius:14px;
+
   padding:15px;
+
   margin-bottom:11px;
+
   line-height:1.6;
 }
 
 .ruleBox strong{
   display:block;
+
   margin-bottom:5px;
 }
 
@@ -337,11 +560,13 @@ button:disabled{
 
 .gameMinor{
   color:#999;
+
   font-size:12px;
 }
 
 .potBox{
   text-align:center;
+
   padding:15px;
 }
 
@@ -352,87 +577,116 @@ button:disabled{
 .potValue{
   font-size:42px;
   font-weight:bold;
+
   margin-top:3px;
 }
 
 .roundInfo{
   display:grid;
+
   grid-template-columns:1fr 1fr;
+
   gap:8px;
+
   margin:12px 0;
 }
 
 .turnBox{
   background:#202020;
+
   border:1px solid #555;
   border-radius:13px;
+
   padding:13px;
+
   text-align:center;
+
   margin:12px 0;
 }
 
 .turnName{
   font-size:23px;
   font-weight:bold;
+
   margin-top:3px;
 }
 
 .diceBox{
   background:#151515;
+
   border:1px solid #444;
   border-radius:14px;
+
   padding:16px;
+
   margin:14px 0;
 }
 
 .diceButtons{
   display:grid;
+
   grid-template-columns:repeat(3,1fr);
+
   gap:7px;
 }
 
 .diceButtons button{
   margin:0;
+
   font-size:21px;
 }
 
 .actionArea{
   background:#151515;
+
   border:1px solid #444;
   border-radius:14px;
+
   padding:16px;
+
   margin-top:16px;
 }
 
 .actionStatus{
   color:#aaa;
+
   font-size:13px;
+
   line-height:1.6;
+
   margin-bottom:12px;
 }
 
 .betControl{
   display:flex;
   align-items:center;
+
   gap:8px;
 }
 
 .betControl button{
   width:54px;
+
   margin:0;
 }
 
 .betControl input{
   flex:1;
+
   margin:0;
+
   text-align:center;
+
   font-weight:bold;
 }
 
 .actionButtons{
   display:grid;
+
   grid-template-columns:1fr 1fr;
+
   gap:8px;
+
   margin-top:10px;
 }
 
@@ -462,15 +716,20 @@ button:disabled{
 
 .showdownBox{
   background:#241f15;
+
   border:1px solid #62532c;
   border-radius:14px;
+
   padding:16px;
+
   margin-top:15px;
 }
 
 .showdownButtons{
   display:grid;
+
   grid-template-columns:1fr 1fr;
+
   gap:8px;
 }
 
@@ -491,66 +750,92 @@ button:disabled{
 .winnerButton{
   background:#333;
   color:#fff;
+
   margin-top:7px;
 }
 
 .finishedBox{
   text-align:center;
+
   background:#16271a;
+
   border:1px solid #365a3c;
   border-radius:14px;
+
   padding:18px;
+
   margin-top:15px;
 }
 
 .finishedWinner{
   font-size:25px;
   font-weight:bold;
+
   margin:6px 0 12px;
 }
 
 .gameLeaveBox{
   margin-top:22px;
+
   padding-top:18px;
+
   border-top:1px solid #333;
 }
 
 .gameLeaveHelp{
   color:#777;
+
   font-size:11px;
+
   line-height:1.5;
+
   text-align:center;
 }
 
 .modalBackdrop{
   position:fixed;
+
   inset:0;
+
   background:rgba(0,0,0,.78);
+
   display:flex;
   justify-content:center;
   align-items:center;
+
   padding:20px;
+
   z-index:1000;
 }
 
 .modal{
   width:min(92%,420px);
+
   max-height:82vh;
+
   overflow-y:auto;
+
   background:#1c1c1c;
+
   border:1px solid #444;
   border-radius:18px;
+
   padding:21px;
 }
 
 .modalClose{
   float:right;
+
   width:auto;
+
   padding:6px 10px;
+
   margin:0;
+
   background:#333;
   color:#fff;
 }
+
 </style>
 </head>
 
@@ -558,91 +843,136 @@ button:disabled{
 
 <div class="container">
 
-<div class="logo">HOLDEM A</div>
-<div class="version">v0.8.1</div>
-<div class="subtitle">홀덤 보조 게임</div>
+<div class="logo">
+HOLDEM A
+</div>
+
+<div class="version">
+v0.9.0
+</div>
+
+<div class="subtitle">
+홀덤 보조 게임
+</div>
 
 
 <!-- 로그인 -->
 
-<div id="loginScreen" class="card">
+<div
+id="loginScreen"
+class="card"
+>
 
-<h2>로그인</h2>
+<h2>
+로그인
+</h2>
 
-<input id="loginNickname"
+<input
+id="loginNickname"
 type="text"
-placeholder="닉네임">
+placeholder="닉네임"
+>
 
-<input id="loginPassword"
+<input
+id="loginPassword"
 type="password"
-placeholder="비밀번호">
+placeholder="비밀번호"
+>
 
-<button class="primary"
-onclick="login()">
+<button
+class="primary"
+onclick="login()"
+>
 로그인
 </button>
 
-<div class="switch"
-onclick="showSignup()">
+<div
+class="switch"
+onclick="showSignup()"
+>
 처음이신가요? 회원가입
 </div>
 
-<div id="loginMessage"
-class="message"></div>
+<div
+id="loginMessage"
+class="message"
+></div>
 
 </div>
 
 
 <!-- 회원가입 -->
 
-<div id="signupScreen"
-class="card hidden">
+<div
+id="signupScreen"
+class="card hidden"
+>
 
-<h2>회원가입</h2>
+<h2>
+회원가입
+</h2>
 
-<input id="signupNickname"
+<input
+id="signupNickname"
 type="text"
 placeholder="닉네임"
-maxlength="20">
+maxlength="20"
+>
 
-<input id="signupPassword"
+<input
+id="signupPassword"
 type="password"
-placeholder="비밀번호">
+placeholder="비밀번호"
+>
 
-<input id="signupPassword2"
+<input
+id="signupPassword2"
 type="password"
-placeholder="비밀번호 확인">
+placeholder="비밀번호 확인"
+>
 
-<button class="primary"
-onclick="signup()">
+<button
+class="primary"
+onclick="signup()"
+>
 가입하기
 </button>
 
-<div class="switch"
-onclick="showLogin()">
+<div
+class="switch"
+onclick="showLogin()"
+>
 이미 계정이 있나요? 로그인
 </div>
 
-<div id="signupMessage"
-class="message"></div>
+<div
+id="signupMessage"
+class="message"
+></div>
 
 </div>
 
 
 <!-- 홈 -->
 
-<div id="homeScreen"
-class="hidden">
+<div
+id="homeScreen"
+class="hidden"
+>
 
 <div class="accountBar">
 
-<div id="homeNickname"
-class="accountName">
+<div
+id="homeNickname"
+class="accountName"
+>
 -
 </div>
 
-<div id="homePer"
-class="accountPer">
+<div
+id="homePer"
+class="accountPer"
+>
 0 퍼
 </div>
 
@@ -650,10 +980,14 @@ class="accountPer">
 
 <div class="card">
 
-<h2>홈</h2>
+<h2>
+홈
+</h2>
 
-<button class="menuButton"
-onclick="showGameMenu()">
+<button
+class="menuButton"
+onclick="showGameMenu()"
+>
 
 🎮 게임 시작
 
@@ -663,8 +997,10 @@ onclick="showGameMenu()">
 
 </button>
 
-<button class="menuButton"
-onclick="showRules()">
+<button
+class="menuButton"
+onclick="showRules()"
+>
 
 📖 룰 설명
 
@@ -674,19 +1010,23 @@ onclick="showRules()">
 
 </button>
 
-<button class="menuButton"
-onclick="showBank()">
+<button
+class="menuButton"
+onclick="showBank()"
+>
 
 🏦 은행
 
 <small>
-퍼, 예금, 대출 관리
+입출금 · 대출 · 상환 · 송금
 </small>
 
 </button>
 
-<button class="secondary"
-onclick="logout()">
+<button
+class="secondary"
+onclick="logout()"
+>
 로그아웃
 </button>
 
@@ -697,18 +1037,26 @@ onclick="logout()">
 
 <!-- 게임 메뉴 -->
 
-<div id="gameMenuScreen"
-class="card hidden">
+<div
+id="gameMenuScreen"
+class="card hidden"
+>
 
-<button class="secondary backButton"
-onclick="showHome()">
+<button
+class="secondary backButton"
+onclick="showHome()"
+>
 ← 홈
 </button>
 
-<h2>게임 시작</h2>
+<h2>
+게임 시작
+</h2>
 
-<button class="menuButton"
-onclick="showCreateRoom()">
+<button
+class="menuButton"
+onclick="showCreateRoom()"
+>
 
 방 만들기
 
@@ -718,8 +1066,10 @@ onclick="showCreateRoom()">
 
 </button>
 
-<button class="menuButton"
-onclick="showJoinRoom()">
+<button
+class="menuButton"
+onclick="showJoinRoom()"
+>
 
 방 참가
 
@@ -734,38 +1084,52 @@ onclick="showJoinRoom()">
 
 <!-- 방 만들기 -->
 
-<div id="createRoomScreen"
-class="card hidden">
+<div
+id="createRoomScreen"
+class="card hidden"
+>
 
-<button class="secondary backButton"
-onclick="showGameMenu()">
+<button
+class="secondary backButton"
+onclick="showGameMenu()"
+>
 ← 게임 메뉴
 </button>
 
-<h2>방 만들기</h2>
+<h2>
+방 만들기
+</h2>
 
 <label class="fieldLabel">
 방 이름
 </label>
 
-<input id="createRoomName"
+<input
+id="createRoomName"
 type="text"
 placeholder="방 이름을 입력하세요"
-maxlength="30">
+maxlength="30"
+>
 
-<label id="chipValueLabel"
-class="fieldLabel">
+<label
+id="chipValueLabel"
+class="fieldLabel"
+>
 칩 가치 (100칩 = 1,000퍼)
 </label>
 
-<input id="createChipValue"
+<input
+id="createChipValue"
 type="number"
 value="10"
 min="1"
-oninput="updateChipPreview()">
+oninput="updateChipPreview()"
+>
 
-<div id="singleChipPreview"
-class="fieldHelp">
+<div
+id="singleChipPreview"
+class="fieldHelp"
+>
 1칩 = 10퍼
 </div>
 
@@ -773,51 +1137,69 @@ class="fieldHelp">
 최소 환전 칩
 </label>
 
-<input id="createMinBuyin"
+<input
+id="createMinBuyin"
 type="number"
 value="50"
-min="1">
+min="1"
+>
 
 <label class="fieldLabel">
 최대 환전 칩
 </label>
 
-<input id="createMaxBuyin"
+<input
+id="createMaxBuyin"
 type="number"
 value="100"
 min="1"
-oninput="updateChipPreview()">
+oninput="updateChipPreview()"
+>
 
-<div id="maxBuyinPreview"
-class="fieldHelp">
+<div
+id="maxBuyinPreview"
+class="fieldHelp"
+>
 최대 환전 시 1,000퍼 필요
 </div>
 
-<button class="primary"
-onclick="createRoom()">
+<button
+class="primary"
+onclick="createRoom()"
+>
 방 생성
 </button>
 
-<div id="createRoomMessage"
-class="message"></div>
+<div
+id="createRoomMessage"
+class="message"
+></div>
 
 </div>
 
 
 <!-- 방 참가 -->
 
-<div id="joinRoomScreen"
-class="card hidden">
+<div
+id="joinRoomScreen"
+class="card hidden"
+>
 
-<button class="secondary backButton"
-onclick="showGameMenu()">
+<button
+class="secondary backButton"
+onclick="showGameMenu()"
+>
 ← 게임 메뉴
 </button>
 
-<h2>열린 방</h2>
+<h2>
+열린 방
+</h2>
 
-<button class="secondary"
-onclick="loadRooms()">
+<button
+class="secondary"
+onclick="loadRooms()"
+>
 새로고침
 </button>
 
@@ -830,8 +1212,10 @@ onclick="loadRooms()">
 
 <!-- 대기실 -->
 
-<div id="roomLobbyScreen"
-class="card hidden">
+<div
+id="roomLobbyScreen"
+class="card hidden"
+>
 
 <h2 id="lobbyRoomName">
 방
@@ -843,20 +1227,26 @@ class="card hidden">
 방 코드
 </div>
 
-<div id="lobbyRoomCode"
-class="roomCode">
+<div
+id="lobbyRoomCode"
+class="roomCode"
+>
 ------
 </div>
 
-<div id="lobbyRoomSettings"
-class="roomInfo"></div>
+<div
+id="lobbyRoomSettings"
+class="roomInfo"
+></div>
 
 </div>
 
 
 <div class="exchangeBox">
 
-<h3>칩 환전</h3>
+<h3>
+칩 환전
+</h3>
 
 <div class="exchangeSummary">
 
@@ -866,8 +1256,10 @@ class="roomInfo"></div>
 보유 퍼
 </div>
 
-<div id="lobbyMyPer"
-class="smallValue">
+<div
+id="lobbyMyPer"
+class="smallValue"
+>
 0퍼
 </div>
 
@@ -879,8 +1271,10 @@ class="smallValue">
 현재 칩
 </div>
 
-<div id="lobbyMyChips"
-class="smallValue">
+<div
+id="lobbyMyChips"
+class="smallValue"
+>
 0칩
 </div>
 
@@ -892,73 +1286,97 @@ class="smallValue">
 환전 후 보유할 칩
 </label>
 
-<input id="targetChipInput"
+<input
+id="targetChipInput"
 type="number"
 value="0"
 min="0"
-oninput="updateExchangePreview()">
+oninput="updateExchangePreview()"
+>
 
 <div class="quickButtons">
 
-<button class="secondary"
-onclick="setTargetMin()">
+<button
+class="secondary"
+onclick="setTargetMin()"
+>
 최소
 </button>
 
-<button class="secondary"
-onclick="setTargetMax()">
+<button
+class="secondary"
+onclick="setTargetMax()"
+>
 최대
 </button>
 
-<button class="secondary"
-onclick="setTargetZero()">
+<button
+class="secondary"
+onclick="setTargetZero()"
+>
 전액 환전
 </button>
 
 </div>
 
-<div id="exchangePreview"
-class="preview"></div>
+<div
+id="exchangePreview"
+class="preview"
+></div>
 
-<button class="primary"
-onclick="exchangeChips()">
+<button
+class="primary"
+onclick="exchangeChips()"
+>
 환전 적용
 </button>
 
 </div>
 
 
-<h3>대기 인원</h3>
+<h3>
+대기 인원
+</h3>
 
 <div id="lobbyPlayers"></div>
 
-<div id="allReadyNotice"
-class="allReady hidden">
+<div
+id="allReadyNotice"
+class="allReady hidden"
+>
 모든 플레이어가 준비되었습니다!
 </div>
 
-<button id="readyButton"
+<button
+id="readyButton"
 class="primary"
-onclick="toggleReady()">
+onclick="toggleReady()"
+>
 준비 완료
 </button>
 
-<button id="startGameButton"
+<button
+id="startGameButton"
 class="primary hidden"
 disabled
-onclick="startGame()">
+onclick="startGame()"
+>
 게임 시작
 </button>
 
-<button id="leaveRoomButton"
+<button
+id="leaveRoomButton"
 class="secondary hidden"
-onclick="leaveRoom()">
+onclick="leaveRoom()"
+>
 방 나가기
 </button>
 
-<button id="destroyRoomButton"
+<button
+id="destroyRoomButton"
 class="danger hidden"
-onclick="destroyRoom()">
+onclick="destroyRoom()"
+>
 방 폭파
 </button>
 
@@ -967,8 +1385,10 @@ onclick="destroyRoom()">
 
 <!-- 게임 -->
 
-<div id="gameScreen"
-class="card hidden">
+<div
+id="gameScreen"
+class="card hidden"
+>
 
 <div class="gameHeader">
 
@@ -978,15 +1398,19 @@ class="card hidden">
 게임 진행
 </h2>
 
-<div id="gameHandNumber"
-class="gameMinor">
+<div
+id="gameHandNumber"
+class="gameMinor"
+>
 -
 </div>
 
 </div>
 
-<div id="gameStatus"
-class="gameMinor">
+<div
+id="gameStatus"
+class="gameMinor"
+>
 -
 </div>
 
@@ -999,8 +1423,10 @@ class="gameMinor">
 현재 팟
 </div>
 
-<div id="gamePot"
-class="potValue">
+<div
+id="gamePot"
+class="potValue"
+>
 0칩
 </div>
 
@@ -1015,8 +1441,10 @@ class="potValue">
 베팅 라운드
 </div>
 
-<div id="gameRound"
-class="smallValue">
+<div
+id="gameRound"
+class="smallValue"
+>
 -
 </div>
 
@@ -1028,8 +1456,10 @@ class="smallValue">
 현재 베팅
 </div>
 
-<div id="gameCurrentBet"
-class="smallValue">
+<div
+id="gameCurrentBet"
+class="smallValue"
+>
 -
 </div>
 
@@ -1038,137 +1468,146 @@ class="smallValue">
 </div>
 
 
-<div id="turnSection"
-class="turnBox hidden">
+<div
+id="turnSection"
+class="turnBox hidden"
+>
 
 <div>
 현재 차례
 </div>
 
-<div id="turnName"
-class="turnName">
+<div
+id="turnName"
+class="turnName"
+>
 -
 </div>
 
 </div>
 
 
-<div id="diceSection"
-class="diceBox hidden">
+<div
+id="diceSection"
+class="diceBox hidden"
+>
 
 <h3 id="diceTitle">
 첫 행동자 결정
 </h3>
 
-<div id="diceHelp"
+<div
+id="diceHelp"
 class="playerSub"
-style="margin-bottom:13px">
-
+style="margin-bottom:13px"
+>
 실제 주사위를 굴린 뒤 숫자를 선택하세요.
-
 </div>
 
-<div id="diceButtons"
-class="diceButtons">
+<div
+id="diceButtons"
+class="diceButtons"
+>
 
-<button class="secondary"
-onclick="submitDice(1)">
-1
-</button>
-
-<button class="secondary"
-onclick="submitDice(2)">
-2
-</button>
-
-<button class="secondary"
-onclick="submitDice(3)">
-3
-</button>
-
-<button class="secondary"
-onclick="submitDice(4)">
-4
-</button>
-
-<button class="secondary"
-onclick="submitDice(5)">
-5
-</button>
-
-<button class="secondary"
-onclick="submitDice(6)">
-6
-</button>
+<button class="secondary" onclick="submitDice(1)">1</button>
+<button class="secondary" onclick="submitDice(2)">2</button>
+<button class="secondary" onclick="submitDice(3)">3</button>
+<button class="secondary" onclick="submitDice(4)">4</button>
+<button class="secondary" onclick="submitDice(5)">5</button>
+<button class="secondary" onclick="submitDice(6)">6</button>
 
 </div>
 
 </div>
 
 
-<h3>플레이어</h3>
+<h3>
+플레이어
+</h3>
 
 <div id="gamePlayers"></div>
 
 
-<div id="actionArea"
-class="actionArea hidden">
+<div
+id="actionArea"
+class="actionArea hidden"
+>
 
-<h3>내 행동</h3>
+<h3>
+내 행동
+</h3>
 
-<div id="actionStatus"
-class="actionStatus">
+<div
+id="actionStatus"
+class="actionStatus"
+>
 -
 </div>
 
 <div class="betControl">
 
-<button class="secondary"
-onclick="changeRaise(-1)">
+<button
+class="secondary"
+onclick="changeRaise(-1)"
+>
 −
 </button>
 
-<input id="raiseInput"
+<input
+id="raiseInput"
 type="number"
 value="0"
 min="0"
-oninput="updateRaisePreview()">
+oninput="updateRaisePreview()"
+>
 
-<button class="secondary"
-onclick="changeRaise(1)">
+<button
+class="secondary"
+onclick="changeRaise(1)"
+>
 ＋
 </button>
 
 </div>
 
-<div id="raisePreview"
-class="preview">
+<div
+id="raisePreview"
+class="preview"
+>
 -
 </div>
 
 <div class="actionButtons">
 
-<button id="foldButton"
+<button
+id="foldButton"
 class="foldButton"
-onclick="doAction('fold')">
+onclick="doAction('fold')"
+>
 폴드
 </button>
 
-<button id="checkButton"
+<button
+id="checkButton"
 class="checkButton"
-onclick="doAction('check')">
+onclick="doAction('check')"
+>
 체크
 </button>
 
-<button id="callButton"
+<button
+id="callButton"
 class="callButton"
-onclick="doAction('call')">
+onclick="doAction('call')"
+>
 콜
 </button>
 
-<button id="raiseButton"
+<button
+id="raiseButton"
 class="raiseButton"
-onclick="doRaise()">
+onclick="doRaise()"
+>
 레이즈
 </button>
 
@@ -1177,35 +1616,47 @@ onclick="doRaise()">
 </div>
 
 
-<div id="showdownSection"
-class="showdownBox hidden">
+<div
+id="showdownSection"
+class="showdownBox hidden"
+>
 
-<h3>쇼다운</h3>
+<h3>
+쇼다운
+</h3>
 
-<div id="showdownText"
-class="actionStatus">
-
+<div
+id="showdownText"
+class="actionStatus"
+>
 당신은 이번 판에서 승리하셨습니까?
-
 </div>
 
-<div id="claimButtons"
-class="showdownButtons">
+<div
+id="claimButtons"
+class="showdownButtons"
+>
 
-<button class="claimYes"
-onclick="submitClaim(true)">
+<button
+class="claimYes"
+onclick="submitClaim(true)"
+>
 예
 </button>
 
-<button class="claimNo"
-onclick="submitClaim(false)">
+<button
+class="claimNo"
+onclick="submitClaim(false)"
+>
 아니오
 </button>
 
 </div>
 
-<div id="hostWinnerArea"
-class="hidden">
+<div
+id="hostWinnerArea"
+class="hidden"
+>
 
 <div class="sectionLine"></div>
 
@@ -1214,10 +1665,8 @@ class="hidden">
 </h3>
 
 <div class="actionStatus">
-
 응답 결과만으로 승자가 확정되지 않았습니다.
 방장이 실제 카드를 확인하고 승자를 선택해주세요.
-
 </div>
 
 <div id="winnerButtons"></div>
@@ -1227,32 +1676,38 @@ class="hidden">
 </div>
 
 
-<div id="finishedSection"
-class="finishedBox hidden">
+<div
+id="finishedSection"
+class="finishedBox hidden"
+>
 
 <div>
 이번 판 승자
 </div>
 
-<div id="finishedWinner"
-class="finishedWinner">
+<div
+id="finishedWinner"
+class="finishedWinner"
+>
 -
 </div>
 
-<div id="finishedPotText"
-class="playerSub">
+<div
+id="finishedPotText"
+class="playerSub"
+>
 -
 </div>
 
-<button class="primary"
-onclick="returnToLobby()">
+<button
+class="primary"
+onclick="returnToLobby()"
+>
 다음 판 준비
 </button>
 
 </div>
 
-
-<!-- 게임 중 나가기 -->
 
 <div class="gameLeaveBox">
 
@@ -1264,8 +1719,10 @@ onclick="returnToLobby()">
 
 </div>
 
-<button class="danger"
-onclick="leaveDuringGame()">
+<button
+class="danger"
+onclick="leaveDuringGame()"
+>
 게임 포기하고 나가기
 </button>
 
@@ -1276,11 +1733,15 @@ onclick="leaveDuringGame()">
 
 <!-- 룰 -->
 
-<div id="rulesScreen"
-class="card hidden">
+<div
+id="rulesScreen"
+class="card hidden"
+>
 
-<button class="secondary backButton"
-onclick="showHome()">
+<button
+class="secondary backButton"
+onclick="showHome()"
+>
 ← 홈
 </button>
 
@@ -1347,15 +1808,22 @@ onclick="showHome()">
 
 <!-- 은행 -->
 
-<div id="bankScreen"
-class="card hidden">
+<div
+id="bankScreen"
+class="card hidden"
+>
 
-<button class="secondary backButton"
-onclick="showHome()">
+<button
+class="secondary backButton"
+onclick="showHome()"
+>
 ← 홈
 </button>
 
-<h2>은행</h2>
+<h2>
+은행
+</h2>
+
 
 <div class="balanceBox">
 
@@ -1363,12 +1831,15 @@ onclick="showHome()">
 보유 퍼
 </div>
 
-<div id="bankBalance"
-class="balanceValue">
+<div
+id="bankBalance"
+class="balanceValue"
+>
 0 퍼
 </div>
 
 </div>
+
 
 <div class="balanceBox">
 
@@ -1376,12 +1847,15 @@ class="balanceValue">
 예금
 </div>
 
-<div id="bankDeposit"
-class="balanceValue">
+<div
+id="bankDeposit"
+class="balanceValue"
+>
 0 퍼
 </div>
 
 </div>
+
 
 <div class="balanceBox">
 
@@ -1389,9 +1863,234 @@ class="balanceValue">
 대출
 </div>
 
-<div id="bankLoan"
-class="balanceValue">
-0 퍼
+<div
+id="bankLoan"
+class="balanceValue loanDanger"
+>
+-0 퍼
+</div>
+
+</div>
+
+
+<div
+id="bankInterestInfo"
+class="interestInfo"
+>
+
+예금은 판 종료 시 +1% 이자<br>
+대출은 100,000퍼 미만 +2% / 100,000퍼 이상 +10%
+
+</div>
+
+
+<div class="bankTabs">
+
+<button
+class="primary"
+onclick="showBankMoney()"
+>
+은행 업무
+</button>
+
+<button
+class="secondary"
+onclick="showTransfer()"
+>
+송금
+</button>
+
+</div>
+
+
+<!-- 입출금 / 대출 -->
+
+<div
+id="bankMoneyArea"
+>
+
+<div class="bankActionBox">
+
+<div class="bankActionTitle">
+입금 / 출금
+</div>
+
+<input
+id="bankMoveAmount"
+type="number"
+min="1"
+inputmode="numeric"
+placeholder="금액"
+>
+
+<div class="bankGrid">
+
+<button
+class="primary"
+onclick="bankDeposit()"
+>
+입금
+</button>
+
+<button
+class="secondary"
+onclick="bankWithdraw()"
+>
+출금
+</button>
+
+</div>
+
+</div>
+
+
+<div class="bankActionBox">
+
+<div class="bankActionTitle">
+대출 / 상환
+</div>
+
+<input
+id="loanAmount"
+type="number"
+min="1"
+inputmode="numeric"
+placeholder="금액"
+>
+
+<div class="bankGrid">
+
+<button
+class="primary"
+onclick="bankBorrow()"
+>
+대출
+</button>
+
+<button
+class="secondary"
+onclick="bankRepay()"
+>
+상환
+</button>
+
+</div>
+
+<div class="fieldHelp" style="margin-top:10px">
+
+대출 한도는 없습니다.<br>
+현재 대출금이 100,000퍼 이상이면
+판 종료 시 10% 이자가 적용됩니다.
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- 송금 -->
+
+<div
+id="transferArea"
+class="hidden"
+>
+
+<div class="transferBox">
+
+<div class="bankActionTitle">
+퍼 송금
+</div>
+
+<label class="fieldLabel">
+받는 사람 닉네임
+</label>
+
+<input
+id="transferNickname"
+type="text"
+placeholder="닉네임"
+>
+
+<button
+class="secondary"
+onclick="searchTransferRecipient()"
+>
+받는 사람 확인
+</button>
+
+
+<div
+id="recipientBox"
+class="transferRecipient hidden"
+>
+
+<div class="smallLabel">
+받는 사람
+</div>
+
+<div
+id="recipientName"
+class="transferRecipientName"
+>
+-
+</div>
+
+<div class="transferRecipientHelp">
+닉네임을 확인한 뒤 금액을 입력하세요.
+</div>
+
+</div>
+
+
+<label class="fieldLabel">
+송금 금액
+</label>
+
+<input
+id="transferAmount"
+type="number"
+min="1"
+inputmode="numeric"
+placeholder="금액"
+>
+
+<button
+id="transferButton"
+class="primary"
+disabled
+onclick="sendTransfer()"
+>
+송금하기
+</button>
+
+</div>
+
+
+<div class="transferBox">
+
+<div class="bankActionTitle">
+최근 송금 내역
+</div>
+
+<button
+class="secondary"
+onclick="loadTransferHistory()"
+>
+새로고침
+</button>
+
+<div
+id="transferHistory"
+style="margin-top:12px"
+>
+
+<div class="emptyText">
+내역을 불러오는 중...
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -1403,13 +2102,17 @@ class="balanceValue">
 
 <!-- 팝업 -->
 
-<div id="simpleModal"
-class="modalBackdrop hidden">
+<div
+id="simpleModal"
+class="modalBackdrop hidden"
+>
 
 <div class="modal">
 
-<button class="modalClose"
-onclick="closeModal()">
+<button
+class="modalClose"
+onclick="closeModal()"
+>
 ×
 </button>
 
@@ -1417,9 +2120,10 @@ onclick="closeModal()">
 안내
 </h3>
 
-<div id="modalText"
-style="white-space:pre-line">
-</div>
+<div
+id="modalText"
+style="white-space:pre-line"
+></div>
 
 </div>
 
@@ -1429,10 +2133,12 @@ style="white-space:pre-line">
 <script>
 
 const APP_VERSION =
-"v0.8.1";
+"v0.9.0";
+
 
 const SUPABASE_URL =
 "https://wuvbsntbtnvxmudluraq.supabase.co";
+
 
 const SUPABASE_PUBLISHABLE_KEY =
 "sb_publishable_CtBML_wKT9KLliZJZXVkbg_H3Bg3ppI";
@@ -1445,33 +2151,56 @@ SUPABASE_PUBLISHABLE_KEY
 );
 
 
-let currentUser = null;
-
-let currentProfile = null;
-
-let currentRoom = null;
-
-let currentLobbyPlayer = null;
-
-let currentGameState = null;
-
-let currentHandPlayers = [];
-
-let myActionOptions = null;
+let currentUser =
+null;
 
 
-let lobbyTimer = null;
+let currentProfile =
+null;
 
-let gameTimer = null;
+
+let currentRoom =
+null;
 
 
-let previousRound = null;
+let currentLobbyPlayer =
+null;
 
-let previousStatus = null;
+
+let currentGameState =
+null;
+
+
+let currentHandPlayers =
+[];
+
+
+let myActionOptions =
+null;
+
+
+let selectedTransferRecipient =
+null;
+
+
+let lobbyTimer =
+null;
+
+
+let gameTimer =
+null;
+
+
+let previousRound =
+null;
+
+
+let previousStatus =
+null;
 
 
 /* =====================================================
-   로그인 내부 이메일
+   내부 이메일
 ===================================================== */
 
 function nicknameToEmail(
@@ -1512,7 +2241,8 @@ clearInterval(
 lobbyTimer
 );
 
-lobbyTimer = null;
+lobbyTimer =
+null;
 
 }
 
@@ -1523,7 +2253,8 @@ clearInterval(
 gameTimer
 );
 
-gameTimer = null;
+gameTimer =
+null;
 
 }
 
@@ -1531,7 +2262,7 @@ gameTimer = null;
 
 
 /* =====================================================
-   화면 숨기기
+   화면
 ===================================================== */
 
 function hideAllScreens(){
@@ -1568,13 +2299,10 @@ id
 }
 
 
-/* =====================================================
-   기본 화면 이동
-===================================================== */
-
 function showLogin(){
 
 hideAllScreens();
+
 
 document
 .getElementById(
@@ -1591,6 +2319,7 @@ function showSignup(){
 
 hideAllScreens();
 
+
 document
 .getElementById(
 "signupScreen"
@@ -1604,15 +2333,24 @@ document
 
 function showHome(){
 
-currentRoom = null;
+currentRoom =
+null;
 
-currentLobbyPlayer = null;
 
-currentGameState = null;
+currentLobbyPlayer =
+null;
 
-currentHandPlayers = [];
 
-myActionOptions = null;
+currentGameState =
+null;
+
+
+currentHandPlayers =
+[];
+
+
+myActionOptions =
+null;
 
 
 hideAllScreens();
@@ -1635,6 +2373,7 @@ document
 function showGameMenu(){
 
 hideAllScreens();
+
 
 document
 .getElementById(
@@ -1709,11 +2448,22 @@ document
 }
 
 
-function showBank(){
+/* =====================================================
+   은행 화면 진입
+===================================================== */
+
+async function showBank(){
 
 hideAllScreens();
 
+
+await refreshProfile();
+
+
 updateBank();
+
+
+showBankMoney();
 
 
 document
@@ -1723,6 +2473,78 @@ document
 .classList.remove(
 "hidden"
 );
+
+}
+
+
+/* =====================================================
+   은행 탭
+===================================================== */
+
+function showBankMoney(){
+
+document
+.getElementById(
+"bankMoneyArea"
+)
+.classList.remove(
+"hidden"
+);
+
+
+document
+.getElementById(
+"transferArea"
+)
+.classList.add(
+"hidden"
+);
+
+}
+
+
+async function showTransfer(){
+
+document
+.getElementById(
+"bankMoneyArea"
+)
+.classList.add(
+"hidden"
+);
+
+
+document
+.getElementById(
+"transferArea"
+)
+.classList.remove(
+"hidden"
+);
+
+
+selectedTransferRecipient =
+null;
+
+
+document
+.getElementById(
+"recipientBox"
+)
+.classList.add(
+"hidden"
+);
+
+
+document
+.getElementById(
+"transferButton"
+)
+.disabled =
+true;
+
+
+await loadTransferHistory();
 
 }
 
@@ -2082,7 +2904,7 @@ return true;
 
 
 /* =====================================================
-   현재 방 정보 서버와 동기화
+   현재 방 동기화
 ===================================================== */
 
 async function syncCurrentRoom(){
@@ -2163,7 +2985,7 @@ return true;
 
 
 /* =====================================================
-   새로고침 / 재접속 복구
+   새로고침 복구
 ===================================================== */
 
 async function restoreSessionLocation(){
@@ -2181,8 +3003,6 @@ return;
 }
 
 
-/* 진행 중 */
-
 if(
 currentRoom.room_status ===
 "playing"
@@ -2195,15 +3015,13 @@ return;
 }
 
 
-/* waiting / intermission */
-
 await enterLobby();
 
 }
 
 
 /* =====================================================
-   홈 로드
+   시작 시 프로필 로드
 ===================================================== */
 
 async function loadHome(){
@@ -2251,18 +3069,13 @@ return;
 }
 
 
-/*
-새로고침했다고 무조건 홈으로 가지 않고
-Supabase에서 현재 참가 중인 방부터 확인
-*/
-
 await restoreSessionLocation();
 
 }
 
 
 /* =====================================================
-   홈 표시
+   홈 값
 ===================================================== */
 
 function updateHome(){
@@ -2298,7 +3111,7 @@ currentProfile.balance_per
 
 
 /* =====================================================
-   은행 표시
+   은행 값
 ===================================================== */
 
 function updateBank(){
@@ -2310,16 +3123,30 @@ return;
 }
 
 
+const balance =
+Number(
+currentProfile.balance_per
+);
+
+
+const deposit =
+Number(
+currentProfile.bank_per
+);
+
+
+const loan =
+Number(
+currentProfile.loan_per
+);
+
+
 document
 .getElementById(
 "bankBalance"
 )
 .textContent =
-
-Number(
-currentProfile.balance_per
-)
-.toLocaleString() +
+balance.toLocaleString() +
 " 퍼";
 
 
@@ -2328,11 +3155,7 @@ document
 "bankDeposit"
 )
 .textContent =
-
-Number(
-currentProfile.bank_per
-)
-.toLocaleString() +
+deposit.toLocaleString() +
 " 퍼";
 
 
@@ -2341,18 +3164,54 @@ document
 "bankLoan"
 )
 .textContent =
-
-Number(
-currentProfile.loan_per
-)
-.toLocaleString() +
+"-" +
+loan.toLocaleString() +
 " 퍼";
+
+
+const info =
+document
+.getElementById(
+"bankInterestInfo"
+);
+
+
+if(
+loan >= 100000
+){
+
+info.classList.add(
+"interestDanger"
+);
+
+
+info.innerHTML =
+
+`⚠ 고금리 구간입니다.<br>
+현재 대출금: ${loan.toLocaleString()}퍼<br>
+판 종료 시 대출 이자 +10%<br>
+예금 이자는 +1%`;
+
+}else{
+
+info.classList.remove(
+"interestDanger"
+);
+
+
+info.innerHTML =
+
+`예금은 판 종료 시 +1% 이자<br>
+현재 대출 이자 +2%<br>
+대출금이 100,000퍼 이상이면 +10%`;
+
+}
 
 }
 
 
 /* =====================================================
-   방 생성 값 미리보기
+   방 생성 미리보기
 ===================================================== */
 
 function updateChipPreview(){
@@ -2423,7 +3282,7 @@ document
 
 
 /* =====================================================
-   방 만들기
+   방 생성
 ===================================================== */
 
 async function createRoom(){
@@ -2701,7 +3560,8 @@ button.textContent =
 
 
 button.onclick =
-() => previewRoom(
+() =>
+previewRoom(
 room
 );
 
@@ -2809,7 +3669,8 @@ join.textContent =
 
 
 join.onclick =
-() => joinRoom(
+() =>
+joinRoom(
 room
 );
 
@@ -2858,11 +3719,6 @@ return;
 closeModal();
 
 
-/*
-서버에서 방 정보를 다시 읽어서
-is_host 등을 정확하게 구성
-*/
-
 const success =
 await syncCurrentRoom();
 
@@ -2892,11 +3748,6 @@ async function enterLobby(){
 
 hideAllScreens();
 
-
-/*
-방장 승계 등이 있었을 수 있으므로
-항상 최신 방 정보 동기화
-*/
 
 const stillInRoom =
 await syncCurrentRoom();
@@ -2957,7 +3808,7 @@ refreshLobby,
 
 
 /* =====================================================
-   대기실 방장 표시 / 버튼
+   대기실 헤더
 ===================================================== */
 
 function updateLobbyRoomHeader(){
@@ -2996,28 +3847,27 @@ document
 );
 
 
-if(currentRoom.is_host){
+if(
+currentRoom.is_host
+){
 
 start
 .classList.remove(
 "hidden"
 );
 
+
 destroy
 .classList.remove(
 "hidden"
 );
+
 
 leave
 .classList.remove(
 "hidden"
 );
 
-
-/*
-v0.8.1부터 방장도 방을 나갈 수 있음.
-나가면 다음 사람에게 방장 승계.
-*/
 
 leave.textContent =
 "방 나가기 (방장 넘기기)";
@@ -3029,15 +3879,18 @@ start
 "hidden"
 );
 
+
 destroy
 .classList.add(
 "hidden"
 );
 
+
 leave
 .classList.remove(
 "hidden"
 );
+
 
 leave.textContent =
 "방 나가기";
@@ -3053,17 +3906,14 @@ leave.textContent =
 
 async function refreshLobby(){
 
-if(!currentRoom){
+if(
+!currentRoom
+){
 
 return;
 
 }
 
-
-/*
-방장이 나갔을 때
-남아 있는 사람의 is_host 값을 자동 갱신.
-*/
 
 const roomExists =
 await syncCurrentRoom();
@@ -3084,10 +3934,6 @@ return;
 
 updateLobbyRoomHeader();
 
-
-/*
-게임 시작 여부 확인
-*/
 
 const {
 data:stateData
@@ -3303,7 +4149,8 @@ row
 const allReady =
 data.length >= 2 &&
 data.every(
-x => x.is_ready
+x =>
+x.is_ready
 );
 
 
@@ -3317,14 +4164,12 @@ document
 );
 
 
-const ready =
 document
 .getElementById(
 "readyButton"
-);
+)
+.textContent =
 
-
-ready.textContent =
 currentLobbyPlayer.is_ready
 ?
 "준비 취소"
@@ -3332,7 +4177,9 @@ currentLobbyPlayer.is_ready
 "준비 완료";
 
 
-if(currentRoom.is_host){
+if(
+currentRoom.is_host
+){
 
 document
 .getElementById(
@@ -3344,6 +4191,10 @@ document
 }
 
 }
+/* =====================================================
+   환전 미리보기
+===================================================== */
+
 function updateExchangePreview(){
 
 if(
@@ -3409,7 +4260,8 @@ return;
 
 
 const difference =
-target - current;
+target -
+current;
 
 
 const per =
@@ -3495,7 +4347,7 @@ updateExchangePreview();
 
 
 /* =====================================================
-   환전 적용
+   환전
 ===================================================== */
 
 async function exchangeChips(){
@@ -3517,6 +4369,21 @@ document
 )
 .value
 );
+
+
+if(
+!Number.isInteger(target) ||
+target < 0
+){
+
+showModal(
+"환전 오류",
+"올바른 칩 수를 입력해주세요."
+);
+
+return;
+
+}
 
 
 const {
@@ -3652,6 +4519,936 @@ await enterGame();
 
 
 /* =====================================================
+   은행 공통 입력값
+===================================================== */
+
+function readPositiveInteger(
+inputId,
+label
+){
+
+const value =
+Number(
+document
+.getElementById(
+inputId
+)
+.value
+);
+
+
+if(
+!Number.isInteger(value) ||
+value <= 0
+){
+
+showModal(
+`${label} 오류`,
+"금액은 1 이상의 정수로 입력해주세요."
+);
+
+return null;
+
+}
+
+
+return value;
+
+}
+
+
+/* =====================================================
+   은행 입금
+===================================================== */
+
+async function bankDeposit(){
+
+const amount =
+readPositiveInteger(
+"bankMoveAmount",
+"입금"
+);
+
+
+if(
+amount === null
+){
+
+return;
+
+}
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"bank_deposit",
+{
+
+p_amount:
+amount
+
+}
+);
+
+
+if(error){
+
+showError(
+"입금 오류",
+error
+);
+
+return;
+
+}
+
+
+if(
+data &&
+data.length > 0
+){
+
+currentProfile.balance_per =
+data[0].balance_per;
+
+currentProfile.bank_per =
+data[0].bank_per;
+
+currentProfile.loan_per =
+data[0].loan_per;
+
+}else{
+
+await refreshProfile();
+
+}
+
+
+updateBank();
+
+updateHome();
+
+
+document
+.getElementById(
+"bankMoveAmount"
+)
+.value =
+"";
+
+
+showModal(
+"입금 완료",
+`${amount.toLocaleString()}퍼를 예금했습니다.`
+);
+
+}
+
+
+/* =====================================================
+   은행 출금
+===================================================== */
+
+async function bankWithdraw(){
+
+const amount =
+readPositiveInteger(
+"bankMoveAmount",
+"출금"
+);
+
+
+if(
+amount === null
+){
+
+return;
+
+}
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"bank_withdraw",
+{
+
+p_amount:
+amount
+
+}
+);
+
+
+if(error){
+
+showError(
+"출금 오류",
+error
+);
+
+return;
+
+}
+
+
+if(
+data &&
+data.length > 0
+){
+
+currentProfile.balance_per =
+data[0].balance_per;
+
+currentProfile.bank_per =
+data[0].bank_per;
+
+currentProfile.loan_per =
+data[0].loan_per;
+
+}else{
+
+await refreshProfile();
+
+}
+
+
+updateBank();
+
+updateHome();
+
+
+document
+.getElementById(
+"bankMoveAmount"
+)
+.value =
+"";
+
+
+showModal(
+"출금 완료",
+`${amount.toLocaleString()}퍼를 출금했습니다.`
+);
+
+}
+
+
+/* =====================================================
+   대출
+===================================================== */
+
+async function bankBorrow(){
+
+const amount =
+readPositiveInteger(
+"loanAmount",
+"대출"
+);
+
+
+if(
+amount === null
+){
+
+return;
+
+}
+
+
+const currentLoan =
+Number(
+currentProfile?.loan_per ?? 0
+);
+
+
+const expectedLoan =
+currentLoan +
+amount;
+
+
+let warning =
+
+`${amount.toLocaleString()}퍼를 대출하시겠습니까?
+
+대출 후 총 대출금:
+${expectedLoan.toLocaleString()}퍼`;
+
+
+if(
+expectedLoan >= 100000
+){
+
+warning +=
+
+`
+
+⚠ 대출금이 100,000퍼 이상입니다.
+판 종료 시 대출 이자 10%가 적용됩니다.`;
+
+}else{
+
+warning +=
+
+`
+
+현재 구간의 판 종료 이자는 2%입니다.`;
+
+}
+
+
+const ok =
+confirm(
+warning
+);
+
+
+if(
+!ok
+){
+
+return;
+
+}
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"bank_borrow",
+{
+
+p_amount:
+amount
+
+}
+);
+
+
+if(error){
+
+showError(
+"대출 오류",
+error
+);
+
+return;
+
+}
+
+
+if(
+data &&
+data.length > 0
+){
+
+currentProfile.balance_per =
+data[0].balance_per;
+
+currentProfile.bank_per =
+data[0].bank_per;
+
+currentProfile.loan_per =
+data[0].loan_per;
+
+}else{
+
+await refreshProfile();
+
+}
+
+
+updateBank();
+
+updateHome();
+
+
+document
+.getElementById(
+"loanAmount"
+)
+.value =
+"";
+
+
+showModal(
+"대출 완료",
+`${amount.toLocaleString()}퍼가 보유 퍼에 추가되었습니다.`
+);
+
+}
+
+
+/* =====================================================
+   대출 상환
+===================================================== */
+
+async function bankRepay(){
+
+const amount =
+readPositiveInteger(
+"loanAmount",
+"상환"
+);
+
+
+if(
+amount === null
+){
+
+return;
+
+}
+
+
+const ok =
+confirm(
+`${amount.toLocaleString()}퍼를 대출 상환에 사용하시겠습니까?`
+);
+
+
+if(
+!ok
+){
+
+return;
+
+}
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"bank_repay",
+{
+
+p_amount:
+amount
+
+}
+);
+
+
+if(error){
+
+showError(
+"상환 오류",
+error
+);
+
+return;
+
+}
+
+
+if(
+data &&
+data.length > 0
+){
+
+currentProfile.balance_per =
+data[0].balance_per;
+
+currentProfile.bank_per =
+data[0].bank_per;
+
+currentProfile.loan_per =
+data[0].loan_per;
+
+}else{
+
+await refreshProfile();
+
+}
+
+
+updateBank();
+
+updateHome();
+
+
+document
+.getElementById(
+"loanAmount"
+)
+.value =
+"";
+
+
+showModal(
+"상환 완료",
+`${amount.toLocaleString()}퍼를 상환했습니다.`
+);
+
+}
+
+
+/* =====================================================
+   송금 상대 검색
+===================================================== */
+
+async function searchTransferRecipient(){
+
+const nickname =
+document
+.getElementById(
+"transferNickname"
+)
+.value
+.trim();
+
+
+selectedTransferRecipient =
+null;
+
+
+document
+.getElementById(
+"recipientBox"
+)
+.classList.add(
+"hidden"
+);
+
+
+document
+.getElementById(
+"transferButton"
+)
+.disabled =
+true;
+
+
+if(
+!nickname
+){
+
+showModal(
+"받는 사람 확인",
+"닉네임을 입력해주세요."
+);
+
+return;
+
+}
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"find_transfer_recipient",
+{
+
+p_nickname:
+nickname
+
+}
+);
+
+
+if(error){
+
+showError(
+"받는 사람 확인 오류",
+error
+);
+
+return;
+
+}
+
+
+if(
+!data ||
+data.length === 0
+){
+
+showModal(
+"받는 사람 확인",
+"사용자를 찾지 못했습니다."
+);
+
+return;
+
+}
+
+
+const recipient =
+data[0];
+
+
+if(
+recipient.profile_id ===
+currentUser.id
+){
+
+showModal(
+"송금 오류",
+"자기 자신에게는 송금할 수 없습니다."
+);
+
+return;
+
+}
+
+
+selectedTransferRecipient = {
+
+profile_id:
+recipient.profile_id,
+
+nickname:
+recipient.nickname
+
+};
+
+
+document
+.getElementById(
+"recipientName"
+)
+.textContent =
+recipient.nickname;
+
+
+document
+.getElementById(
+"recipientBox"
+)
+.classList.remove(
+"hidden"
+);
+
+
+document
+.getElementById(
+"transferButton"
+)
+.disabled =
+false;
+
+}
+
+
+/* =====================================================
+   송금 실행
+===================================================== */
+
+async function sendTransfer(){
+
+if(
+!selectedTransferRecipient
+){
+
+showModal(
+"송금 오류",
+"먼저 받는 사람을 확인해주세요."
+);
+
+return;
+
+}
+
+
+const amount =
+readPositiveInteger(
+"transferAmount",
+"송금"
+);
+
+
+if(
+amount === null
+){
+
+return;
+
+}
+
+
+const recipientName =
+selectedTransferRecipient.nickname;
+
+
+const ok =
+confirm(
+`${recipientName}님에게 ${amount.toLocaleString()}퍼를 송금하시겠습니까?
+
+송금 후에는 자동으로 되돌릴 수 없습니다.`
+);
+
+
+if(
+!ok
+){
+
+return;
+
+}
+
+
+const button =
+document
+.getElementById(
+"transferButton"
+);
+
+
+button.disabled =
+true;
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"transfer_per",
+{
+
+p_receiver_profile_id:
+selectedTransferRecipient.profile_id,
+
+p_amount:
+amount
+
+}
+);
+
+
+if(error){
+
+button.disabled =
+false;
+
+
+showError(
+"송금 오류",
+error
+);
+
+return;
+
+}
+
+
+if(
+data &&
+data.length > 0
+){
+
+currentProfile.balance_per =
+data[0].new_balance_per;
+
+}else{
+
+await refreshProfile();
+
+}
+
+
+updateBank();
+
+updateHome();
+
+
+document
+.getElementById(
+"transferAmount"
+)
+.value =
+"";
+
+
+selectedTransferRecipient =
+null;
+
+
+document
+.getElementById(
+"recipientBox"
+)
+.classList.add(
+"hidden"
+);
+
+
+button.disabled =
+true;
+
+
+await loadTransferHistory();
+
+
+showModal(
+"송금 완료",
+`${recipientName}님에게 ${amount.toLocaleString()}퍼를 보냈습니다.`
+);
+
+}
+
+
+/* =====================================================
+   송금 내역
+===================================================== */
+
+async function loadTransferHistory(){
+
+const box =
+document
+.getElementById(
+"transferHistory"
+);
+
+
+box.innerHTML =
+'<div class="emptyText">내역을 불러오는 중...</div>';
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"get_my_transfer_history"
+);
+
+
+if(error){
+
+box.innerHTML =
+'<div class="emptyText">내역을 불러오지 못했습니다.</div>';
+
+
+showError(
+"송금 내역 오류",
+error
+);
+
+return;
+
+}
+
+
+if(
+!data ||
+data.length === 0
+){
+
+box.innerHTML =
+'<div class="emptyText">아직 송금 내역이 없습니다.</div>';
+
+return;
+
+}
+
+
+box.innerHTML =
+"";
+
+
+data.forEach(
+item => {
+
+const row =
+document.createElement(
+"div"
+);
+
+
+row.className =
+"transferHistoryRow";
+
+
+const sent =
+item.direction ===
+"sent";
+
+
+const sign =
+sent
+?
+"-"
+:
+"+";
+
+
+const amountClass =
+sent
+?
+"transferSent"
+:
+"transferReceived";
+
+
+const directionText =
+sent
+?
+"보냄"
+:
+"받음";
+
+
+const date =
+new Date(
+item.created_at
+);
+
+
+const timeText =
+Number.isNaN(
+date.getTime()
+)
+?
+""
+:
+date.toLocaleString(
+"ko-KR"
+);
+
+
+row.innerHTML = `
+
+<div>
+
+<div class="transferHistoryName">
+${escapeHtml(item.counterpart_nickname)}
+</div>
+
+<div class="transferHistorySub">
+${directionText}${timeText ? " · " + escapeHtml(timeText) : ""}
+</div>
+
+</div>
+
+<div class="${amountClass}">
+${sign}${Number(item.amount).toLocaleString()}퍼
+</div>
+`;
+
+
+box.appendChild(
+row
+);
+
+}
+);
+
+}
+
+
+/* =====================================================
    게임 진입
 ===================================================== */
 
@@ -3659,11 +5456,6 @@ async function enterGame(){
 
 hideAllScreens();
 
-
-/*
-재접속이나 방장 승계가 있었을 수 있으므로
-항상 최신 방 정보 다시 확인
-*/
 
 const stillInRoom =
 await syncCurrentRoom();
@@ -3712,7 +5504,7 @@ refreshGame,
 
 
 /* =====================================================
-   게임 상태 갱신
+   게임 갱신
 ===================================================== */
 
 async function refreshGame(){
@@ -3726,12 +5518,23 @@ return;
 }
 
 
-/*
-방장 권한이 바뀌었는지 포함해서
-현재 방 정보를 계속 서버와 동기화
-*/
-
+const roomSynced =
 await syncCurrentRoom();
+
+
+if(
+!roomSynced
+){
+
+stopTimers();
+
+await refreshProfile();
+
+showHome();
+
+return;
+
+}
 
 
 const {
@@ -3771,7 +5574,7 @@ return;
 }
 
 
-const newState =
+currentGameState =
 stateData[0];
 
 
@@ -3802,17 +5605,11 @@ return;
 }
 
 
-currentGameState =
-newState;
-
-
 currentHandPlayers =
 players ?? [];
 
 
-/* =====================================================
-   내 행동 옵션
-===================================================== */
+/* 내 행동 옵션 */
 
 if(
 currentGameState.hand_status ===
@@ -3860,9 +5657,7 @@ null;
 }
 
 
-/* =====================================================
-   라운드 변경 감지
-===================================================== */
+/* 라운드 이동 */
 
 if(
 previousRound !== null &&
@@ -3880,9 +5675,7 @@ showModal(
 }
 
 
-/* =====================================================
-   쇼다운 전환 감지
-===================================================== */
+/* 쇼다운 진입 */
 
 if(
 previousStatus &&
@@ -3893,7 +5686,7 @@ currentGameState.hand_status ===
 
 showModal(
 "베팅 종료",
-"더 이상 베팅할 내용이 없습니다.\n실제 카드를 모두 공개하고 승자를 확인해주세요."
+"더 이상 베팅할 내용이 없습니다.\n실제 카드를 공개하고 승자를 확인해주세요."
 );
 
 }
@@ -3913,7 +5706,7 @@ renderGame();
 
 
 /* =====================================================
-   게임 렌더
+   게임 화면
 ===================================================== */
 
 function renderGame(){
@@ -3964,41 +5757,40 @@ document
 
 
 let statusText =
-"";
+state.hand_status;
 
 
 if(
-state.hand_status === "dice"
+state.hand_status ===
+"dice"
 ){
 
 statusText =
 "주사위";
 
 }else if(
-state.hand_status === "betting"
+state.hand_status ===
+"betting"
 ){
 
 statusText =
 "베팅";
 
 }else if(
-state.hand_status === "showdown"
+state.hand_status ===
+"showdown"
 ){
 
 statusText =
 "쇼다운";
 
 }else if(
-state.hand_status === "finished"
+state.hand_status ===
+"finished"
 ){
 
 statusText =
 "판 종료";
-
-}else{
-
-statusText =
-state.hand_status;
 
 }
 
@@ -4011,22 +5803,20 @@ document
 statusText;
 
 
-/* =====================================================
-   현재 차례
-===================================================== */
+/* 현재 차례 */
+
+const actor =
+currentHandPlayers.find(
+player =>
+player.profile_id ===
+state.current_actor_profile_id
+);
+
 
 const turnSection =
 document
 .getElementById(
 "turnSection"
-);
-
-
-const actor =
-currentHandPlayers.find(
-x =>
-x.profile_id ===
-state.current_actor_profile_id
 );
 
 
@@ -4055,9 +5845,7 @@ turnSection
 }
 
 
-/* =====================================================
-   플레이어 목록
-===================================================== */
+/* 플레이어 */
 
 const playerBox =
 document
@@ -4088,8 +5876,7 @@ player.profile_id ===
 state.current_actor_profile_id
 ){
 
-row
-.classList.add(
+row.classList.add(
 "current"
 );
 
@@ -4100,15 +5887,14 @@ if(
 player.folded
 ){
 
-row
-.classList.add(
+row.classList.add(
 "folded"
 );
 
 }
 
 
-let flags =
+const flags =
 [];
 
 
@@ -4161,7 +5947,7 @@ flags.push(
 
 
 const flagText =
-flags.length
+flags.length > 0
 ?
 "<br>" +
 flags.join(
@@ -4196,9 +5982,7 @@ ${flagText}
 </div>
 
 <div class="playerChip">
-
 ${Number(player.chips).toLocaleString()}칩
-
 </div>
 `;
 
@@ -4223,7 +6007,7 @@ renderFinished();
 
 
 /* =====================================================
-   주사위 렌더
+   주사위
 ===================================================== */
 
 function renderDice(){
@@ -4240,8 +6024,7 @@ currentGameState.hand_status !==
 "dice"
 ){
 
-box
-.classList.add(
+box.classList.add(
 "hidden"
 );
 
@@ -4250,16 +6033,15 @@ return;
 }
 
 
-box
-.classList.remove(
+box.classList.remove(
 "hidden"
 );
 
 
 const me =
 currentHandPlayers.find(
-x =>
-x.profile_id ===
+player =>
+player.profile_id ===
 currentUser.id
 );
 
@@ -4292,8 +6074,8 @@ if(
 ){
 
 buttons.forEach(
-x =>
-x.disabled =
+button =>
+button.disabled =
 true
 );
 
@@ -4315,8 +6097,8 @@ document
 
 
 buttons.forEach(
-x =>
-x.disabled =
+button =>
+button.disabled =
 true
 );
 
@@ -4334,8 +6116,8 @@ document
 
 
 buttons.forEach(
-x =>
-x.disabled =
+button =>
+button.disabled =
 true
 );
 
@@ -4350,8 +6132,8 @@ document
 
 
 buttons.forEach(
-x =>
-x.disabled =
+button =>
+button.disabled =
 false
 );
 
@@ -4359,10 +6141,6 @@ false
 
 }
 
-
-/* =====================================================
-   주사위 제출
-===================================================== */
 
 async function submitDice(
 number
@@ -4373,8 +6151,8 @@ document
 "#diceButtons button"
 )
 .forEach(
-x =>
-x.disabled =
+button =>
+button.disabled =
 true
 );
 
@@ -4430,8 +6208,7 @@ currentGameState.hand_status !==
 !myActionOptions
 ){
 
-area
-.classList.add(
+area.classList.add(
 "hidden"
 );
 
@@ -4440,13 +6217,12 @@ return;
 }
 
 
-area
-.classList.remove(
+area.classList.remove(
 "hidden"
 );
 
 
-const o =
+const options =
 myActionOptions;
 
 
@@ -4458,23 +6234,23 @@ document
 
 
 if(
-o.is_my_turn
+options.is_my_turn
 ){
 
 status.textContent =
 `당신의 차례입니다.
 
-보유 칩: ${o.my_chips}칩
-이번 라운드 베팅: ${o.my_round_bet}칩
-콜 필요: ${o.call_amount}칩
-이번 판 베팅 상한: ${o.hand_cap}칩`;
+보유 칩: ${options.my_chips}칩
+이번 라운드 베팅: ${options.my_round_bet}칩
+콜 필요: ${options.call_amount}칩
+이번 판 베팅 상한: ${options.hand_cap}칩`;
 
 }else{
 
 const actor =
 currentHandPlayers.find(
-x =>
-x.profile_id ===
+player =>
+player.profile_id ===
 currentGameState.current_actor_profile_id
 );
 
@@ -4482,9 +6258,7 @@ currentGameState.current_actor_profile_id
 status.textContent =
 actor
 ?
-`${actor.nickname}님의 차례입니다.
-
-레이즈 희망 수량은 미리 조절할 수 있습니다.`
+`${actor.nickname}님의 차례입니다.`
 :
 "다른 플레이어의 행동을 기다립니다.";
 
@@ -4496,7 +6270,7 @@ document
 "foldButton"
 )
 .disabled =
-!o.can_fold;
+!options.can_fold;
 
 
 document
@@ -4504,7 +6278,7 @@ document
 "checkButton"
 )
 .disabled =
-!o.can_check;
+!options.can_check;
 
 
 document
@@ -4512,7 +6286,7 @@ document
 "callButton"
 )
 .disabled =
-!o.can_call;
+!options.can_call;
 
 
 document
@@ -4520,7 +6294,7 @@ document
 "raiseButton"
 )
 .disabled =
-!o.can_raise;
+!options.can_raise;
 
 
 document
@@ -4528,15 +6302,12 @@ document
 "callButton"
 )
 .textContent =
-
-o.call_amount > 0
-
+Number(
+options.call_amount
+) > 0
 ?
-
-`콜 ${o.call_amount}`
-
+`콜 ${options.call_amount}`
 :
-
 "콜";
 
 
@@ -4549,13 +6320,13 @@ document
 
 const minRaise =
 Number(
-o.current_bet
+options.current_bet
 ) + 1;
 
 
 const maxRaise =
 Number(
-o.max_raise_to
+options.max_raise_to
 );
 
 
@@ -4572,20 +6343,20 @@ document.activeElement !==
 raiseInput
 ){
 
-let proposed =
+let value =
 Number(
 raiseInput.value
 );
 
 
 if(
-!Number.isFinite(proposed) ||
-proposed < minRaise ||
-proposed > maxRaise
+!Number.isFinite(value) ||
+value < minRaise ||
+value > maxRaise
 ){
 
 raiseInput.value =
-o.can_raise
+options.can_raise
 ?
 minRaise
 :
@@ -4601,13 +6372,18 @@ updateRaisePreview();
 }
 
 
-/* =====================================================
-   레이즈 수량 조절
-===================================================== */
-
 function changeRaise(
 delta
 ){
+
+if(
+!myActionOptions
+){
+
+return;
+
+}
+
 
 const input =
 document
@@ -4626,10 +6402,6 @@ value +=
 delta;
 
 
-if(
-myActionOptions
-){
-
 const min =
 Number(
 myActionOptions.current_bet
@@ -4644,17 +6416,12 @@ myActionOptions.max_raise_to
 
 value =
 Math.max(
-
+min,
 Math.min(
 value,
 max
-),
-
-min
-
+)
 );
-
-}
 
 
 input.value =
@@ -4753,7 +6520,7 @@ box.textContent =
 
 
 /* =====================================================
-   체크 / 콜 / 폴드
+   폴드 / 체크 / 콜
 ===================================================== */
 
 async function doAction(
@@ -4797,6 +6564,7 @@ showError(
 "베팅 오류",
 error
 );
+
 
 await refreshGame();
 
@@ -4886,6 +6654,7 @@ showError(
 error
 );
 
+
 await refreshGame();
 
 return;
@@ -4955,8 +6724,7 @@ currentGameState.hand_status !==
 "showdown"
 ){
 
-section
-.classList.add(
+section.classList.add(
 "hidden"
 );
 
@@ -4965,16 +6733,15 @@ return;
 }
 
 
-section
-.classList.remove(
+section.classList.remove(
 "hidden"
 );
 
 
 const me =
 currentHandPlayers.find(
-x =>
-x.profile_id ===
+player =>
+player.profile_id ===
 currentUser.id
 );
 
@@ -4991,8 +6758,7 @@ if(
 me.folded
 ){
 
-claimButtons
-.classList.add(
+claimButtons.classList.add(
 "hidden"
 );
 
@@ -5009,8 +6775,7 @@ me.showdown_claim !==
 null
 ){
 
-claimButtons
-.classList.add(
+claimButtons.classList.add(
 "hidden"
 );
 
@@ -5020,21 +6785,15 @@ document
 "showdownText"
 )
 .textContent =
-
 me.showdown_claim
-
 ?
-
 "승리했다고 응답했습니다. 다른 플레이어를 기다립니다."
-
 :
-
 "승리하지 않았다고 응답했습니다. 다른 플레이어를 기다립니다.";
 
 }else{
 
-claimButtons
-.classList.remove(
+claimButtons.classList.remove(
 "hidden"
 );
 
@@ -5051,24 +6810,24 @@ document
 
 const alive =
 currentHandPlayers.filter(
-x =>
-!x.folded
+player =>
+!player.folded
 );
 
 
 const allAnswered =
 alive.length > 0 &&
 alive.every(
-x =>
-x.showdown_claim !==
+player =>
+player.showdown_claim !==
 null
 );
 
 
 const yesCount =
 alive.filter(
-x =>
-x.showdown_claim ===
+player =>
+player.showdown_claim ===
 true
 )
 .length;
@@ -5088,8 +6847,7 @@ currentGameState.host_profile_id ===
 currentUser.id
 ){
 
-hostArea
-.classList.remove(
+hostArea.classList.remove(
 "hidden"
 );
 
@@ -5100,8 +6858,7 @@ alive
 
 }else{
 
-hostArea
-.classList.add(
+hostArea.classList.add(
 "hidden"
 );
 
@@ -5159,10 +6916,6 @@ button
 }
 
 
-/* =====================================================
-   승리 여부 응답
-===================================================== */
-
 async function submitClaim(
 claim
 ){
@@ -5172,8 +6925,8 @@ document
 "#claimButtons button"
 )
 .forEach(
-x =>
-x.disabled =
+button =>
+button.disabled =
 true
 );
 
@@ -5210,18 +6963,14 @@ await refreshGame();
 }
 
 
-/* =====================================================
-   방장 승자 선택
-===================================================== */
-
 async function hostSelectWinner(
 profileId
 ){
 
 const player =
 currentHandPlayers.find(
-x =>
-x.profile_id ===
+item =>
+item.profile_id ===
 profileId
 );
 
@@ -5276,7 +7025,7 @@ await refreshGame();
 
 
 /* =====================================================
-   판 종료 화면
+   판 종료
 ===================================================== */
 
 function renderFinished(){
@@ -5293,8 +7042,7 @@ currentGameState.hand_status !==
 "finished"
 ){
 
-section
-.classList.add(
+section.classList.add(
 "hidden"
 );
 
@@ -5303,8 +7051,7 @@ return;
 }
 
 
-section
-.classList.remove(
+section.classList.remove(
 "hidden"
 );
 
@@ -5329,8 +7076,8 @@ document
 
 const winner =
 currentHandPlayers.find(
-x =>
-x.profile_id ===
+player =>
+player.profile_id ===
 currentGameState.winner_profile_id
 );
 
@@ -5340,7 +7087,6 @@ document
 "finishedWinner"
 )
 .textContent =
-
 winner
 ?
 winner.nickname
@@ -5353,15 +7099,10 @@ document
 "finishedPotText"
 )
 .textContent =
-
 `${Number(currentGameState.pot).toLocaleString()}칩을 획득했습니다.`;
 
 }
 
-
-/* =====================================================
-   다음 판 준비
-===================================================== */
 
 async function returnToLobby(){
 
@@ -5392,7 +7133,7 @@ await enterLobby();
 
 
 /* =====================================================
-   대기실에서 방 나가기
+   대기실 나가기
 ===================================================== */
 
 async function leaveRoom(){
@@ -5406,7 +7147,7 @@ return;
 }
 
 
-let text =
+let warning =
 "방에서 나가시겠습니까?\n남은 칩은 퍼로 자동 환전됩니다.";
 
 
@@ -5414,15 +7155,19 @@ if(
 currentRoom.is_host
 ){
 
-text =
-"방에서 나가시겠습니까?\n\n남아 있는 플레이어가 있다면 가장 먼저 들어온 사람에게 방장이 넘어갑니다.\n남은 칩은 퍼로 자동 환전됩니다.";
+warning =
+`방에서 나가시겠습니까?
+
+남아 있는 플레이어가 있다면 가장 먼저 들어온 사람에게 방장이 넘어갑니다.
+
+남은 칩은 퍼로 자동 환전됩니다.`;
 
 }
 
 
 const ok =
 confirm(
-text
+warning
 );
 
 
@@ -5436,7 +7181,6 @@ return;
 
 
 const {
-data,
 error
 } =
 await db.rpc(
@@ -5478,7 +7222,7 @@ showHome();
 
 
 /* =====================================================
-   게임 중 포기하고 나가기
+   게임 중 나가기
 ===================================================== */
 
 async function leaveDuringGame(){
@@ -5493,14 +7237,13 @@ return;
 
 
 let warning =
-
 `게임을 포기하고 방에서 나가시겠습니까?
 
 현재 판에서는 즉시 폴드됩니다.
 
 이미 팟에 넣은 칩은 돌려받지 못합니다.
 
-손에 남은 칩은 이 판이 끝난 후 퍼로 자동 환전됩니다.`;
+손에 남은 칩은 이 판 종료 후 퍼로 자동 환전됩니다.`;
 
 
 if(
@@ -5508,10 +7251,9 @@ currentRoom.is_host
 ){
 
 warning +=
-
 `
 
-방장 권한은 남아 있는 플레이어 중 가장 먼저 들어온 사람에게 자동으로 넘어갑니다.`;
+방장 권한은 남은 플레이어 중 가장 먼저 들어온 사람에게 넘어갑니다.`;
 
 }
 
@@ -5558,23 +7300,20 @@ return;
 }
 
 
-/*
-사용자는 즉시 게임 화면에서 나옴.
-서버에서는 leave_after_hand=true 상태로
-이번 판 종료 후 실제 정산/삭제.
-*/
-
 stopTimers();
 
 
 currentRoom =
 null;
 
+
 currentGameState =
 null;
 
+
 currentHandPlayers =
 [];
+
 
 myActionOptions =
 null;
@@ -5587,19 +7326,20 @@ showHome();
 
 
 if(
-data === "hand_finished"
+data ===
+"hand_finished"
 ){
 
 showModal(
 "게임에서 나왔습니다",
-"당신의 퇴장으로 이번 판도 함께 종료되었습니다."
+"당신의 퇴장으로 이번 판도 종료되었습니다."
 );
 
 }else{
 
 showModal(
 "게임에서 나왔습니다",
-"현재 판에서는 폴드 처리되었습니다.\n남아 있던 칩은 판 종료 후 자동으로 퍼로 환전됩니다."
+"현재 판에서는 폴드 처리되었습니다.\n남은 칩은 판 종료 후 퍼로 환전됩니다."
 );
 
 }
@@ -5679,7 +7419,7 @@ showHome();
 
 
 /* =====================================================
-   HTML 문자열 보호
+   HTML 보호
 ===================================================== */
 
 function escapeHtml(
@@ -5748,22 +7488,32 @@ return;
 currentUser =
 null;
 
+
 currentProfile =
 null;
+
 
 currentRoom =
 null;
 
+
 currentLobbyPlayer =
 null;
+
 
 currentGameState =
 null;
 
+
 currentHandPlayers =
 [];
 
+
 myActionOptions =
+null;
+
+
+selectedTransferRecipient =
 null;
 
 
