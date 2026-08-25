@@ -22,12 +22,12 @@
 
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
     }
 
     .container {
-      width: min(92%, 430px);
-      padding: 20px 0;
+      width: min(92%, 450px);
+      padding: 30px 0;
     }
 
     .logo {
@@ -47,20 +47,17 @@
       background: #1c1c1c;
       border: 1px solid #333;
       border-radius: 18px;
-      padding: 24px;
+      padding: 22px;
     }
 
-    h2 {
-      margin-top: 0;
-    }
-
+    h2,
     h3 {
       margin-top: 0;
     }
 
     input {
       width: 100%;
-      padding: 15px;
+      padding: 14px;
       margin-bottom: 12px;
 
       background: #111;
@@ -74,11 +71,11 @@
 
     button {
       width: 100%;
-      padding: 15px;
+      padding: 14px;
       margin-top: 10px;
 
       border: 0;
-      border-radius: 12px;
+      border-radius: 11px;
 
       font-size: 16px;
       font-weight: bold;
@@ -101,10 +98,16 @@
       color: white;
     }
 
+    .danger {
+      background: #542525;
+      color: white;
+    }
+
     .menuButton {
       background: #252525;
       color: white;
-      border: 1px solid #3c3c3c;
+      border: 1px solid #3d3d3d;
+
       text-align: left;
       padding: 18px;
       font-size: 18px;
@@ -114,8 +117,8 @@
       display: block;
       color: #999;
       font-size: 12px;
-      margin-top: 6px;
       font-weight: normal;
+      margin-top: 6px;
     }
 
     .switch {
@@ -155,18 +158,13 @@
     }
 
     .accountPer {
-      color: #ddd;
       font-weight: bold;
-    }
-
-    .sectionTitle {
-      margin-bottom: 18px;
     }
 
     .backButton {
       width: auto;
       padding: 10px 14px;
-      margin-bottom: 16px;
+      margin: 0 0 18px 0;
     }
 
     .balanceBox {
@@ -182,7 +180,7 @@
     }
 
     .balanceValue {
-      font-size: 28px;
+      font-size: 27px;
       font-weight: bold;
       margin-top: 5px;
     }
@@ -200,11 +198,83 @@
       margin-bottom: 6px;
     }
 
-    .comingSoon {
-      color: #888;
-      text-align: center;
-      margin-top: 14px;
+    .fieldLabel {
+      display: block;
+      color: #aaa;
       font-size: 13px;
+      margin: 10px 0 6px 2px;
+    }
+
+    .roomCard {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .roomCardTitle {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .roomCode {
+      font-family: monospace;
+      letter-spacing: 2px;
+      color: #ddd;
+    }
+
+    .roomInfo {
+      color: #aaa;
+      font-size: 13px;
+      line-height: 1.7;
+      margin-top: 8px;
+    }
+
+    .playerRow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      background: #111;
+      border-radius: 12px;
+
+      padding: 14px;
+      margin-bottom: 8px;
+    }
+
+    .playerNickname {
+      font-weight: bold;
+    }
+
+    .playerPer {
+      color: #aaa;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .playerChip {
+      font-weight: bold;
+    }
+
+    .sectionLine {
+      height: 1px;
+      background: #333;
+      margin: 20px 0;
+    }
+
+    .emptyText {
+      text-align: center;
+      color: #888;
+      padding: 25px 5px;
+    }
+
+    .refreshText {
+      color: #777;
+      font-size: 12px;
+      text-align: center;
+      margin-top: 12px;
     }
 
     .modalBackdrop {
@@ -253,7 +323,7 @@
   <div class="subtitle">홀덤 보조 게임</div>
 
 
-  <!-- 로그인 화면 -->
+  <!-- 로그인 -->
   <div id="loginScreen" class="card">
 
     <h2>로그인</h2>
@@ -294,7 +364,7 @@
   </div>
 
 
-  <!-- 회원가입 화면 -->
+  <!-- 회원가입 -->
   <div id="signupScreen" class="card hidden">
 
     <h2>회원가입</h2>
@@ -343,15 +413,16 @@
   </div>
 
 
-  <!-- 홈 화면 -->
+  <!-- 홈 -->
   <div id="homeScreen" class="hidden">
 
     <div class="accountBar">
 
-      <div>
-        <div class="accountName" id="homeNickname">
-          -
-        </div>
+      <div
+        class="accountName"
+        id="homeNickname"
+      >
+        -
       </div>
 
       <div
@@ -365,9 +436,7 @@
 
     <div class="card">
 
-      <h2 class="sectionTitle">
-        홈
-      </h2>
+      <h2>홈</h2>
 
       <button
         class="menuButton"
@@ -387,7 +456,7 @@
         📖 룰 설명
 
         <small>
-          홀덤(변형 A)의 기본 진행 방법을 확인합니다.
+          홀덤(변형 A)의 게임 규칙을 확인합니다.
         </small>
       </button>
 
@@ -414,7 +483,7 @@
   </div>
 
 
-  <!-- 게임 시작 메뉴 -->
+  <!-- 게임 메뉴 -->
   <div id="gameMenuScreen" class="card hidden">
 
     <button
@@ -424,40 +493,203 @@
       ← 홈
     </button>
 
-    <h2>
-      게임 시작
-    </h2>
+    <h2>게임 시작</h2>
 
     <button
       class="menuButton"
-      onclick="showComingSoon('방 만들기')"
+      onclick="showCreateRoom()"
     >
       방 만들기
 
       <small>
-        새로운 게임방을 생성합니다.
+        새 게임방을 생성합니다.
       </small>
     </button>
 
     <button
       class="menuButton"
-      onclick="showComingSoon('방 참가')"
+      onclick="showJoinRoom()"
     >
       방 참가
 
       <small>
-        열려 있는 방을 찾거나 코드로 참가합니다.
+        현재 열려 있는 방을 확인합니다.
       </small>
     </button>
 
-    <div class="comingSoon">
-      방 시스템은 다음 단계에서 연결합니다.
+  </div>
+
+
+  <!-- 방 만들기 -->
+  <div id="createRoomScreen" class="card hidden">
+
+    <button
+      class="secondary backButton"
+      onclick="showGameMenu()"
+    >
+      ← 게임 메뉴
+    </button>
+
+    <h2>방 만들기</h2>
+
+    <label class="fieldLabel">
+      방 이름
+    </label>
+
+    <input
+      id="createRoomName"
+      type="text"
+      placeholder="예: 오늘도 파산"
+      maxlength="30"
+    >
+
+
+    <label class="fieldLabel">
+      칩 가치
+    </label>
+
+    <input
+      id="createChipValue"
+      type="number"
+      inputmode="numeric"
+      min="1"
+      value="10"
+      placeholder="1칩 = 몇 퍼?"
+    >
+
+
+    <label class="fieldLabel">
+      최소 환전 칩
+    </label>
+
+    <input
+      id="createMinBuyin"
+      type="number"
+      inputmode="numeric"
+      min="1"
+      value="10"
+    >
+
+
+    <label class="fieldLabel">
+      최대 환전 칩
+    </label>
+
+    <input
+      id="createMaxBuyin"
+      type="number"
+      inputmode="numeric"
+      min="1"
+      value="1000"
+    >
+
+
+    <button
+      id="createRoomButton"
+      class="primary"
+      onclick="createRoom()"
+    >
+      방 생성
+    </button>
+
+    <div
+      id="createRoomMessage"
+      class="message"
+    ></div>
+
+  </div>
+
+
+  <!-- 방 참가 -->
+  <div id="joinRoomScreen" class="card hidden">
+
+    <button
+      class="secondary backButton"
+      onclick="showGameMenu()"
+    >
+      ← 게임 메뉴
+    </button>
+
+    <h2>열린 방</h2>
+
+    <button
+      class="secondary"
+      onclick="loadRooms()"
+    >
+      새로고침
+    </button>
+
+    <div class="sectionLine"></div>
+
+    <div id="roomList">
+      <div class="emptyText">
+        방 목록을 불러오는 중...
+      </div>
     </div>
 
   </div>
 
 
-  <!-- 룰 설명 -->
+  <!-- 방 대기실 -->
+  <div id="roomLobbyScreen" class="card hidden">
+
+    <h2 id="lobbyRoomName">
+      방
+    </h2>
+
+    <div class="roomCard">
+
+      <div>
+        방 코드
+      </div>
+
+      <div
+        id="lobbyRoomCode"
+        class="roomCode"
+      >
+        ------
+      </div>
+
+      <div
+        id="lobbyRoomSettings"
+        class="roomInfo"
+      >
+      </div>
+
+    </div>
+
+    <h3>
+      대기 인원
+    </h3>
+
+    <div id="lobbyPlayers">
+      <div class="emptyText">
+        참가자를 불러오는 중...
+      </div>
+    </div>
+
+    <div class="refreshText">
+      참가자 목록은 자동으로 갱신됩니다.
+    </div>
+
+    <button
+      class="secondary"
+      onclick="refreshLobby()"
+    >
+      지금 새로고침
+    </button>
+
+    <button
+      class="secondary"
+      onclick="showHome()"
+    >
+      홈으로
+    </button>
+
+  </div>
+
+
+  <!-- 룰 -->
   <div id="rulesScreen" class="card hidden">
 
     <button
@@ -467,38 +699,35 @@
       ← 홈
     </button>
 
-    <h2>
-      홀덤(변형 A)
-    </h2>
+    <h2>홀덤(변형 A)</h2>
 
     <div class="ruleBox">
       <strong>게임 방식</strong>
 
-      실제 카드는 오프라인에서 사용하고,
-      앱은 칩·베팅·턴·팟·정산을 관리합니다.
+      실제 카드는 오프라인에서 사용하고
+      앱은 칩, 베팅, 턴, 팟과 정산을 관리합니다.
     </div>
 
     <div class="ruleBox">
       <strong>기본베팅</strong>
 
-      한 판이 시작되면 모든 참가자가
-      기본베팅 1칩씩 팟에 냅니다.
+      한 판 시작 시 모든 참가자가
+      기본베팅 1칩을 냅니다.
     </div>
 
     <div class="ruleBox">
-      <strong>행동 순서</strong>
+      <strong>첫 행동자</strong>
 
-      첫 판은 주사위 최고 숫자가 나온 사람부터 시작합니다.
-      동점이면 동점자끼리 다시 굴립니다.
+      첫 판은 주사위 최고 숫자가 나온 사람,
+      이후 판은 직전 판 승자가 먼저 행동합니다.
 
-      이후 판은 직전 판의 승자부터 시작하며,
-      행동은 시계 방향으로 진행합니다.
+      행동 방향은 시계 방향입니다.
     </div>
 
     <div class="ruleBox">
       <strong>베팅</strong>
 
-      폴드 / 체크 / 콜 / 레이즈 / 올인을 사용할 수 있습니다.
+      폴드 / 체크 / 콜 / 레이즈 / 올인을 사용합니다.
 
       최소 레이즈는 1칩입니다.
     </div>
@@ -506,18 +735,9 @@
     <div class="ruleBox">
       <strong>사이드팟 없음</strong>
 
-      홀덤(변형 A)은 사이드팟을 사용하지 않습니다.
-
       살아 있는 플레이어 중
-      이번 판에 넣을 수 있는 총 칩이 가장 적은 사람을 기준으로
-      베팅 상한이 결정됩니다.
-    </div>
-
-    <div class="ruleBox">
-      <strong>더 자세한 설명</strong>
-
-      카드 족보, 문양 서열, 베팅 예시 등은
-      이후 상세 룰 페이지로 확장할 예정입니다.
+      이번 판 총 투입 가능 칩이 가장 적은 사람을 기준으로
+      베팅 상한을 결정합니다.
     </div>
 
   </div>
@@ -533,9 +753,7 @@
       ← 홈
     </button>
 
-    <h2>
-      은행
-    </h2>
+    <h2>은행</h2>
 
     <div class="balanceBox">
 
@@ -544,8 +762,8 @@
       </div>
 
       <div
-        class="balanceValue"
         id="bankBalance"
+        class="balanceValue"
       >
         0 퍼
       </div>
@@ -559,8 +777,8 @@
       </div>
 
       <div
-        class="balanceValue"
         id="bankDeposit"
+        class="balanceValue"
       >
         0 퍼
       </div>
@@ -574,8 +792,8 @@
       </div>
 
       <div
-        class="balanceValue"
         id="bankLoan"
+        class="balanceValue"
       >
         0 퍼
       </div>
@@ -596,16 +814,12 @@
       대출 / 상환
     </button>
 
-    <div class="comingSoon">
-      예금·대출 실제 거래 기능은 다음 단계에서 연결합니다.
-    </div>
-
   </div>
 
 </div>
 
 
-<!-- 간단 팝업 -->
+<!-- 팝업 -->
 <div
   id="simpleModal"
   class="modalBackdrop hidden"
@@ -625,7 +839,6 @@
     </h3>
 
     <div id="modalText">
-      준비 중입니다.
     </div>
 
   </div>
@@ -636,7 +849,7 @@
 <script>
 
   // =====================================================
-  // Supabase
+  // Supabase 연결
   // =====================================================
 
   const SUPABASE_URL =
@@ -655,9 +868,13 @@
 
   let currentProfile = null;
 
+  let currentRoom = null;
+
+  let lobbyRefreshTimer = null;
+
 
   // =====================================================
-  // 닉네임 → 내부 로그인 이메일
+  // 닉네임 → 내부 이메일
   // =====================================================
 
   function nicknameToEmail(nickname) {
@@ -671,24 +888,47 @@
       encodeURIComponent(normalized)
         .replaceAll("%", "");
 
-    return encoded + "@holdem-a.invalid";
+    return encoded +
+      "@holdem-a.invalid";
   }
 
 
   // =====================================================
-  // 화면 전환
+  // 공통 화면
   // =====================================================
+
+  function stopLobbyTimer() {
+
+    if (lobbyRefreshTimer) {
+
+      clearInterval(
+        lobbyRefreshTimer
+      );
+
+      lobbyRefreshTimer = null;
+    }
+  }
+
 
   function hideAllScreens() {
 
+    stopLobbyTimer();
+
+
     const screens = [
+
       "loginScreen",
       "signupScreen",
       "homeScreen",
       "gameMenuScreen",
+      "createRoomScreen",
+      "joinRoomScreen",
+      "roomLobbyScreen",
       "rulesScreen",
       "bankScreen"
+
     ];
+
 
     screens.forEach(id => {
 
@@ -707,10 +947,6 @@
     document
       .getElementById("loginScreen")
       .classList.remove("hidden");
-
-    document.getElementById(
-      "loginMessage"
-    ).textContent = "";
   }
 
 
@@ -721,10 +957,6 @@
     document
       .getElementById("signupScreen")
       .classList.remove("hidden");
-
-    document.getElementById(
-      "signupMessage"
-    ).textContent = "";
   }
 
 
@@ -747,6 +979,32 @@
     document
       .getElementById("gameMenuScreen")
       .classList.remove("hidden");
+  }
+
+
+  function showCreateRoom() {
+
+    hideAllScreens();
+
+    document.getElementById(
+      "createRoomMessage"
+    ).textContent = "";
+
+    document
+      .getElementById("createRoomScreen")
+      .classList.remove("hidden");
+  }
+
+
+  async function showJoinRoom() {
+
+    hideAllScreens();
+
+    document
+      .getElementById("joinRoomScreen")
+      .classList.remove("hidden");
+
+    await loadRooms();
   }
 
 
@@ -780,12 +1038,71 @@
 
     document.getElementById(
       "modalTitle"
-    ).textContent = title;
+    ).textContent =
+      title;
+
 
     document.getElementById(
       "modalText"
     ).textContent =
       "이 기능은 다음 개발 단계에서 연결할 예정입니다.";
+
+
+    document
+      .getElementById("simpleModal")
+      .classList.remove("hidden");
+  }
+
+
+  function showError(title, error) {
+
+    document.getElementById(
+      "modalTitle"
+    ).textContent =
+      title;
+
+
+    let text = "";
+
+    if (error) {
+
+      text +=
+        "message: " +
+        (error.message ?? "없음");
+
+      if (error.code) {
+
+        text +=
+          "\n\ncode: " +
+          error.code;
+      }
+
+      if (error.details) {
+
+        text +=
+          "\n\ndetails: " +
+          error.details;
+      }
+
+      if (error.hint) {
+
+        text +=
+          "\n\nhint: " +
+          error.hint;
+      }
+
+    } else {
+
+      text =
+        "알 수 없는 오류가 발생했습니다.";
+    }
+
+
+    document.getElementById(
+      "modalText"
+    ).textContent =
+      text;
+
 
     document
       .getElementById("simpleModal")
@@ -813,15 +1130,18 @@
         .value
         .trim();
 
+
     const password =
       document
         .getElementById("signupPassword")
         .value;
 
+
     const password2 =
       document
         .getElementById("signupPassword2")
         .value;
+
 
     const message =
       document.getElementById(
@@ -829,7 +1149,9 @@
       );
 
 
-    message.style.color = "#ff8080";
+    message.style.color =
+      "#ff8080";
+
     message.textContent = "";
 
 
@@ -869,14 +1191,17 @@
     }
 
 
-    message.style.color = "#aaa";
+    message.style.color =
+      "#aaa";
 
     message.textContent =
       "계정을 만드는 중...";
 
 
     const email =
-      nicknameToEmail(nickname);
+      nicknameToEmail(
+        nickname
+      );
 
 
     const {
@@ -901,7 +1226,8 @@
 
     if (error) {
 
-      message.style.color = "#ff8080";
+      message.style.color =
+        "#ff8080";
 
       message.textContent =
         "회원가입 실패: " +
@@ -911,7 +1237,8 @@
     }
 
 
-    message.style.color = "#8cff9b";
+    message.style.color =
+      "#8cff9b";
 
     message.textContent =
       "회원가입 성공!";
@@ -933,10 +1260,12 @@
         .value
         .trim();
 
+
     const password =
       document
         .getElementById("loginPassword")
         .value;
+
 
     const message =
       document.getElementById(
@@ -944,11 +1273,16 @@
       );
 
 
-    message.style.color = "#ff8080";
+    message.style.color =
+      "#ff8080";
+
     message.textContent = "";
 
 
-    if (!nickname || !password) {
+    if (
+      !nickname ||
+      !password
+    ) {
 
       message.textContent =
         "닉네임과 비밀번호를 입력해주세요.";
@@ -957,14 +1291,17 @@
     }
 
 
-    message.style.color = "#aaa";
+    message.style.color =
+      "#aaa";
 
     message.textContent =
       "로그인 중...";
 
 
     const email =
-      nicknameToEmail(nickname);
+      nicknameToEmail(
+        nickname
+      );
 
 
     const {
@@ -981,7 +1318,8 @@
 
     if (error) {
 
-      message.style.color = "#ff8080";
+      message.style.color =
+        "#ff8080";
 
       message.textContent =
         "닉네임 또는 비밀번호를 확인해주세요.";
@@ -995,7 +1333,7 @@
 
 
   // =====================================================
-  // 프로필 불러오기
+  // 프로필
   // =====================================================
 
   async function loadHome() {
@@ -1009,12 +1347,10 @@
 
     if (userError) {
 
-      alert(
-        "사용자 정보 오류\n\n" +
-        userError.message
+      showError(
+        "사용자 정보 오류",
+        userError
       );
-
-      showLogin();
 
       return;
     }
@@ -1050,30 +1386,25 @@
 
     if (profileError) {
 
-      alert(
-        "프로필 불러오기 실패\n\n" +
-        "message: " +
-        profileError.message +
-        "\n\ncode: " +
-        profileError.code +
-        "\n\ndetails: " +
-        profileError.details +
-        "\n\nhint: " +
-        profileError.hint
+      showError(
+        "프로필 불러오기 실패",
+        profileError
       );
 
       return;
     }
 
 
-    currentProfile = profile;
+    currentProfile =
+      profile;
+
 
     showHome();
   }
 
 
   // =====================================================
-  // 화면 숫자 갱신
+  // 표시 갱신
   // =====================================================
 
   function updateHomeValues() {
@@ -1095,7 +1426,8 @@
       Number(
         currentProfile.balance_per
       ).toLocaleString()
-      + " 퍼";
+      +
+      " 퍼";
   }
 
 
@@ -1112,7 +1444,8 @@
       Number(
         currentProfile.balance_per
       ).toLocaleString()
-      + " 퍼";
+      +
+      " 퍼";
 
 
     document.getElementById(
@@ -1121,7 +1454,8 @@
       Number(
         currentProfile.bank_per
       ).toLocaleString()
-      + " 퍼";
+      +
+      " 퍼";
 
 
     document.getElementById(
@@ -1130,7 +1464,733 @@
       Number(
         currentProfile.loan_per
       ).toLocaleString()
-      + " 퍼";
+      +
+      " 퍼";
+  }
+
+
+  // =====================================================
+  // 방 만들기
+  // =====================================================
+
+  async function createRoom() {
+
+    const roomName =
+      document
+        .getElementById("createRoomName")
+        .value
+        .trim();
+
+
+    const chipValue =
+      Number(
+        document
+          .getElementById("createChipValue")
+          .value
+      );
+
+
+    const minBuyin =
+      Number(
+        document
+          .getElementById("createMinBuyin")
+          .value
+      );
+
+
+    const maxBuyin =
+      Number(
+        document
+          .getElementById("createMaxBuyin")
+          .value
+      );
+
+
+    const message =
+      document.getElementById(
+        "createRoomMessage"
+      );
+
+
+    const button =
+      document.getElementById(
+        "createRoomButton"
+      );
+
+
+    message.style.color =
+      "#ff8080";
+
+    message.textContent = "";
+
+
+    if (!roomName) {
+
+      message.textContent =
+        "방 이름을 입력해주세요.";
+
+      return;
+    }
+
+
+    if (
+      !Number.isInteger(chipValue) ||
+      chipValue <= 0
+    ) {
+
+      message.textContent =
+        "칩 가치는 1 이상의 정수여야 합니다.";
+
+      return;
+    }
+
+
+    if (
+      !Number.isInteger(minBuyin) ||
+      minBuyin <= 0
+    ) {
+
+      message.textContent =
+        "최소 환전 칩을 확인해주세요.";
+
+      return;
+    }
+
+
+    if (
+      !Number.isInteger(maxBuyin) ||
+      maxBuyin < minBuyin
+    ) {
+
+      message.textContent =
+        "최대 환전 칩을 확인해주세요.";
+
+      return;
+    }
+
+
+    button.disabled = true;
+
+    message.style.color =
+      "#aaa";
+
+    message.textContent =
+      "방을 만드는 중...";
+
+
+    const {
+      data,
+      error
+    } =
+      await db.rpc(
+        "create_game_room",
+        {
+
+          p_room_name:
+            roomName,
+
+          p_chip_value_per:
+            chipValue,
+
+          p_min_buyin_chips:
+            minBuyin,
+
+          p_max_buyin_chips:
+            maxBuyin
+
+        }
+      );
+
+
+    button.disabled = false;
+
+
+    if (error) {
+
+      message.textContent =
+        "방 생성 실패";
+
+      showError(
+        "방 생성 오류",
+        error
+      );
+
+      return;
+    }
+
+
+    const created =
+      data?.[0];
+
+
+    if (!created) {
+
+      message.textContent =
+        "방 정보가 반환되지 않았습니다.";
+
+      return;
+    }
+
+
+    currentRoom = {
+
+      room_id:
+        created.room_id,
+
+      room_code:
+        created.room_code,
+
+      room_name:
+        roomName,
+
+      host_nickname:
+        currentProfile.nickname,
+
+      chip_value_per:
+        chipValue,
+
+      min_buyin_chips:
+        minBuyin,
+
+      max_buyin_chips:
+        maxBuyin
+
+    };
+
+
+    await enterLobby();
+  }
+
+
+  // =====================================================
+  // 열린 방 목록
+  // =====================================================
+
+  async function loadRooms() {
+
+    const list =
+      document.getElementById(
+        "roomList"
+      );
+
+
+    list.innerHTML =
+      '<div class="emptyText">방 목록을 불러오는 중...</div>';
+
+
+    const {
+      data,
+      error
+    } =
+      await db.rpc(
+        "get_waiting_rooms"
+      );
+
+
+    if (error) {
+
+      list.innerHTML =
+        '<div class="emptyText">방 목록을 불러오지 못했습니다.</div>';
+
+
+      showError(
+        "방 목록 오류",
+        error
+      );
+
+      return;
+    }
+
+
+    if (
+      !data ||
+      data.length === 0
+    ) {
+
+      list.innerHTML =
+        '<div class="emptyText">현재 열려 있는 방이 없습니다.</div>';
+
+      return;
+    }
+
+
+    list.innerHTML = "";
+
+
+    data.forEach(room => {
+
+      const div =
+        document.createElement(
+          "div"
+        );
+
+
+      div.className =
+        "roomCard";
+
+
+      div.innerHTML = `
+
+        <div class="roomCardTitle">
+          ${escapeHtml(room.room_name)}
+        </div>
+
+        <div class="roomCode">
+          ${escapeHtml(room.room_code)}
+        </div>
+
+        <div class="roomInfo">
+
+          방장:
+          ${escapeHtml(room.host_nickname)}
+          <br>
+
+          대기 인원:
+          ${Number(room.player_count)}명
+          <br>
+
+          1칩 =
+          ${Number(room.chip_value_per).toLocaleString()}퍼
+          <br>
+
+          환전:
+          ${Number(room.min_buyin_chips).toLocaleString()}
+          ~
+          ${Number(room.max_buyin_chips).toLocaleString()}
+          칩
+
+        </div>
+
+      `;
+
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.className =
+        "primary";
+
+      button.textContent =
+        "방 정보 보기";
+
+
+      button.onclick =
+        () =>
+          previewRoom(room);
+
+
+      div.appendChild(
+        button
+      );
+
+
+      list.appendChild(
+        div
+      );
+
+    });
+  }
+
+
+  // =====================================================
+  // 방 미리보기
+  // =====================================================
+
+  async function previewRoom(room) {
+
+    const {
+      data: players,
+      error
+    } =
+      await db.rpc(
+        "get_room_lobby_players",
+        {
+          p_room_id:
+            room.room_id
+        }
+      );
+
+
+    if (error) {
+
+      showError(
+        "방 정보 오류",
+        error
+      );
+
+      return;
+    }
+
+
+    let text =
+
+      "방 이름: " +
+      room.room_name +
+
+      "\n방 코드: " +
+      room.room_code +
+
+      "\n방장: " +
+      room.host_nickname +
+
+      "\n\n1칩 = " +
+      Number(
+        room.chip_value_per
+      ).toLocaleString() +
+      "퍼" +
+
+      "\n환전 범위: " +
+      Number(
+        room.min_buyin_chips
+      ).toLocaleString() +
+      " ~ " +
+      Number(
+        room.max_buyin_chips
+      ).toLocaleString() +
+      "칩" +
+
+      "\n\n대기 인원";
+
+
+    if (
+      players &&
+      players.length > 0
+    ) {
+
+      players.forEach(
+        player => {
+
+          text +=
+
+            "\n• " +
+            player.nickname +
+            " — " +
+            Number(
+              player.balance_per
+            ).toLocaleString() +
+            "퍼";
+
+        }
+      );
+
+    } else {
+
+      text +=
+        "\n없음";
+    }
+
+
+    document.getElementById(
+      "modalTitle"
+    ).textContent =
+      "방 참가";
+
+
+    document.getElementById(
+      "modalText"
+    ).textContent =
+      text;
+
+
+    const modal =
+      document.querySelector(
+        "#simpleModal .modal"
+      );
+
+
+    const oldButton =
+      document.getElementById(
+        "modalJoinButton"
+      );
+
+
+    if (oldButton) {
+      oldButton.remove();
+    }
+
+
+    const joinButton =
+      document.createElement(
+        "button"
+      );
+
+
+    joinButton.id =
+      "modalJoinButton";
+
+    joinButton.className =
+      "primary";
+
+    joinButton.textContent =
+      "이 방에 참가";
+
+
+    joinButton.onclick =
+      async () => {
+
+        joinButton.disabled =
+          true;
+
+
+        await joinRoom(
+          room
+        );
+
+
+        joinButton.disabled =
+          false;
+      };
+
+
+    modal.appendChild(
+      joinButton
+    );
+
+
+    document
+      .getElementById("simpleModal")
+      .classList.remove("hidden");
+  }
+
+
+  // =====================================================
+  // 방 참가
+  // =====================================================
+
+  async function joinRoom(room) {
+
+    const {
+      error
+    } =
+      await db.rpc(
+        "join_game_room",
+        {
+          p_room_id:
+            room.room_id
+        }
+      );
+
+
+    if (error) {
+
+      showError(
+        "방 참가 오류",
+        error
+      );
+
+      return;
+    }
+
+
+    currentRoom =
+      room;
+
+
+    closeModal();
+
+
+    await enterLobby();
+  }
+
+
+  // =====================================================
+  // 대기실
+  // =====================================================
+
+  async function enterLobby() {
+
+    if (!currentRoom) {
+      return;
+    }
+
+
+    hideAllScreens();
+
+
+    document
+      .getElementById(
+        "roomLobbyScreen"
+      )
+      .classList
+      .remove(
+        "hidden"
+      );
+
+
+    document.getElementById(
+      "lobbyRoomName"
+    ).textContent =
+      currentRoom.room_name;
+
+
+    document.getElementById(
+      "lobbyRoomCode"
+    ).textContent =
+      currentRoom.room_code;
+
+
+    document.getElementById(
+      "lobbyRoomSettings"
+    ).innerHTML =
+
+      "방장: " +
+      escapeHtml(
+        currentRoom.host_nickname
+      ) +
+
+      "<br>1칩 = " +
+      Number(
+        currentRoom.chip_value_per
+      ).toLocaleString() +
+      "퍼" +
+
+      "<br>환전 범위: " +
+      Number(
+        currentRoom.min_buyin_chips
+      ).toLocaleString() +
+      " ~ " +
+      Number(
+        currentRoom.max_buyin_chips
+      ).toLocaleString() +
+      "칩";
+
+
+    await refreshLobby();
+
+
+    lobbyRefreshTimer =
+      setInterval(
+        refreshLobby,
+        3000
+      );
+  }
+
+
+  async function refreshLobby() {
+
+    if (!currentRoom) {
+      return;
+    }
+
+
+    const {
+      data,
+      error
+    } =
+      await db.rpc(
+        "get_room_lobby_players",
+        {
+          p_room_id:
+            currentRoom.room_id
+        }
+      );
+
+
+    if (error) {
+
+      console.error(
+        error
+      );
+
+      return;
+    }
+
+
+    const container =
+      document.getElementById(
+        "lobbyPlayers"
+      );
+
+
+    if (
+      !data ||
+      data.length === 0
+    ) {
+
+      container.innerHTML =
+        '<div class="emptyText">참가자가 없습니다.</div>';
+
+      return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    data.forEach(
+      player => {
+
+        const row =
+          document.createElement(
+            "div"
+          );
+
+
+        row.className =
+          "playerRow";
+
+
+        row.innerHTML = `
+
+          <div>
+
+            <div class="playerNickname">
+              ${escapeHtml(player.nickname)}
+            </div>
+
+            <div class="playerPer">
+              보유 퍼:
+              ${Number(player.balance_per).toLocaleString()}퍼
+            </div>
+
+          </div>
+
+          <div class="playerChip">
+            ${Number(player.chips).toLocaleString()}칩
+          </div>
+
+        `;
+
+
+        container.appendChild(
+          row
+        );
+
+      }
+    );
+  }
+
+
+  // =====================================================
+  // HTML 보호
+  // =====================================================
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replaceAll(
+        "&",
+        "&amp;"
+      )
+      .replaceAll(
+        "<",
+        "&lt;"
+      )
+      .replaceAll(
+        ">",
+        "&gt;"
+      )
+      .replaceAll(
+        '"',
+        "&quot;"
+      )
+      .replaceAll(
+        "'",
+        "&#039;"
+      );
   }
 
 
@@ -1140,6 +2200,9 @@
 
   async function logout() {
 
+    stopLobbyTimer();
+
+
     const {
       error
     } =
@@ -1148,23 +2211,28 @@
 
     if (error) {
 
-      alert(
-        "로그아웃 오류\n\n" +
-        error.message
+      showError(
+        "로그아웃 오류",
+        error
       );
 
       return;
     }
 
 
-    currentProfile = null;
+    currentProfile =
+      null;
+
+    currentRoom =
+      null;
+
 
     showLogin();
   }
 
 
   // =====================================================
-  // 앱 시작
+  // 시작
   // =====================================================
 
   async function start() {
@@ -1178,9 +2246,9 @@
 
     if (error) {
 
-      alert(
-        "세션 확인 오류\n\n" +
-        error.message
+      showError(
+        "세션 확인 오류",
+        error
       );
 
       showLogin();
@@ -1189,7 +2257,9 @@
     }
 
 
-    if (data.session) {
+    if (
+      data.session
+    ) {
 
       await loadHome();
 
