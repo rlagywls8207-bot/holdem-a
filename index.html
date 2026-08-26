@@ -1,12 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>Holdem A</title>
+<html lang="ko">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0,maximum-scale=1.0"
+>
+
+<title>HOLDEM A</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
 <style>
 
@@ -14,48 +22,68 @@
   box-sizing:border-box;
 }
 
+html,
 body{
   margin:0;
-  min-height:100vh;
-  font-family:Arial,sans-serif;
+  min-height:100%;
   background:#0d0d0d;
   color:#fff;
+  font-family:Arial,sans-serif;
+}
+
+body{
   display:flex;
   justify-content:center;
-  align-items:flex-start;
+}
+
+button,
+input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+button:disabled{
+  cursor:default;
+  opacity:.28;
+}
+
+.hidden{
+  display:none!important;
 }
 
 .container{
-  width:min(95%,520px);
-  padding:24px 0 40px;
+  width:min(96%,520px);
+  padding:18px 0 35px;
 }
 
 .logo{
   text-align:center;
-  font-size:36px;
+  font-size:34px;
   font-weight:900;
-  letter-spacing:1px;
-  margin-bottom:3px;
 }
 
 .version{
   text-align:center;
+  margin-top:2px;
   color:#666;
-  font-size:12px;
-  margin-bottom:5px;
+  font-size:11px;
 }
 
 .subtitle{
   text-align:center;
+  margin:4px 0 18px;
   color:#999;
-  margin-bottom:22px;
+  font-size:13px;
 }
 
 .card{
   background:#191919;
   border:1px solid #303030;
-  border-radius:18px;
-  padding:20px;
+  border-radius:17px;
+  padding:18px;
 }
 
 h2,
@@ -65,33 +93,25 @@ h3{
 
 input{
   width:100%;
-  padding:14px;
-  margin-bottom:12px;
+  padding:13px;
+  margin-bottom:10px;
+  border-radius:9px;
+  border:1px solid #444;
   background:#101010;
   color:#fff;
-  border:1px solid #444;
-  border-radius:10px;
-  font-size:16px;
 }
 
 button{
   width:100%;
-  padding:14px;
-  margin-top:9px;
+  padding:13px;
+  margin-top:8px;
   border:0;
-  border-radius:11px;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-button:disabled{
-  opacity:.3;
-  cursor:default;
+  border-radius:10px;
+  font-weight:800;
 }
 
 .primary{
-  background:#f2f2f2;
+  background:#eee;
   color:#111;
 }
 
@@ -101,44 +121,46 @@ button:disabled{
 }
 
 .danger{
-  background:#682c2c;
+  background:#642b2b;
   color:#fff;
 }
 
-.hidden{
-  display:none!important;
+.backButton{
+  width:auto;
+  margin:0 0 15px;
+  padding:9px 13px;
 }
 
 .menuButton{
+  text-align:left;
+  padding:17px;
   background:#232323;
   color:#fff;
-  border:1px solid #383838;
-  text-align:left;
-  padding:18px;
-  font-size:18px;
+  border:1px solid #373737;
+  font-size:17px;
 }
 
 .menuButton small{
   display:block;
+  margin-top:5px;
   color:#929292;
-  font-size:12px;
+  line-height:1.45;
+  font-size:11px;
   font-weight:normal;
-  margin-top:6px;
-  line-height:1.5;
 }
 
 .switch{
-  margin-top:20px;
+  margin-top:18px;
   text-align:center;
   color:#aaa;
   cursor:pointer;
 }
 
 .message{
-  min-height:24px;
-  margin-top:15px;
+  min-height:20px;
+  margin-top:12px;
   text-align:center;
-  color:#ff8989;
+  color:#ff9696;
   white-space:pre-line;
 }
 
@@ -146,306 +168,89 @@ button:disabled{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  background:#181818;
+  margin-bottom:12px;
+  padding:12px 14px;
+  border-radius:12px;
   border:1px solid #303030;
-  border-radius:14px;
-  padding:14px 16px;
-  margin-bottom:16px;
+  background:#181818;
 }
 
 .accountName,
 .accountPer{
-  font-weight:bold;
-}
-
-.backButton{
-  width:auto;
-  padding:10px 14px;
-  margin:0 0 16px;
+  font-weight:900;
 }
 
 .fieldLabel{
   display:block;
-  color:#ddd;
-  font-size:14px;
-  font-weight:bold;
-  margin:12px 0 7px 2px;
+  margin:10px 0 6px 2px;
+  font-size:13px;
+  font-weight:800;
 }
 
 .fieldHelp{
-  color:#858585;
-  font-size:12px;
-  margin:-4px 0 14px 3px;
-  line-height:1.55;
-}
-
-.roomCard,
-.balanceBox,
-.exchangeBox,
-.bankActionBox,
-.transferBox,
-.avatarPanel,
-.gameBox{
-  background:#101010;
-  border:1px solid #303030;
-  border-radius:14px;
-  padding:15px;
-  margin-bottom:12px;
-}
-
-.roomTitle{
-  font-size:18px;
-  font-weight:bold;
-}
-
-.roomCode{
-  font-family:monospace;
-  letter-spacing:2px;
-  margin-top:5px;
-}
-
-.roomInfo{
-  color:#aaa;
-  font-size:13px;
-  line-height:1.7;
-  margin-top:8px;
+  margin:-2px 2px 10px;
+  color:#818181;
+  font-size:11px;
+  line-height:1.5;
 }
 
 .sectionLine{
   height:1px;
   background:#333;
-  margin:20px 0;
+  margin:18px 0;
 }
 
 .emptyText{
-  text-align:center;
+  padding:20px 4px;
   color:#888;
-  padding:22px 5px;
+  text-align:center;
 }
 
 .smallLabel{
-  color:#888;
-  font-size:11px;
+  color:#858585;
+  font-size:10px;
 }
 
 .smallValue{
-  font-weight:bold;
-  margin-top:3px;
-}
-
-.preview{
-  background:#1b1b1b;
-  border-radius:10px;
-  padding:12px;
-  color:#ccc;
-  font-size:13px;
-  line-height:1.6;
-  white-space:pre-line;
-  margin:10px 0;
-}
-
-.quickButtons{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:7px;
-}
-
-.quickButtons button{
-  margin:0;
-  padding:11px 4px;
-  font-size:13px;
-}
-
-.exchangeSummary,
-.roundInfo{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-bottom:12px;
-}
-
-.smallStat{
-  background:#1d1d1d;
-  border-radius:10px;
-  padding:11px;
-}
-
-.allReady{
-  background:#1c3421;
-  border:1px solid #35613d;
-  color:#baffc4;
-  border-radius:12px;
-  padding:12px;
-  text-align:center;
-  margin:12px 0;
-}
-
-
-/* ==========================================================
-   홀덤 테이블
-========================================================== */
-
-.tableGuide{
-  color:#999;
-  font-size:12px;
-  line-height:1.6;
-  text-align:center;
-  margin-bottom:12px;
-}
-
-.pokerTableWrap{
-  position:relative;
-  width:100%;
-  height:410px;
-  margin:8px auto 18px;
-}
-
-.pokerTable{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  width:73%;
-  height:58%;
-  border-radius:50%;
-  background:#173524;
-  border:8px solid #3e2b1e;
-  box-shadow:
-    inset 0 0 0 3px #204b32,
-    0 9px 22px rgba(0,0,0,.45);
-}
-
-.tableCenter{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  width:65%;
-  text-align:center;
-  pointer-events:none;
-}
-
-.tableCenterLogo{
+  margin-top:2px;
   font-weight:900;
-  color:rgba(255,255,255,.14);
-  font-size:14px;
+}
+
+.roomCard,
+.exchangeBox,
+.balanceBox,
+.avatarPanel,
+.shopItem,
+.bankBox{
+  margin-bottom:10px;
+  padding:13px;
+  border:1px solid #303030;
+  border-radius:12px;
+  background:#101010;
+}
+
+.roomTitle{
+  font-size:17px;
+  font-weight:900;
+}
+
+.roomCode{
+  margin-top:4px;
+  font-family:monospace;
   letter-spacing:2px;
 }
 
-.tablePot{
+.roomInfo{
   margin-top:7px;
-  font-weight:bold;
-  color:#fff;
-  font-size:16px;
-}
-
-.communityCards{
-  display:flex;
-  justify-content:center;
-  gap:4px;
-  margin-top:8px;
-}
-
-.seat{
-  position:absolute;
-  width:82px;
-  min-height:95px;
-  transform:translate(-50%,-50%);
-  text-align:center;
-  z-index:3;
-}
-
-.seat1{left:50%;top:4%}
-.seat2{left:84%;top:18%}
-.seat3{left:95%;top:50%}
-.seat4{left:83%;top:83%}
-.seat5{left:50%;top:96%}
-.seat6{left:17%;top:83%}
-.seat7{left:5%;top:50%}
-.seat8{left:16%;top:18%}
-
-.emptySeatButton{
-  width:64px;
-  height:64px;
-  padding:0;
-  margin:0 auto;
-  border-radius:50%;
-  background:#242424;
-  border:2px dashed #555;
   color:#aaa;
-  font-size:11px;
-}
-
-.seatNumber{
-  color:#777;
-  font-size:10px;
-  margin-top:3px;
-}
-
-.seatNickname{
-  margin-top:3px;
-  font-size:11px;
-  font-weight:bold;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.seatSub{
-  color:#999;
-  font-size:9px;
-  margin-top:2px;
-  line-height:1.35;
-}
-
-.seatMe .seatNickname::after{
-  content:" · 나";
-  color:#aaa;
-}
-
-.seatFolded{
-  opacity:.35;
-}
-
-.seatCurrent .pixelAvatar{
-  filter:
-    drop-shadow(0 0 2px #fff)
-    drop-shadow(0 0 6px rgba(255,255,255,.8));
-}
-
-.roleBadges{
-  display:flex;
-  justify-content:center;
-  gap:2px;
-  margin-top:2px;
-  min-height:14px;
-}
-
-.roleBadge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-width:18px;
-  height:14px;
-  padding:0 3px;
-  background:#dedede;
-  color:#111;
-  border-radius:3px;
-  font-size:8px;
-  font-weight:900;
-}
-
-.roleBadge.sb{
-  background:#b9d9ff;
-}
-
-.roleBadge.bb{
-  background:#ffd494;
+  font-size:12px;
+  line-height:1.6;
 }
 
 
 /* ==========================================================
-   32 × 32 픽셀 털복숭이
+   픽셀 털복숭이
+   베이스 실루엣 고정
 ========================================================== */
 
 .pixelAvatar{
@@ -461,15 +266,13 @@ button:disabled{
   display:block;
   width:64px;
   height:64px;
-  image-rendering:pixelated;
-  image-rendering:crisp-edges;
   shape-rendering:crispEdges;
+  image-rendering:pixelated;
 }
 
 .pixelAvatarLarge{
   width:128px;
   height:128px;
-  margin:15px auto 25px;
 }
 
 .pixelAvatarLarge svg{
@@ -479,34 +282,381 @@ button:disabled{
 
 
 /* ==========================================================
-   픽셀 카드
+   아바타 화면
 ========================================================== */
+
+.avatarNickname{
+  text-align:center;
+  font-size:21px;
+  font-weight:900;
+}
+
+.avatarHint{
+  margin:7px 0 10px;
+  text-align:center;
+  color:#888;
+  font-size:11px;
+  line-height:1.5;
+}
+
+.avatarColorBox{
+  margin-top:13px;
+  padding:12px;
+  border-radius:11px;
+  background:#181818;
+}
+
+.avatarColorRow{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.avatarColorPicker{
+  width:55px;
+  height:42px;
+  padding:2px;
+  margin:0;
+}
+
+.avatarColorText{
+  flex:1;
+}
+
+.avatarColorCode{
+  margin-top:3px;
+  font-family:monospace;
+  font-weight:900;
+}
+
+.avatarSlots{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  margin-top:10px;
+}
+
+.avatarSlot{
+  padding:9px 5px;
+  text-align:center;
+  background:#1a1a1a;
+  border-radius:9px;
+}
+
+.avatarSlotName{
+  margin-top:4px;
+  font-size:11px;
+  font-weight:900;
+}
+
+.avatarSlot button{
+  padding:7px 2px;
+  font-size:9px;
+}
+
+
+/* ==========================================================
+   상점
+========================================================== */
+
+.shopCategory{
+  margin:19px 0 8px;
+  font-size:17px;
+  font-weight:900;
+}
+
+.shopItem{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.shopPreview{
+  width:58px;
+  flex:0 0 58px;
+}
+
+.shopPreview .pixelAvatar{
+  width:52px;
+  height:52px;
+}
+
+.shopPreview .pixelAvatar svg{
+  width:52px;
+  height:52px;
+}
+
+.shopInfo{
+  flex:1;
+  min-width:0;
+}
+
+.shopName{
+  font-weight:900;
+}
+
+.shopDescription{
+  margin-top:3px;
+  color:#888;
+  font-size:10px;
+}
+
+.shopPrice{
+  margin-top:5px;
+  font-size:11px;
+  font-weight:900;
+}
+
+.shopAction{
+  width:auto;
+  flex:0 0 auto;
+  padding:8px 9px;
+  margin:0;
+  font-size:10px;
+}
+
+.equippedTag{
+  font-size:9px;
+  font-weight:900;
+}
+
+
+/* ==========================================================
+   대기실 테이블
+========================================================== */
+
+.pokerArea{
+  position:relative;
+  height:370px;
+  margin:5px 0 10px;
+}
+
+.pokerTable{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:72%;
+  height:58%;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:#173524;
+  border:7px solid #3e2b1e;
+  box-shadow:
+    inset 0 0 0 3px #214b33,
+    0 8px 20px rgba(0,0,0,.45);
+}
+
+.seat{
+  position:absolute;
+  width:70px;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  z-index:5;
+}
+
+.seat1{left:50%;top:4%}
+.seat2{left:84%;top:18%}
+.seat3{left:95%;top:50%}
+.seat4{left:83%;top:82%}
+.seat5{left:50%;top:96%}
+.seat6{left:17%;top:82%}
+.seat7{left:5%;top:50%}
+.seat8{left:16%;top:18%}
+
+.seat .pixelAvatar{
+  width:52px;
+  height:52px;
+}
+
+.seat .pixelAvatar svg{
+  width:52px;
+  height:52px;
+}
+
+.seatName{
+  margin-top:2px;
+  font-size:9px;
+  font-weight:900;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.seatSub{
+  margin-top:1px;
+  color:#999;
+  font-size:8px;
+}
+
+.emptySeat{
+  width:54px;
+  height:54px;
+  padding:0;
+  margin:0 auto;
+  border-radius:50%;
+  border:2px dashed #555;
+  background:#252525;
+  color:#aaa;
+  font-size:9px;
+}
+
+
+/* ==========================================================
+   블라인드 설정
+========================================================== */
+
+.lobbyBlindBox{
+  margin-bottom:10px;
+  padding:11px;
+  border:1px solid #303030;
+  border-radius:11px;
+  background:#101010;
+}
+
+.blindHeader{
+  display:flex;
+  justify-content:space-between;
+}
+
+.blindValue{
+  font-size:13px;
+  font-weight:900;
+}
+
+.blindEdit{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  margin-top:9px;
+}
+
+.blindEdit input{
+  margin:0;
+  text-align:center;
+}
+
+
+/* ==========================================================
+   게임 전체 - 한 화면 우선
+========================================================== */
+
+#gameScreen{
+  position:relative;
+  padding:11px;
+  overflow:hidden;
+}
+
+.gameTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  min-height:33px;
+  margin-bottom:2px;
+}
+
+.gameTopTitle{
+  font-size:16px;
+  font-weight:900;
+}
+
+.gameTopSub{
+  margin-top:2px;
+  color:#777;
+  font-size:9px;
+}
+
+.streetBadge{
+  display:inline-flex;
+  padding:4px 7px;
+  margin-left:4px;
+  border-radius:12px;
+  background:#303030;
+  font-size:9px;
+}
+
+.topPot{
+  text-align:right;
+}
+
+.topPotLabel{
+  color:#777;
+  font-size:8px;
+}
+
+.topPotNumber{
+  font-size:15px;
+  font-weight:900;
+}
+
+
+/* ==========================================================
+   게임 테이블
+========================================================== */
+
+.gameTableArea{
+  position:relative;
+  height:390px;
+}
+
+.gameTable{
+  position:absolute;
+  left:50%;
+  top:47%;
+  width:76%;
+  height:61%;
+  transform:translate(-50%,-50%);
+  border-radius:48%;
+  background:#173524;
+  border:7px solid #3e2b1e;
+  box-shadow:
+    inset 0 0 0 3px #255039,
+    0 7px 18px rgba(0,0,0,.5);
+}
+
+.gameTableCenter{
+  position:absolute;
+  left:50%;
+  top:43%;
+  width:78%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+
+
+/* ==========================================================
+   공용 카드
+========================================================== */
+
+.communityCards{
+  display:flex;
+  justify-content:center;
+  gap:3px;
+  min-height:49px;
+}
 
 .pixelCard{
   position:relative;
-  width:38px;
-  height:54px;
-  flex:0 0 38px;
-  background:#f0eadc;
-  border:2px solid #1b1b1b;
+  width:34px;
+  height:48px;
+  flex:0 0 34px;
+  overflow:hidden;
+  border:2px solid #171717;
   border-radius:2px;
+  background:#f0eadc;
   color:#111;
   font-family:monospace;
-  overflow:hidden;
-  image-rendering:pixelated;
 }
 
 .pixelCard.red{
-  color:#a72727;
+  color:#a52727;
 }
 
 .pixelCardRank{
   position:absolute;
+  left:3px;
   top:3px;
-  left:4px;
-  font-size:12px;
+  font-size:10px;
   font-weight:900;
-  line-height:1;
 }
 
 .pixelCardSuit{
@@ -514,148 +664,350 @@ button:disabled{
   left:50%;
   top:50%;
   transform:translate(-50%,-45%);
-  font-size:20px;
-  font-weight:bold;
+  font-size:17px;
 }
 
 .pixelCardBack{
   background:
     repeating-linear-gradient(
       0deg,
-      #253d67 0,
-      #253d67 4px,
-      #385588 4px,
-      #385588 8px
+      #263f69 0,
+      #263f69 4px,
+      #39588b 4px,
+      #39588b 8px
     );
-  border:2px solid #c9c1aa;
+  border-color:#ccc4ac;
 }
 
 .pixelCardBack::after{
   content:"";
   position:absolute;
-  inset:5px;
-  border:2px solid rgba(255,255,255,.45);
+  inset:4px;
+  border:2px solid rgba(255,255,255,.35);
 }
 
 .cardPlaceholder{
-  width:38px;
-  height:54px;
-  flex:0 0 38px;
+  width:34px;
+  height:48px;
+  flex:0 0 34px;
   border:1px dashed rgba(255,255,255,.22);
-  border-radius:2px;
-}
-
-.myCardsArea{
-  background:#111;
-  border:1px solid #333;
-  border-radius:14px;
-  padding:14px;
-  margin:14px 0;
-  text-align:center;
-}
-
-.myCards{
-  display:flex;
-  justify-content:center;
-  gap:8px;
-  margin:10px 0;
-}
-
-.cardPeekButton{
-  max-width:220px;
-  margin:7px auto 0;
-}
-
-.cardPeekHelp{
-  color:#888;
-  font-size:11px;
-  line-height:1.45;
-}
-
-.communityTitle{
-  color:#aaa;
-  font-size:10px;
-  margin-top:5px;
 }
 
 
 /* ==========================================================
-   게임
+   팟 코인
 ========================================================== */
 
-.gameHeader{
+.potArea{
+  margin-top:6px;
+}
+
+.potCoins{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  width:100px;
+  min-height:11px;
+  margin:auto;
+  gap:1px;
+}
+
+.potCoin{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  border:2px solid #9d7122;
+  background:#d6aa42;
+  box-shadow:inset 0 0 0 1px #efd37b;
+}
+
+.potText{
+  margin-top:2px;
+  font-size:9px;
+  font-weight:900;
+}
+
+
+/* ==========================================================
+   게임 좌석
+========================================================== */
+
+.gameSeat{
+  position:absolute;
+  width:68px;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  z-index:6;
+}
+
+.gameSeat1{left:50%;top:3%}
+.gameSeat2{left:84%;top:17%}
+.gameSeat3{left:96%;top:47%}
+.gameSeat4{left:84%;top:78%}
+.gameSeat5{left:50%;top:94%}
+.gameSeat6{left:16%;top:78%}
+.gameSeat7{left:4%;top:47%}
+.gameSeat8{left:16%;top:17%}
+
+.gameSeat .pixelAvatar{
+  width:48px;
+  height:48px;
+}
+
+.gameSeat .pixelAvatar svg{
+  width:48px;
+  height:48px;
+}
+
+.gameSeat.currentActor .pixelAvatar{
+  filter:
+    drop-shadow(0 0 2px #fff)
+    drop-shadow(0 0 6px rgba(255,255,255,.9));
+}
+
+.gameSeat.folded{
+  opacity:.3;
+}
+
+.roleLine{
+  min-height:12px;
+  display:flex;
+  justify-content:center;
+  gap:2px;
+}
+
+.role{
+  min-width:15px;
+  padding:1px 3px;
+  border-radius:5px;
+  background:#eee;
+  color:#111;
+  font-size:6px;
+  font-weight:900;
+}
+
+.role.sb{
+  background:#badcff;
+}
+
+.role.bb{
+  background:#ffd28c;
+}
+
+
+/* ==========================================================
+   내 카드 테이블 위
+========================================================== */
+
+.myTableCards{
+  position:absolute;
+  z-index:20;
+  left:50%;
+  bottom:8%;
+  display:flex;
+  gap:3px;
+  transform:translateX(-50%);
+  cursor:pointer;
+}
+
+.myTableCards .pixelCard{
+  width:39px;
+  height:55px;
+  flex-basis:39px;
+  box-shadow:0 3px 7px rgba(0,0,0,.5);
+}
+
+.peekLabel{
+  position:absolute;
+  z-index:20;
+  left:50%;
+  bottom:2.5%;
+  transform:translateX(-50%);
+  color:#aaa;
+  font-size:7px;
+  white-space:nowrap;
+}
+
+
+/* ==========================================================
+   내 칩 트레이
+========================================================== */
+
+.chipTray{
+  margin-top:-3px;
+  padding:7px;
+  border:1px solid #292929;
+  border-radius:10px;
+  background:#101010;
+}
+
+.chipTrayHeader{
   display:flex;
   justify-content:space-between;
-  align-items:flex-start;
+  margin-bottom:5px;
 }
 
-.gameMinor{
-  color:#999;
-  font-size:12px;
+.chipTrayTitle{
+  color:#888;
+  font-size:9px;
 }
 
-.turnBox{
-  background:#202020;
-  border:1px solid #555;
-  border-radius:13px;
-  padding:13px;
-  text-align:center;
-  margin:12px 0;
+.chipTrayCount{
+  font-size:10px;
+  font-weight:900;
 }
 
-.turnName{
-  font-size:23px;
-  font-weight:bold;
-  margin-top:3px;
+.chipRows{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  max-height:73px;
+  overflow:hidden;
 }
 
-.actionArea{
-  background:#141414;
-  border:1px solid #444;
-  border-radius:14px;
-  padding:16px;
-  margin-top:14px;
+.chipRow{
+  display:flex;
+  gap:1px;
 }
 
-.actionStatus{
-  color:#aaa;
-  font-size:13px;
-  line-height:1.6;
-  margin-bottom:12px;
-  white-space:pre-line;
+.chipCoin{
+  width:9px;
+  height:9px;
+  flex:0 0 9px;
+  border:2px solid #ddd;
+  border-radius:50%;
+  background:#454545;
+  box-shadow:inset 0 0 0 1px #171717;
+  transition:
+    transform .12s ease,
+    background .12s ease;
 }
 
-.betControl{
+.chipCoin.selected{
+  transform:translateY(-5px);
+  background:#eee;
+}
+
+
+/* ==========================================================
+   행동 패널
+========================================================== */
+
+.waitStrip{
+  min-height:39px;
+  margin-top:6px;
+  padding:7px;
   display:flex;
   align-items:center;
-  gap:8px;
+  justify-content:center;
+  border:1px solid #303030;
+  border-radius:10px;
+  background:#141414;
+  color:#999;
+  font-size:10px;
 }
 
-.betControl button{
-  width:54px;
-  margin:0;
+.actionPanel{
+  margin-top:6px;
+  padding:7px;
+  border:1px solid #383838;
+  border-radius:11px;
+  background:#131313;
 }
 
-.betControl input{
-  flex:1;
-  margin:0;
+.actionNumbers{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:4px;
+  margin-bottom:5px;
+}
+
+.actionNumber{
+  padding:5px 2px;
   text-align:center;
-  font-weight:bold;
+  border-radius:7px;
+  background:#1d1d1d;
 }
+
+.actionNumberLabel{
+  color:#777;
+  font-size:7px;
+}
+
+.actionNumberValue{
+  margin-top:2px;
+  font-size:10px;
+  font-weight:900;
+}
+
+
+/* ==========================================================
+   ± 베팅
+========================================================== */
+
+.betAdjust{
+  display:grid;
+  grid-template-columns:40px 34px 1fr 34px 40px;
+  gap:3px;
+}
+
+.betAdjust button{
+  height:33px;
+  margin:0;
+  padding:0;
+  border-radius:17px;
+  font-size:10px;
+}
+
+.betAdjust input{
+  height:35px;
+  margin:0;
+  padding:0;
+  text-align:center;
+  font-size:15px;
+  font-weight:900;
+}
+
+.betMeta{
+  min-height:22px;
+  padding-top:4px;
+  color:#888;
+  text-align:center;
+  font-size:8px;
+  line-height:1.35;
+}
+
+
+/* ==========================================================
+   행동 원형 버튼 한 줄
+========================================================== */
 
 .actionButtons{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:10px;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+  margin-top:5px;
 }
 
-.actionButtons button{
+.actionCircle{
+  width:100%;
+  max-width:65px;
+  aspect-ratio:1;
+  justify-self:center;
   margin:0;
+  padding:3px;
+  border-radius:50%;
+  font-size:10px;
+}
+
+.actionCircle small{
+  display:block;
+  margin-top:1px;
+  font-size:7px;
 }
 
 .foldButton{
-  background:#562a2a;
+  background:#582929;
   color:#fff;
 }
 
@@ -674,212 +1026,124 @@ button:disabled{
   color:#111;
 }
 
-.gameUtilityButtons{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin:12px 0;
-}
-
-.gameUtilityButtons button{
-  margin:0;
-  font-size:13px;
-}
-
-.finishedBox{
-  text-align:center;
-  background:#16271a;
-  border:1px solid #365a3c;
-  border-radius:14px;
-  padding:18px;
-  margin-top:15px;
-}
-
-.finishedWinner{
-  font-size:25px;
-  font-weight:bold;
-  margin:6px 0 12px;
-}
-
-.resultPlayer{
-  background:#111;
-  border:1px solid #333;
-  border-radius:11px;
-  padding:11px;
-  margin-top:8px;
-}
-
-.resultWinner{
-  border-color:#739878;
-}
-
-.resultCards{
+.allInRow{
   display:flex;
-  gap:5px;
-  justify-content:center;
-  margin-top:7px;
+  justify-content:flex-end;
+  margin-top:4px;
 }
 
-.gameLeaveBox{
-  margin-top:22px;
-  padding-top:18px;
-  border-top:1px solid #333;
-}
-
-.gameLeaveHelp{
-  color:#777;
-  font-size:11px;
-  line-height:1.5;
-  text-align:center;
+.allInButton{
+  width:auto;
+  min-width:85px;
+  height:30px;
+  margin:0;
+  padding:0 10px;
+  border:1px solid #75639c;
+  border-radius:16px;
+  background:#40345d;
+  color:#fff;
+  font-size:9px;
 }
 
 
 /* ==========================================================
-   아바타 / 상점
+   룰북 / 힌트 플로팅
 ========================================================== */
 
-.avatarNickname{
-  text-align:center;
-  font-size:22px;
-  font-weight:bold;
-}
-
-.avatarHint{
-  color:#888;
-  text-align:center;
-  font-size:12px;
-  line-height:1.6;
-  margin-bottom:15px;
-}
-
-.avatarSlots{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-}
-
-.avatarSlot{
-  background:#1b1b1b;
-  border-radius:10px;
-  padding:11px;
-}
-
-.avatarSlotLabel{
-  color:#888;
-  font-size:10px;
-}
-
-.avatarSlotValue{
-  font-weight:bold;
-  margin-top:4px;
-  font-size:13px;
-}
-
-.avatarSlot button{
-  padding:8px;
-  margin-top:8px;
-  font-size:11px;
-}
-
-.avatarColorArea{
-  background:#181818;
-  border:1px solid #303030;
-  border-radius:12px;
-  padding:14px;
-  margin:15px 0 12px;
-}
-
-.avatarColorRow{
+.sideTools{
+  position:fixed;
+  z-index:700;
+  right:0;
+  top:33%;
   display:flex;
-  align-items:center;
-  gap:12px;
+  flex-direction:column;
+  gap:5px;
 }
 
-.avatarColorPicker{
-  width:58px;
-  height:42px;
-  padding:2px;
+.sideTool{
+  width:44px;
+  min-height:49px;
   margin:0;
+  padding:5px 2px;
+  border-radius:11px 0 0 11px;
   border:1px solid #555;
-  background:#111;
+  border-right:0;
+  background:#282828;
+  color:#fff;
+  font-size:9px;
 }
 
-.avatarColorInfo{
-  flex:1;
+.sideTool b{
+  display:block;
+  font-size:14px;
 }
 
-.avatarColorCode{
-  font-family:monospace;
-  font-size:15px;
-  font-weight:bold;
-}
-
-.avatarColorPrice{
-  color:#aaa;
-  font-size:11px;
-  margin-top:4px;
-}
-
-.shopCategoryTitle{
-  font-size:19px;
-  font-weight:bold;
-  margin:22px 0 10px;
-}
-
-.shopItem{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  background:#171717;
-  border:1px solid #303030;
-  border-radius:13px;
-  padding:12px;
-  margin-bottom:9px;
-}
-
-.shopAvatarPreview{
-  flex:0 0 auto;
-  width:58px;
-}
-
-.shopInfo{
-  flex:1;
-  min-width:0;
-}
-
-.shopName{
-  font-weight:bold;
-}
-
-.shopDescription{
-  color:#888;
-  font-size:11px;
-  margin-top:4px;
-  line-height:1.45;
-}
-
-.shopPrice{
-  margin-top:6px;
-  font-size:12px;
-  font-weight:bold;
-}
-
-.shopItem button{
-  width:auto;
-  flex:0 0 auto;
-  padding:9px 11px;
-  margin:0;
-  font-size:12px;
-}
-
-.equippedTag{
-  display:inline-block;
-  background:#e7e7e7;
+.sideTool.hint{
+  background:#eee;
   color:#111;
-  border-radius:20px;
-  padding:5px 8px;
-  font-size:10px;
-  font-weight:bold;
+}
+
+.drawerBackdrop{
+  position:fixed;
+  z-index:800;
+  inset:0;
+  background:rgba(0,0,0,.28);
+}
+
+.drawer{
+  position:fixed;
+  z-index:801;
+  top:0;
+  right:0;
+  width:min(78vw,370px);
+  height:100vh;
+  overflow-y:auto;
+  padding:17px 14px 30px;
+  background:#171717;
+  border-left:1px solid #444;
+  box-shadow:-10px 0 25px rgba(0,0,0,.6);
+}
+
+.drawerHeader{
+  position:sticky;
+  top:-17px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 0 7px;
+  margin-bottom:9px;
+  background:#171717;
+}
+
+.drawerTitle{
+  font-size:19px;
+  font-weight:900;
+}
+
+.drawerClose{
+  width:33px;
+  height:33px;
+  margin:0;
+  padding:0;
+  border-radius:50%;
+  background:#333;
+  color:#fff;
+}
+
+.drawerSection{
+  margin-bottom:7px;
+  padding:10px;
+  border:1px solid #303030;
+  border-radius:10px;
+  background:#101010;
+  font-size:11px;
+  line-height:1.5;
+}
+
+.drawerSection b{
+  display:block;
+  margin-bottom:3px;
+  font-size:12px;
 }
 
 
@@ -887,110 +1151,36 @@ button:disabled{
    은행
 ========================================================== */
 
-.balanceLabel{
-  color:#999;
-  font-size:12px;
-}
-
 .balanceValue{
-  font-size:27px;
-  font-weight:bold;
-  margin-top:4px;
-}
-
-.loanDanger{
-  color:#ff9898;
-}
-
-.interestInfo{
-  background:#171717;
-  border-radius:12px;
-  padding:13px;
-  color:#aaa;
-  font-size:12px;
-  line-height:1.7;
-  margin-bottom:14px;
-}
-
-.interestDanger{
-  background:#351d1d;
-  border:1px solid #673434;
-  color:#ffb1b1;
-}
-
-.bankTabs{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-bottom:12px;
-}
-
-.bankTabs button{
-  margin:0;
+  margin-top:3px;
+  font-size:24px;
+  font-weight:900;
 }
 
 .bankGrid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:8px;
+  gap:6px;
 }
 
 .bankGrid button{
   margin:0;
 }
 
-.bankActionTitle{
-  font-size:17px;
-  font-weight:bold;
-  margin-bottom:12px;
-}
-
-.transferRecipient{
-  background:#1d1d1d;
-  border-radius:10px;
-  padding:12px;
+.interestInfo{
   margin-bottom:10px;
-}
-
-.transferRecipientName{
-  font-weight:bold;
-  font-size:17px;
-}
-
-.transferRecipientHelp{
-  color:#888;
-  font-size:11px;
-  margin-top:4px;
-}
-
-.transferHistoryRow{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#181818;
+  padding:10px;
   border-radius:10px;
-  padding:11px;
-  margin-bottom:7px;
-}
-
-.transferHistoryName{
-  font-weight:bold;
-}
-
-.transferHistorySub{
-  color:#888;
+  background:#171717;
+  color:#aaa;
   font-size:11px;
-  margin-top:3px;
+  line-height:1.5;
 }
 
-.transferSent{
-  color:#ff9d9d;
-  font-weight:bold;
-}
-
-.transferReceived{
-  color:#a9ffb4;
-  font-weight:bold;
+.interestDanger{
+  border:1px solid #673434;
+  background:#351d1d;
+  color:#ffb1b1;
 }
 
 
@@ -998,103 +1188,95 @@ button:disabled{
    룰북
 ========================================================== */
 
-.ruleIntro{
-  color:#aaa;
-  line-height:1.7;
-  margin-bottom:18px;
-}
-
 .ruleSection{
-  background:#101010;
+  margin-bottom:9px;
+  padding:13px;
   border:1px solid #303030;
-  border-radius:14px;
-  padding:16px;
-  margin-bottom:11px;
-  line-height:1.65;
+  border-radius:11px;
+  background:#101010;
+  line-height:1.55;
 }
 
 .ruleNumber{
-  color:#888;
-  font-size:11px;
-  font-weight:bold;
+  color:#777;
+  font-size:9px;
+  font-weight:900;
 }
 
 .ruleTitle{
-  font-size:18px;
-  font-weight:bold;
-  margin:3px 0 8px;
-}
-
-.ruleExample{
-  background:#1b1b1b;
-  border-radius:10px;
-  padding:11px;
-  margin-top:10px;
-  color:#bbb;
-  font-size:12px;
-  line-height:1.6;
-}
-
-.handRankRow{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:10px 0;
-  border-bottom:1px solid #292929;
-}
-
-.handRankRow:last-child{
-  border-bottom:0;
-}
-
-.handRankName{
-  font-weight:bold;
-}
-
-.handRankExample{
-  font-family:monospace;
-  color:#aaa;
-  font-size:12px;
-  text-align:right;
+  margin:2px 0 6px;
+  font-size:16px;
+  font-weight:900;
 }
 
 
 /* ==========================================================
-   팝업
+   모달
 ========================================================== */
 
 .modalBackdrop{
   position:fixed;
+  z-index:1000;
   inset:0;
-  background:rgba(0,0,0,.78);
   display:flex;
   justify-content:center;
   align-items:center;
-  padding:20px;
-  z-index:1000;
+  padding:18px;
+  background:rgba(0,0,0,.78);
 }
 
 .modal{
-  width:min(92%,430px);
-  max-height:84vh;
+  width:min(92%,420px);
+  max-height:82vh;
   overflow-y:auto;
-  background:#1c1c1c;
+  padding:18px;
   border:1px solid #444;
-  border-radius:18px;
-  padding:21px;
+  border-radius:16px;
+  background:#1c1c1c;
 }
 
 .modalClose{
   float:right;
   width:auto;
-  padding:6px 10px;
   margin:0;
+  padding:5px 9px;
   background:#333;
   color:#fff;
 }
 
+
+/* ==========================================================
+   작은 화면
+========================================================== */
+
+@media(max-width:390px){
+
+  .gameTableArea{
+    height:365px;
+  }
+
+  .gameSeat .pixelAvatar{
+    width:43px;
+    height:43px;
+  }
+
+  .gameSeat .pixelAvatar svg{
+    width:43px;
+    height:43px;
+  }
+
+  .chipCoin{
+    width:8px;
+    height:8px;
+    flex-basis:8px;
+  }
+
+}
+
 </style>
+
 </head>
+
 
 <body>
 
@@ -1105,7 +1287,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.13.0
+v0.14.0
 </div>
 
 <div class="subtitle">
@@ -1117,7 +1299,10 @@ v0.13.0
      로그인
 ===================================================== -->
 
-<div id="loginScreen" class="card">
+<div
+id="loginScreen"
+class="card"
+>
 
 <h2>로그인</h2>
 
@@ -1169,8 +1354,8 @@ class="card hidden"
 <input
 id="signupNickname"
 type="text"
-placeholder="닉네임"
 maxlength="20"
+placeholder="닉네임"
 >
 
 <input
@@ -1229,7 +1414,7 @@ class="accountName"
 id="homePer"
 class="accountPer"
 >
-0 퍼
+0퍼
 </div>
 
 </div>
@@ -1254,7 +1439,7 @@ onclick="showAvatar()"
 >
 내 아바타
 <small>
-털 색과 보유한 파츠를 꾸밉니다.
+털 색과 귀, 눈, 코를 꾸밉니다.
 </small>
 </button>
 
@@ -1324,7 +1509,7 @@ onclick="showCreateRoom()"
 >
 방 만들기
 <small>
-칩 가치와 블라인드를 설정해 새 테이블을 만듭니다.
+칩 가치와 블라인드를 설정합니다.
 </small>
 </button>
 
@@ -1334,7 +1519,7 @@ onclick="showJoinRoom()"
 >
 방 참가
 <small>
-현재 참가 가능한 테이블을 확인합니다.
+현재 열려 있는 테이블을 확인합니다.
 </small>
 </button>
 
@@ -1366,22 +1551,19 @@ onclick="showGameMenu()"
 <input
 id="createRoomName"
 type="text"
-placeholder="방 이름을 입력하세요"
 maxlength="30"
+placeholder="방 이름"
 >
 
-<label
-id="chipValueLabel"
-class="fieldLabel"
->
-칩 가치 (100칩 = 1,000퍼)
+<label class="fieldLabel">
+1칩의 가치
 </label>
 
 <input
 id="createChipValue"
 type="number"
-value="10"
 min="1"
+value="10"
 oninput="updateChipPreview()"
 >
 
@@ -1399,8 +1581,8 @@ class="fieldHelp"
 <input
 id="createMinBuyin"
 type="number"
-value="50"
 min="1"
+value="50"
 >
 
 <label class="fieldLabel">
@@ -1410,8 +1592,8 @@ min="1"
 <input
 id="createMaxBuyin"
 type="number"
-value="100"
 min="1"
+value="100"
 oninput="updateChipPreview()"
 >
 
@@ -1419,38 +1601,33 @@ oninput="updateChipPreview()"
 id="maxBuyinPreview"
 class="fieldHelp"
 >
-최대 환전 시 1,000퍼 필요
+-
 </div>
 
 <div class="sectionLine"></div>
 
 <h3>블라인드</h3>
 
-<div class="fieldHelp">
-매 판 자동으로 지정되는 강제 베팅입니다.
-방 설정은 게임이 시작되면 변경할 수 없습니다.
-</div>
-
 <label class="fieldLabel">
-스몰 블라인드 · SB
+SB
 </label>
 
 <input
 id="createSmallBlind"
 type="number"
-value="1"
 min="1"
+value="1"
 >
 
 <label class="fieldLabel">
-빅 블라인드 · BB
+BB
 </label>
 
 <input
 id="createBigBlind"
 type="number"
-value="2"
 min="2"
+value="2"
 >
 
 <button
@@ -1523,35 +1700,116 @@ class="card hidden"
 id="lobbyRoomCode"
 class="roomCode"
 >
-------
+-
 </div>
 
 <div
 id="lobbyRoomSettings"
 class="roomInfo"
-></div>
+>
+</div>
 
 </div>
 
-<h3>자리 선택</h3>
 
-<div class="tableGuide">
-빈자리를 선택하세요.<br>
-게임의 행동 순서는 테이블의 시계 방향으로 진행됩니다.
+<div class="lobbyBlindBox">
+
+<div class="blindHeader">
+
+<div>
+
+<div class="smallLabel">
+현재 블라인드
 </div>
 
 <div
-id="lobbyPokerTable"
-class="pokerTableWrap"
+id="lobbyBlindValue"
+class="blindValue"
+>
+SB 1 · BB 2
+</div>
+
+</div>
+
+<div
+id="blindHostLabel"
+class="smallLabel hidden"
+>
+방장 설정
+</div>
+
+</div>
+
+
+<div
+id="blindEditArea"
+class="hidden"
+>
+
+<div class="blindEdit">
+
+<div>
+
+<div class="smallLabel">
+SB
+</div>
+
+<input
+id="lobbySmallBlind"
+type="number"
+min="1"
+>
+
+</div>
+
+<div>
+
+<div class="smallLabel">
+BB
+</div>
+
+<input
+id="lobbyBigBlind"
+type="number"
+min="2"
+>
+
+</div>
+
+</div>
+
+<button
+class="secondary"
+onclick="saveLobbyBlinds()"
+>
+블라인드 변경
+</button>
+
+<div
+id="blindMessage"
+class="fieldHelp"
+style="margin-top:6px"
 ></div>
+
+</div>
+
+</div>
+
+
+<h3>자리 선택</h3>
+
+<div
+id="lobbyPokerArea"
+class="pokerArea"
+>
+</div>
+
 
 <div class="exchangeBox">
 
-<h3>게임 칩 준비</h3>
+<div style="display:flex;justify-content:space-between">
 
-<div class="exchangeSummary">
-
-<div class="smallStat">
+<div>
 
 <div class="smallLabel">
 보유 퍼
@@ -1566,7 +1824,7 @@ class="smallValue"
 
 </div>
 
-<div class="smallStat">
+<div style="text-align:right">
 
 <div class="smallLabel">
 게임 칩
@@ -1584,46 +1842,22 @@ class="smallValue"
 </div>
 
 <label class="fieldLabel">
-게임에서 사용할 칩 수
+준비할 칩 수
 </label>
 
 <input
 id="targetChipInput"
 type="number"
-value="0"
 min="0"
+value="0"
 oninput="updateExchangePreview()"
 >
 
-<div class="quickButtons">
-
-<button
-class="secondary"
-onclick="setTargetMin()"
->
-최소
-</button>
-
-<button
-class="secondary"
-onclick="setTargetMax()"
->
-최대
-</button>
-
-<button
-class="secondary"
-onclick="setTargetZero()"
->
-모두 퍼로
-</button>
-
-</div>
-
 <div
 id="exchangePreview"
-class="preview"
-></div>
+class="fieldHelp"
+>
+</div>
 
 <button
 class="primary"
@@ -1634,9 +1868,11 @@ onclick="exchangeChips()"
 
 </div>
 
+
 <div
 id="allReadyNotice"
-class="allReady hidden"
+class="fieldHelp hidden"
+style="text-align:center"
 >
 모든 플레이어가 준비되었습니다.
 </div>
@@ -1652,7 +1888,6 @@ onclick="toggleReady()"
 <button
 id="startGameButton"
 class="primary hidden"
-disabled
 onclick="startGame()"
 >
 게임 시작
@@ -1678,7 +1913,7 @@ onclick="destroyRoom()"
 
 
 <!-- =====================================================
-     클래식 홀덤 게임 화면
+     게임
 ===================================================== -->
 
 <div
@@ -1686,193 +1921,250 @@ id="gameScreen"
 class="card hidden"
 >
 
-<div class="gameHeader">
+<div class="gameTop">
 
 <div>
 
-<h2 style="margin-bottom:3px">
-텍사스 홀덤
-</h2>
+<div class="gameTopTitle">
+
+HOLDEM
+
+<span
+id="gameStreet"
+class="streetBadge"
+>
+-
+</span>
+
+</div>
 
 <div
 id="gameHandNumber"
-class="gameMinor"
+class="gameTopSub"
 >
 -
 </div>
 
 </div>
 
+<div class="topPot">
+
+<div class="topPotLabel">
+POT
+</div>
+
 <div
-id="gameStreet"
-class="gameMinor"
+id="gameTopPot"
+class="topPotNumber"
 >
--
+0
 </div>
 
 </div>
 
+</div>
 
-<div class="roundInfo">
 
-<div class="smallStat">
+<div
+id="gameTableArea"
+class="gameTableArea"
+>
 
-<div class="smallLabel">
-현재 기준 베팅
+<div class="gameTable">
+
+<div class="gameTableCenter">
+
+<div
+id="communityCards"
+class="communityCards"
+>
+</div>
+
+<div class="potArea">
+
+<div
+id="potCoins"
+class="potCoins"
+>
 </div>
 
 <div
-id="gameCurrentBet"
-class="smallValue"
+id="potText"
+class="potText"
 >
 0칩
 </div>
 
 </div>
 
-<div class="smallStat">
-
-<div class="smallLabel">
-베팅 상한
 </div>
 
+</div>
+
+
 <div
-id="gameHandCap"
-class="smallValue"
+id="gameSeats"
 >
-0칩
-</div>
-
-</div>
-
 </div>
 
 
 <div
-id="gamePokerTable"
-class="pokerTableWrap"
-></div>
-
-
-<div
-id="turnSection"
-class="turnBox hidden"
->
-
-<div>
-현재 차례
-</div>
-
-<div
-id="turnName"
-class="turnName"
->
--
-</div>
-
-</div>
-
-
-<div class="myCardsArea">
-
-<div class="smallLabel">
-내 홀카드
-</div>
-
-<div
-id="myCards"
-class="myCards"
-></div>
-
-<div
-id="cardPeekHelp"
-class="cardPeekHelp"
->
-카드는 기본적으로 가려져 있습니다.
-</div>
-
-<button
-id="peekCardsButton"
-class="secondary cardPeekButton"
+id="myTableCards"
+class="myTableCards"
 onclick="toggleMyCards()"
 >
-내 카드 보기
-</button>
+</div>
+
+<div
+id="peekLabel"
+class="peekLabel"
+>
+카드를 눌러 확인
+</div>
 
 </div>
 
 
-<div class="gameUtilityButtons">
+<div class="chipTray">
 
-<button
-class="secondary"
-onclick="showGameRulebook()"
->
-룰북
-</button>
+<div class="chipTrayHeader">
 
-<button
-class="secondary"
-onclick="showHint()"
+<div class="chipTrayTitle">
+내 칩
+</div>
+
+<div
+id="chipTrayCount"
+class="chipTrayCount"
 >
-힌트 보기
-</button>
+0칩
+</div>
+
+</div>
+
+<div
+id="chipRows"
+class="chipRows"
+>
+</div>
 
 </div>
 
 
 <div
-id="actionArea"
-class="actionArea hidden"
+id="waitStrip"
+class="waitStrip hidden"
 >
-
-<h3>내 행동</h3>
-
-<div
-id="actionStatus"
-class="actionStatus"
->
--
+다른 플레이어의 행동을 기다리고 있습니다.
 </div>
 
-<div class="betControl">
+
+<div
+id="actionPanel"
+class="actionPanel hidden"
+>
+
+<div class="actionNumbers">
+
+<div class="actionNumber">
+
+<div class="actionNumberLabel">
+현재 베팅
+</div>
+
+<div
+id="uiCurrentBet"
+class="actionNumberValue"
+>
+0
+</div>
+
+</div>
+
+<div class="actionNumber">
+
+<div class="actionNumberLabel">
+이미 냄
+</div>
+
+<div
+id="uiMyBet"
+class="actionNumberValue"
+>
+0
+</div>
+
+</div>
+
+<div class="actionNumber">
+
+<div class="actionNumberLabel">
+콜 추가
+</div>
+
+<div
+id="uiCall"
+class="actionNumberValue"
+>
+0
+</div>
+
+</div>
+
+</div>
+
+
+<div class="betAdjust">
 
 <button
 class="secondary"
-onclick="changeRaise(-1)"
+onclick="changeBet(-10)"
 >
-−
+−10
+</button>
+
+<button
+class="secondary"
+onclick="changeBet(-1)"
+>
+−1
 </button>
 
 <input
-id="raiseInput"
+id="betInput"
 type="number"
 value="0"
-min="0"
-oninput="updateRaisePreview()"
+oninput="onBetInput()"
 >
 
 <button
 class="secondary"
-onclick="changeRaise(1)"
+onclick="changeBet(1)"
 >
-＋
++1
+</button>
+
+<button
+class="secondary"
+onclick="changeBet(10)"
+>
++10
 </button>
 
 </div>
 
 <div
-id="raisePreview"
-class="preview"
+id="betMeta"
+class="betMeta"
 >
--
 </div>
+
 
 <div class="actionButtons">
 
 <button
 id="foldButton"
-class="foldButton"
+class="actionCircle foldButton"
 onclick="doAction('fold')"
 >
 폴드
@@ -1880,7 +2172,7 @@ onclick="doAction('fold')"
 
 <button
 id="checkButton"
-class="checkButton"
+class="actionCircle checkButton"
 onclick="doAction('check')"
 >
 체크
@@ -1888,18 +2180,34 @@ onclick="doAction('check')"
 
 <button
 id="callButton"
-class="callButton"
+class="actionCircle callButton"
 onclick="doAction('call')"
 >
 콜
+<small id="callSub"></small>
 </button>
 
 <button
 id="raiseButton"
-class="raiseButton"
+class="actionCircle raiseButton"
 onclick="doRaise()"
 >
+<span id="raiseLabel">
 레이즈
+</span>
+</button>
+
+</div>
+
+
+<div class="allInRow">
+
+<button
+id="allInButton"
+class="allInButton"
+onclick="setAllIn()"
+>
+올인
 </button>
 
 </div>
@@ -1909,28 +2217,28 @@ onclick="doRaise()"
 
 <div
 id="finishedSection"
-class="finishedBox hidden"
+class="hidden"
+style="margin-top:7px;text-align:center"
 >
 
 <div class="smallLabel">
-이번 판 결과
+이번 판 승자
 </div>
 
 <div
 id="finishedWinner"
-class="finishedWinner"
+style="font-size:20px;font-weight:900;margin:4px 0"
 >
 -
 </div>
 
 <div
 id="finishedReason"
-class="actionStatus"
-></div>
+class="fieldHelp"
+>
+</div>
 
-<div
-id="finishedResults"
-></div>
+<div id="finishedResults"></div>
 
 <button
 class="primary"
@@ -1942,15 +2250,9 @@ onclick="returnToLobby()"
 </div>
 
 
-<div class="gameLeaveBox">
-
-<div class="gameLeaveHelp">
-게임 도중 나가면 현재 판에서 폴드 처리됩니다.<br>
-이미 팟에 들어간 칩은 돌려받지 못합니다.
-</div>
-
 <button
 class="danger"
+style="padding:8px;font-size:10px"
 onclick="leaveDuringGame()"
 >
 게임 포기하고 나가기
@@ -1958,7 +2260,73 @@ onclick="leaveDuringGame()"
 
 </div>
 
+
+<!-- =====================================================
+     게임 오른쪽 탭
+===================================================== -->
+
+<div
+id="sideTools"
+class="sideTools hidden"
+>
+
+<button
+class="sideTool"
+onclick="openRuleDrawer()"
+>
+<b>?</b>
+룰북
+</button>
+
+<button
+class="sideTool hint"
+onclick="openHintDrawer()"
+>
+<b>!</b>
+힌트
+</button>
+
 </div>
+
+
+<div
+id="drawerBackdrop"
+class="drawerBackdrop hidden"
+onclick="closeDrawer()"
+>
+</div>
+
+<div
+id="drawer"
+class="drawer hidden"
+>
+
+<div class="drawerHeader">
+
+<div
+id="drawerTitle"
+class="drawerTitle"
+>
+-
+</div>
+
+<button
+class="drawerClose"
+onclick="closeDrawer()"
+>
+×
+</button>
+
+</div>
+
+<div
+id="drawerContent"
+>
+</div>
+
+</div>
+
+
 <!-- =====================================================
      내 아바타
 ===================================================== -->
@@ -1987,16 +2355,17 @@ class="avatarNickname"
 </div>
 
 <div class="avatarHint">
-처음에는 털색과 기본 점눈만 가진 털복숭이로 시작합니다.<br>
-상점에서 귀, 눈, 코를 구매해 원하는 모습으로 꾸밀 수 있습니다.
+털복숭이 본체는 그대로 두고 귀, 눈, 코와 털 색을 꾸밀 수 있습니다.
 </div>
 
 <div
-id="myAvatarPreview"
+id="avatarLarge"
 class="pixelAvatar pixelAvatarLarge"
-></div>
+>
+</div>
 
-<div class="avatarColorArea">
+
+<div class="avatarColorBox">
 
 <div class="avatarColorRow">
 
@@ -2008,7 +2377,7 @@ value="#C89B61"
 oninput="previewAvatarColor()"
 >
 
-<div class="avatarColorInfo">
+<div class="avatarColorText">
 
 <div class="smallLabel">
 털 색
@@ -2021,8 +2390,8 @@ class="avatarColorCode"
 #C89B61
 </div>
 
-<div class="avatarColorPrice">
-색 변경 1회 · 100퍼
+<div class="fieldHelp" style="margin:2px 0 0">
+변경 1회 · 100퍼
 </div>
 
 </div>
@@ -2031,33 +2400,34 @@ class="avatarColorCode"
 
 <button
 class="secondary"
-onclick="changeAvatarColor()"
+onclick="saveAvatarColor()"
 >
 이 색으로 변경 · 100퍼
 </button>
 
 </div>
 
+
 <div class="avatarSlots">
 
 <div class="avatarSlot">
 
-<div class="avatarSlotLabel">
+<div class="smallLabel">
 귀
 </div>
 
 <div
-id="equippedEarName"
-class="avatarSlotValue"
+id="avatarEarName"
+class="avatarSlotName"
 >
 귀 없음
 </div>
 
 <button
 class="secondary"
-onclick="unequipAvatarPart('ear')"
+onclick="resetAvatarPart('ears')"
 >
-귀 떼기
+떼기
 </button>
 
 </div>
@@ -2065,22 +2435,22 @@ onclick="unequipAvatarPart('ear')"
 
 <div class="avatarSlot">
 
-<div class="avatarSlotLabel">
+<div class="smallLabel">
 눈
 </div>
 
 <div
-id="equippedEyeName"
-class="avatarSlotValue"
+id="avatarEyeName"
+class="avatarSlotName"
 >
 기본 점눈
 </div>
 
 <button
 class="secondary"
-onclick="equipDefaultEyes()"
+onclick="resetAvatarPart('eyes')"
 >
-기본 눈
+기본
 </button>
 
 </div>
@@ -2088,22 +2458,22 @@ onclick="equipDefaultEyes()"
 
 <div class="avatarSlot">
 
-<div class="avatarSlotLabel">
+<div class="smallLabel">
 코
 </div>
 
 <div
-id="equippedNoseName"
-class="avatarSlotValue"
+id="avatarNoseName"
+class="avatarSlotName"
 >
 코 없음
 </div>
 
 <button
 class="secondary"
-onclick="unequipAvatarPart('nose')"
+onclick="resetAvatarPart('nose')"
 >
-코 떼기
+떼기
 </button>
 
 </div>
@@ -2116,7 +2486,7 @@ onclick="unequipAvatarPart('nose')"
 class="primary"
 onclick="showShop()"
 >
-상점에서 꾸미기
+상점으로
 </button>
 
 <div
@@ -2145,38 +2515,22 @@ onclick="showHome()"
 
 <h2>상점</h2>
 
-<div class="balanceBox">
+<div class="accountBar">
 
-<div class="balanceLabel">
+<div>
 보유 퍼
 </div>
 
 <div
-id="shopPer"
-class="balanceValue"
+id="shopBalance"
+class="accountPer"
 >
 0퍼
 </div>
 
 </div>
 
-<div class="shopCategoryTitle">
-귀
-</div>
-
-<div id="shopEarList"></div>
-
-<div class="shopCategoryTitle">
-눈
-</div>
-
-<div id="shopEyeList"></div>
-
-<div class="shopCategoryTitle">
-코
-</div>
-
-<div id="shopNoseList"></div>
+<div id="shopItems"></div>
 
 <div
 id="shopMessage"
@@ -2206,12 +2560,12 @@ onclick="showHome()"
 
 <div class="balanceBox">
 
-<div class="balanceLabel">
+<div class="smallLabel">
 보유 퍼
 </div>
 
 <div
-id="bankWallet"
+id="bankBalance"
 class="balanceValue"
 >
 0퍼
@@ -2221,7 +2575,7 @@ class="balanceValue"
 
 <div class="balanceBox">
 
-<div class="balanceLabel">
+<div class="smallLabel">
 예금
 </div>
 
@@ -2236,13 +2590,13 @@ class="balanceValue"
 
 <div class="balanceBox">
 
-<div class="balanceLabel">
-대출금
+<div class="smallLabel">
+대출
 </div>
 
 <div
 id="bankLoan"
-class="balanceValue loanDanger"
+class="balanceValue"
 >
 0퍼
 </div>
@@ -2250,174 +2604,92 @@ class="balanceValue loanDanger"
 </div>
 
 <div
-id="bankInterestInfo"
+id="bankInterest"
 class="interestInfo"
 >
--
 </div>
 
-<div class="bankTabs">
+<div class="bankBox">
+
+<input
+id="bankAmount"
+type="number"
+min="1"
+placeholder="금액"
+>
+
+<div class="bankGrid">
 
 <button
-class="secondary"
-onclick="showBankAction('deposit')"
+class="primary"
+onclick="bankDeposit()"
 >
 예금
 </button>
 
 <button
 class="secondary"
-onclick="showBankAction('withdraw')"
+onclick="bankWithdraw()"
 >
 출금
 </button>
 
 <button
-class="secondary"
-onclick="showBankAction('loan')"
+class="primary"
+onclick="bankBorrow()"
 >
 대출
 </button>
 
 <button
 class="secondary"
-onclick="showBankAction('repay')"
+onclick="bankRepay()"
 >
 상환
 </button>
 
 </div>
 
-<div
-id="bankActionPanel"
-class="bankActionBox hidden"
->
-
-<div
-id="bankActionTitle"
-class="bankActionTitle"
->
--
 </div>
 
-<input
-id="bankAmountInput"
-type="number"
-min="1"
-placeholder="금액"
->
-
-<div class="quickButtons">
-
-<button
-class="secondary"
-onclick="setBankAmount(100)"
->
-100
-</button>
-
-<button
-class="secondary"
-onclick="setBankAmount(500)"
->
-500
-</button>
-
-<button
-class="secondary"
-onclick="setBankAmount(1000)"
->
-1,000
-</button>
-
-</div>
-
-<button
-id="bankActionButton"
-class="primary"
-onclick="executeBankAction()"
->
-확인
-</button>
-
-</div>
-
-
-<div class="sectionLine"></div>
+<div class="bankBox">
 
 <h3>송금</h3>
 
-<div class="transferBox">
-
-<label class="fieldLabel">
-받는 사람
-</label>
-
 <input
-id="transferNicknameInput"
+id="transferNickname"
 type="text"
-placeholder="닉네임"
-oninput="clearTransferRecipient()"
+placeholder="받는 사람 닉네임"
 >
 
 <button
 class="secondary"
-onclick="findTransferRecipient()"
+onclick="findRecipient()"
 >
 받는 사람 확인
 </button>
 
 <div
-id="transferRecipientBox"
-class="transferRecipient hidden"
+id="recipientText"
+class="fieldHelp"
 >
-
-<div
-id="transferRecipientName"
-class="transferRecipientName"
->
--
 </div>
-
-<div class="transferRecipientHelp">
-닉네임이 맞는지 확인해주세요.
-</div>
-
-</div>
-
-<label class="fieldLabel">
-보낼 퍼
-</label>
 
 <input
-id="transferAmountInput"
+id="transferAmount"
 type="number"
 min="1"
-placeholder="금액"
+placeholder="송금할 퍼"
 >
 
 <button
 class="primary"
 onclick="sendTransfer()"
 >
-송금하기
+송금
 </button>
 
 </div>
-
-<h3>최근 송금</h3>
-
-<button
-class="secondary"
-onclick="loadTransferHistory()"
->
-새로고침
-</button>
-
-<div
-id="transferHistory"
-style="margin-top:12px"
-></div>
 
 <div
 id="bankMessage"
@@ -2445,384 +2717,21 @@ onclick="showHome()"
 
 <h2>텍사스 홀덤 룰북</h2>
 
-<div class="ruleIntro">
-HOLDEM A는 클래식 텍사스 홀덤을 기반으로 합니다.<br>
-사이드 팟 대신 HOLDEM A만의 베팅 상한 규칙을 사용합니다.
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">01</div>
-
-<div class="ruleTitle">
-게임의 목표
-</div>
-
-각 플레이어는 자신만 볼 수 있는 홀카드 2장을 받습니다.
-
-테이블 중앙에는 모든 플레이어가 함께 사용하는 공용 카드가 최대 5장까지 공개됩니다.
-
-자신의 카드와 공용 카드를 합친 최대 7장 가운데
-가장 강한 5장 조합으로 승부합니다.
-
-<div class="ruleExample">
-내 카드 2장을 반드시 모두 사용할 필요는 없습니다.<br>
-0장, 1장 또는 2장을 사용할 수 있습니다.
-</div>
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">02</div>
-
-<div class="ruleTitle">
-딜러 버튼 · D
-</div>
-
-매 판 한 플레이어에게 딜러 버튼(D)이 주어집니다.
-
-한 판이 끝날 때마다 D는 시계 방향의 다음 참가자에게 이동합니다.
-
-D의 위치를 기준으로 SB, BB와 행동 순서가 정해집니다.
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">03</div>
-
-<div class="ruleTitle">
-SB와 BB
-</div>
-
-방을 만들 때 방장이
-스몰 블라인드(SB)와 빅 블라인드(BB)의 크기를 정합니다.
-
-3명 이상에서는 D의 왼쪽 첫 번째 플레이어가 SB,
-그 다음 플레이어가 BB입니다.
-
-SB와 BB는 판이 시작될 때 해당 칩을 자동으로 베팅합니다.
-
-<div class="ruleExample">
-SB 1칩 / BB 2칩이라면<br>
-SB는 1칩, BB는 2칩을 자동으로 냅니다.
-</div>
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">04</div>
-
-<div class="ruleTitle">
-2인 게임
-</div>
-
-2명만 플레이할 때는 D가 동시에 SB가 됩니다.
-
-상대 플레이어가 BB입니다.
-
-프리플랍에서는 D·SB가 먼저 행동하고,
-플랍부터는 BB 쪽 플레이어가 먼저 행동합니다.
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">05</div>
-
-<div class="ruleTitle">
-프리플랍
-</div>
-
-모든 플레이어가 홀카드 2장을 받은 상태에서 진행되는
-첫 번째 베팅 라운드입니다.
-
-3명 이상에서는 BB의 왼쪽 플레이어부터 시작해
-시계 방향으로 행동합니다.
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">06</div>
-
-<div class="ruleTitle">
-플랍
-</div>
-
-프리플랍 베팅이 끝나면
-공용 카드 3장이 한꺼번에 공개됩니다.
-
-이 3장을 플랍이라고 합니다.
-
-그 뒤 다시 베팅합니다.
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">07</div>
-
-<div class="ruleTitle">
-턴
-</div>
-
-플랍 베팅이 끝나면
-네 번째 공용 카드 1장이 추가로 공개됩니다.
-
-이 카드를 턴이라고 합니다.
-
-이후 다시 베팅합니다.
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">08</div>
-
-<div class="ruleTitle">
-리버
-</div>
-
-턴 베팅이 끝나면
-마지막 다섯 번째 공용 카드가 공개됩니다.
-
-이 카드를 리버라고 합니다.
-
-리버 공개 후 마지막 베팅을 진행합니다.
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">09</div>
-
-<div class="ruleTitle">
-체크 · 콜 · 레이즈 · 폴드
-</div>
-
-<b>체크</b><br>
-추가로 따라가야 할 베팅이 없을 때 칩을 더 내지 않고 차례를 넘깁니다.
-
-<br><br>
-
-<b>콜</b><br>
-현재 기준 베팅까지 필요한 칩을 추가로 냅니다.
-
-<br><br>
-
-<b>레이즈</b><br>
-현재 기준 베팅보다 더 높은 금액으로 베팅을 올립니다.
-
-<br><br>
-
-<b>폴드</b><br>
-이번 판을 포기합니다.
-이미 팟에 들어간 칩은 돌려받지 못합니다.
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">10</div>
-
-<div class="ruleTitle">
-팟
-</div>
-
-플레이어들이 현재 판에서 베팅한 칩이 모이는 곳을
-<b>팟(Pot)</b>이라고 합니다.
-
-판의 승자는 팟에 모인 칩을 가져갑니다.
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">11</div>
-
-<div class="ruleTitle">
-HOLDEM A의 베팅 상한
-</div>
-
-HOLDEM A에서는 사이드 팟을 사용하지 않습니다.
-
-현재 판에 참여하고 있으며 아직 폴드하지 않은 플레이어 중
-<b>가장 적은 총 가용 칩</b>이
-현재 판에서 한 플레이어가 넣을 수 있는 최대 총 베팅액이 됩니다.
-
-총 가용 칩은
-현재 손에 남아 있는 칩과 이번 판에 이미 베팅한 칩을 합쳐 계산합니다.
-
-플레이어가 폴드하면 그 사람은 상한 계산에서 제외되고,
-남은 플레이어 기준으로 상한이 다시 계산됩니다.
-
-<div class="ruleExample">
-A = 총 가용 30칩<br>
-B = 총 가용 70칩<br>
-C = 총 가용 100칩
-<br><br>
-세 명이 모두 살아 있다면 최대 총 베팅은 30칩입니다.
-<br><br>
-A가 폴드하면 상한은 70칩으로 올라갑니다.
-</div>
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">12</div>
-
-<div class="ruleTitle">
-폴드와 카드 공개
-</div>
-
-폴드한 플레이어의 홀카드는 다른 사람에게 공개되지 않습니다.
-
-폴드한 본인은 자신의 카드를 다시 확인할 수 있지만
-다른 플레이어에게는 계속 뒷면입니다.
-
-한 명을 제외한 모두가 폴드하면
-마지막 플레이어가 즉시 승리합니다.
-
-이때 승자의 홀카드도 공개하지 않습니다.
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">13</div>
-
-<div class="ruleTitle">
-쇼다운
-</div>
-
-리버의 마지막 베팅까지 끝났는데
-2명 이상이 남아 있다면 쇼다운을 진행합니다.
-
-서버가 남아 있는 플레이어들의 최종 5장 패를 비교해
-승자를 판정합니다.
-
-완전히 같은 최종 패라면 공동 승리하며 팟을 나누어 가집니다.
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">14</div>
-
-<div class="ruleTitle">
-족보 · 강한 순서
-</div>
-
-<div class="handRankRow">
-<div class="handRankName">1. 로열 플러시</div>
-<div class="handRankExample">10 J Q K A · 같은 무늬</div>
-</div>
-
-<div class="handRankRow">
-<div class="handRankName">2. 스트레이트 플러시</div>
-<div class="handRankExample">연속 5장 · 같은 무늬</div>
-</div>
-
-<div class="handRankRow">
-<div class="handRankName">3. 포카드</div>
-<div class="handRankExample">같은 숫자 4장</div>
-</div>
-
-<div class="handRankRow">
-<div class="handRankName">4. 풀하우스</div>
-<div class="handRankExample">트리플 + 원페어</div>
-</div>
-
-<div class="handRankRow">
-<div class="handRankName">5. 플러시</div>
-<div class="handRankExample">같은 무늬 5장</div>
-</div>
-
-<div class="handRankRow">
-<div class="handRankName">6. 스트레이트</div>
-<div class="handRankExample">연속 숫자 5장</div>
-</div>
-
-<div class="handRankRow">
-<div class="handRankName">7. 트리플</div>
-<div class="handRankExample">같은 숫자 3장</div>
-</div>
-
-<div class="handRankRow">
-<div class="handRankName">8. 투페어</div>
-<div class="handRankExample">서로 다른 페어 2개</div>
-</div>
-
-<div class="handRankRow">
-<div class="handRankName">9. 원페어</div>
-<div class="handRankExample">같은 숫자 2장</div>
-</div>
-
-<div class="handRankRow">
-<div class="handRankName">10. 하이카드</div>
-<div class="handRankExample">완성 조합이 없을 때</div>
-</div>
-
-</div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">15</div>
-
-<div class="ruleTitle">
-힌트
-</div>
-
-게임 중 힌트는 횟수 제한 없이 사용할 수 있습니다.
-
-힌트는 현재 공개된 카드 기준으로
-<b>이미 완성된 자신의 족보 이름만</b> 알려줍니다.
-
-앞으로 어떤 카드가 나오면 패가 완성되는지,
-승률이 얼마인지,
-어떤 행동이 좋은지,
-얼마를 베팅하는 것이 좋은지는 알려주지 않습니다.
-
-족보의 의미나 패의 위계가 궁금하다면 룰북을 확인해야 합니다.
-
-</div>
+<div id="fullRules"></div>
 
 </div>
 
 
 <!-- =====================================================
-     팝업
+     모달
 ===================================================== -->
 
 <div
 id="modalBackdrop"
 class="modalBackdrop hidden"
-onclick="backdropClose(event)"
 >
 
-<div
-class="modal"
-onclick="event.stopPropagation()"
->
+<div class="modal">
 
 <button
 class="modalClose"
@@ -2831,13 +2740,13 @@ onclick="closeModal()"
 ×
 </button>
 
-<h2 id="modalTitle">
--
-</h2>
+<h3 id="modalTitle">
+안내
+</h3>
 
 <div
-id="modalContent"
-style="line-height:1.7"
+id="modalText"
+style="white-space:pre-line;line-height:1.5"
 >
 </div>
 
@@ -2848,36 +2757,24 @@ style="line-height:1.7"
 
 <script>
 
-/* ==========================================================
-   앱 버전
-========================================================== */
-
 const APP_VERSION =
-"v0.13.0";
+"v0.14.0";
 
-
-/* ==========================================================
-   Supabase
-========================================================== */
 
 const SUPABASE_URL =
 "https://wuvbsntbtnvxmudluraq.supabase.co";
 
 
-const SUPABASE_ANON_KEY =
+const SUPABASE_KEY =
 "sb_publishable_CtBML_wKT9KLliZJZXVkbg_H3Bg3ppI";
 
 
-const supabaseClient =
+const db =
 supabase.createClient(
 SUPABASE_URL,
-SUPABASE_ANON_KEY
+SUPABASE_KEY
 );
 
-
-/* ==========================================================
-   앱 상태
-========================================================== */
 
 let currentUser = null;
 
@@ -2885,9 +2782,7 @@ let currentProfile = null;
 
 let currentRoom = null;
 
-let currentMembership = null;
-
-let currentPlayers = [];
+let currentLobbyPlayer = null;
 
 let currentRoomSeats = [];
 
@@ -2901,16 +2796,17 @@ let currentCommunityCards = [];
 
 let myActionOptions = null;
 
-let currentBankAction = null;
+let myAvatar = null;
 
-let selectedTransferRecipient = null;
+let shopItems = [];
+
+let selectedRecipient = null;
 
 let myCardsVisible = false;
 
-let lobbyRefreshTimer = null;
+let lobbyTimer = null;
 
-let gameRefreshTimer = null;
-
+let gameTimer = null;
 
 /* ==========================================================
    기본 도우미
@@ -2925,7 +2821,7 @@ id
 }
 
 
-function numberValue(value){
+function num(value){
 
 const n =
 Number(
@@ -2942,10 +2838,10 @@ n
 }
 
 
-function intValue(value){
+function int(value){
 
 return Math.floor(
-numberValue(
+num(
 value
 )
 );
@@ -2955,7 +2851,7 @@ value
 
 function formatNumber(value){
 
-return intValue(
+return int(
 value
 )
 .toLocaleString(
@@ -3013,17 +2909,17 @@ value ?? ""
 }
 
 
-function normalizeHexColor(value){
+function normalizeColor(value){
 
 const text =
 String(
-value || ""
+value ?? ""
 )
 .trim();
 
 
 if(
-/^#[0-9a-fA-F]{6}$/
+/^#[0-9A-Fa-f]{6}$/
 .test(
 text
 )
@@ -3039,238 +2935,8 @@ return "#C89B61";
 }
 
 
-function showMessage(
-id,
-text
-){
-
-const el =
-byId(
-id
-);
-
-
-if(el){
-
-el.textContent =
-text || "";
-
-}
-
-}
-
-
-function clearMessages(){
-
-[
-"loginMessage",
-"signupMessage",
-"createRoomMessage",
-"avatarMessage",
-"shopMessage",
-"bankMessage"
-]
-.forEach(
-id => {
-
-const el =
-byId(
-id
-);
-
-
-if(el){
-
-el.textContent =
-"";
-
-}
-
-}
-);
-
-}
-
-
-const SCREEN_IDS = [
-
-"loginScreen",
-"signupScreen",
-"homeScreen",
-"gameMenuScreen",
-"createRoomScreen",
-"joinRoomScreen",
-"roomLobbyScreen",
-"gameScreen",
-"avatarScreen",
-"shopScreen",
-"bankScreen",
-"rulesScreen"
-
-];
-
-
-function hideAllScreens(){
-
-SCREEN_IDS.forEach(
-id => {
-
-const el =
-byId(
-id
-);
-
-
-if(el){
-
-el.classList.add(
-"hidden"
-);
-
-}
-
-}
-);
-
-}
-
-
-function showScreen(id){
-
-hideAllScreens();
-
-
-const el =
-byId(
-id
-);
-
-
-if(el){
-
-el.classList.remove(
-"hidden"
-);
-
-}
-
-
-window.scrollTo(
-0,
-0
-);
-
-}
-
-
 /* ==========================================================
-   타이머
-========================================================== */
-
-function stopLobbyRefresh(){
-
-if(lobbyRefreshTimer){
-
-clearInterval(
-lobbyRefreshTimer
-);
-
-lobbyRefreshTimer =
-null;
-
-}
-
-}
-
-
-function stopGameRefresh(){
-
-if(gameRefreshTimer){
-
-clearInterval(
-gameRefreshTimer
-);
-
-gameRefreshTimer =
-null;
-
-}
-
-}
-
-
-function stopAllRefresh(){
-
-stopLobbyRefresh();
-
-stopGameRefresh();
-
-}
-
-
-/* ==========================================================
-   팝업
-========================================================== */
-
-function openModal(
-title,
-html
-){
-
-byId(
-"modalTitle"
-)
-.textContent =
-title;
-
-
-byId(
-"modalContent"
-)
-.innerHTML =
-html;
-
-
-byId(
-"modalBackdrop"
-)
-.classList.remove(
-"hidden"
-);
-
-}
-
-
-function closeModal(){
-
-byId(
-"modalBackdrop"
-)
-.classList.add(
-"hidden"
-);
-
-}
-
-
-function backdropClose(event){
-
-if(
-event.target ===
-byId(
-"modalBackdrop"
-)
-){
-
-closeModal();
-
-}
-
-}
-
-
-/* ==========================================================
-   로그인용 내부 이메일
+   내부 로그인 이메일
 ========================================================== */
 
 function nicknameToEmail(
@@ -3300,17 +2966,101 @@ return encoded +
 
 
 /* ==========================================================
-   화면 이동
+   타이머
 ========================================================== */
+
+function stopTimers(){
+
+if(lobbyTimer){
+
+clearInterval(
+lobbyTimer
+);
+
+lobbyTimer =
+null;
+
+}
+
+
+if(gameTimer){
+
+clearInterval(
+gameTimer
+);
+
+gameTimer =
+null;
+
+}
+
+}
+
+
+/* ==========================================================
+   화면
+========================================================== */
+
+const SCREEN_IDS = [
+
+"loginScreen",
+"signupScreen",
+"homeScreen",
+"gameMenuScreen",
+"createRoomScreen",
+"joinRoomScreen",
+"roomLobbyScreen",
+"gameScreen",
+"avatarScreen",
+"shopScreen",
+"bankScreen",
+"rulesScreen"
+
+];
+
+
+function hideAllScreens(){
+
+stopTimers();
+
+
+SCREEN_IDS.forEach(
+id => {
+
+byId(
+id
+)
+.classList.add(
+"hidden"
+);
+
+}
+);
+
+
+byId(
+"sideTools"
+)
+.classList.add(
+"hidden"
+);
+
+
+closeDrawer();
+
+}
+
 
 function showLogin(){
 
-stopAllRefresh();
+hideAllScreens();
 
-clearMessages();
 
-showScreen(
+byId(
 "loginScreen"
+)
+.classList.remove(
+"hidden"
 );
 
 }
@@ -3318,12 +3068,14 @@ showScreen(
 
 function showSignup(){
 
-stopAllRefresh();
+hideAllScreens();
 
-clearMessages();
 
-showScreen(
+byId(
 "signupScreen"
+)
+.classList.remove(
+"hidden"
 );
 
 }
@@ -3331,19 +3083,20 @@ showScreen(
 
 async function showHome(){
 
-stopAllRefresh();
-
-clearMessages();
+hideAllScreens();
 
 
-await loadMyProfile();
+await refreshProfile();
 
 
 renderHome();
 
 
-showScreen(
+byId(
 "homeScreen"
+)
+.classList.remove(
+"hidden"
 );
 
 }
@@ -3351,10 +3104,14 @@ showScreen(
 
 function showGameMenu(){
 
-stopAllRefresh();
+hideAllScreens();
 
-showScreen(
+
+byId(
 "gameMenuScreen"
+)
+.classList.remove(
+"hidden"
 );
 
 }
@@ -3362,11 +3119,16 @@ showScreen(
 
 function showCreateRoom(){
 
-stopAllRefresh();
+hideAllScreens();
 
-showScreen(
+
+byId(
 "createRoomScreen"
+)
+.classList.remove(
+"hidden"
 );
+
 
 updateChipPreview();
 
@@ -3375,72 +3137,80 @@ updateChipPreview();
 
 async function showJoinRoom(){
 
-stopAllRefresh();
+hideAllScreens();
 
-showScreen(
+
+byId(
 "joinRoomScreen"
+)
+.classList.remove(
+"hidden"
 );
+
 
 await loadRooms();
 
 }
 
 
-async function showAvatar(){
-
-stopAllRefresh();
-
-await loadMyProfile();
-
-showScreen(
-"avatarScreen"
-);
-
-renderAvatarScreen();
-
-}
-
-
-async function showShop(){
-
-stopAllRefresh();
-
-await loadMyProfile();
-
-showScreen(
-"shopScreen"
-);
-
-await loadShop();
-
-}
-
-
-async function showBank(){
-
-stopAllRefresh();
-
-await loadMyProfile();
-
-showScreen(
-"bankScreen"
-);
-
-updateBank();
-
-showBankMoney();
-
-await loadTransferHistory();
-
-}
-
-
 function showRules(){
 
-stopAllRefresh();
+hideAllScreens();
 
-showScreen(
+
+renderFullRules();
+
+
+byId(
 "rulesScreen"
+)
+.classList.remove(
+"hidden"
+);
+
+}
+
+
+/* ==========================================================
+   모달
+========================================================== */
+
+function showModal(
+title,
+text
+){
+
+byId(
+"modalTitle"
+)
+.textContent =
+title;
+
+
+byId(
+"modalText"
+)
+.textContent =
+text;
+
+
+byId(
+"modalBackdrop"
+)
+.classList.remove(
+"hidden"
+);
+
+}
+
+
+function closeModal(){
+
+byId(
+"modalBackdrop"
+)
+.classList.add(
+"hidden"
 );
 
 }
@@ -3450,7 +3220,7 @@ showScreen(
    프로필
 ========================================================== */
 
-async function loadMyProfile(){
+async function refreshProfile(){
 
 if(!currentUser){
 
@@ -3463,7 +3233,7 @@ const {
 data,
 error
 } =
-await supabaseClient
+await db
 .from(
 "profiles"
 )
@@ -3489,7 +3259,7 @@ currentUser.id
 if(error){
 
 console.error(
-"프로필:",
+"refreshProfile:",
 error
 );
 
@@ -3540,9 +3310,6 @@ currentProfile.balance_per
 
 async function signup(){
 
-clearMessages();
-
-
 const nickname =
 byId(
 "signupNickname"
@@ -3565,12 +3332,20 @@ byId(
 .value;
 
 
+const message =
+byId(
+"signupMessage"
+);
+
+
+message.textContent =
+"";
+
+
 if(!nickname){
 
-showMessage(
-"signupMessage",
-"닉네임을 입력해주세요."
-);
+message.textContent =
+"닉네임을 입력해주세요.";
 
 return;
 
@@ -3579,10 +3354,8 @@ return;
 
 if(password.length < 6){
 
-showMessage(
-"signupMessage",
-"비밀번호는 6글자 이상이어야 합니다."
-);
+message.textContent =
+"비밀번호는 6자 이상이어야 합니다.";
 
 return;
 
@@ -3591,10 +3364,8 @@ return;
 
 if(password !== password2){
 
-showMessage(
-"signupMessage",
-"비밀번호가 서로 다릅니다."
-);
+message.textContent =
+"비밀번호가 서로 다릅니다.";
 
 return;
 
@@ -3610,7 +3381,7 @@ nickname
 const {
 error
 } =
-await supabaseClient.auth.signUp({
+await db.auth.signUp({
 
 email,
 
@@ -3629,11 +3400,9 @@ nickname
 
 if(error){
 
-showMessage(
-"signupMessage",
+message.textContent =
 "회원가입 실패: " +
-error.message
-);
+error.message;
 
 return;
 
@@ -3651,9 +3420,6 @@ await loadHome();
 
 async function login(){
 
-clearMessages();
-
-
 const nickname =
 byId(
 "loginNickname"
@@ -3669,15 +3435,23 @@ byId(
 .value;
 
 
+const message =
+byId(
+"loginMessage"
+);
+
+
+message.textContent =
+"";
+
+
 if(
 !nickname ||
 !password
 ){
 
-showMessage(
-"loginMessage",
-"닉네임과 비밀번호를 입력해주세요."
-);
+message.textContent =
+"닉네임과 비밀번호를 입력해주세요.";
 
 return;
 
@@ -3693,7 +3467,7 @@ nickname
 const {
 error
 } =
-await supabaseClient.auth.signInWithPassword({
+await db.auth.signInWithPassword({
 
 email,
 
@@ -3704,10 +3478,8 @@ password
 
 if(error){
 
-showMessage(
-"loginMessage",
-"닉네임 또는 비밀번호를 확인해주세요."
-);
+message.textContent =
+"닉네임 또는 비밀번호를 확인해주세요.";
 
 return;
 
@@ -3720,7 +3492,64 @@ await loadHome();
 
 
 /* ==========================================================
-   홈/재접속 로드
+   로그아웃
+========================================================== */
+
+async function logout(){
+
+stopTimers();
+
+
+await db.auth.signOut();
+
+
+currentUser =
+null;
+
+currentProfile =
+null;
+
+currentRoom =
+null;
+
+currentLobbyPlayer =
+null;
+
+currentRoomSeats =
+[];
+
+currentHand =
+null;
+
+currentHandPlayers =
+[];
+
+currentHoleCards =
+[];
+
+currentCommunityCards =
+[];
+
+myActionOptions =
+null;
+
+myAvatar =
+null;
+
+shopItems =
+[];
+
+selectedRecipient =
+null;
+
+
+showLogin();
+
+}
+
+
+/* ==========================================================
+   홈 로드 / 재접속
 ========================================================== */
 
 async function loadHome(){
@@ -3729,16 +3558,14 @@ const {
 data:userData,
 error
 } =
-await supabaseClient.auth.getUser();
+await db.auth.getUser();
 
 
 if(error){
 
-openModal(
+showModal(
 "사용자 정보 오류",
-escapeHtml(
 error.message
-)
 );
 
 return;
@@ -3760,7 +3587,7 @@ return;
 
 
 if(
-!await loadMyProfile()
+!await refreshProfile()
 ){
 
 showLogin();
@@ -3771,7 +3598,7 @@ return;
 
 
 const restored =
-await restoreActiveRoom();
+await restoreLocation();
 
 
 if(restored){
@@ -3783,82 +3610,190 @@ return;
 
 renderHome();
 
-showScreen(
+
+hideAllScreens();
+
+
+byId(
 "homeScreen"
+)
+.classList.remove(
+"hidden"
 );
 
 }
 
 
 /* ==========================================================
-   로그아웃
+   현재 방
 ========================================================== */
 
-async function logout(){
+async function syncCurrentRoom(){
 
-stopAllRefresh();
+const {
+data,
+error
+} =
+await db.rpc(
+"get_my_classic_active_room"
+);
 
 
-await supabaseClient.auth.signOut();
+if(error){
+
+console.error(
+"get_my_classic_active_room:",
+error
+);
+
+return false;
+
+}
 
 
-currentUser =
-null;
-
-currentProfile =
-null;
+if(
+!data ||
+data.length === 0
+){
 
 currentRoom =
 null;
 
-currentMembership =
-null;
+return false;
 
-currentPlayers =
-[];
-
-currentRoomSeats =
-[];
-
-currentHand =
-null;
-
-currentHandPlayers =
-[];
-
-currentHoleCards =
-[];
-
-currentCommunityCards =
-[];
-
-myActionOptions =
-null;
-
-selectedTransferRecipient =
-null;
-
-myCardsVisible =
-false;
+}
 
 
-showLogin();
+const r =
+data[0];
+
+
+currentRoom = {
+
+room_id:
+r.room_id,
+
+room_code:
+r.room_code,
+
+room_name:
+r.room_name,
+
+host_profile_id:
+r.host_profile_id,
+
+host_nickname:
+r.host_nickname,
+
+chip_value_per:
+num(
+r.chip_value_per
+),
+
+min_buyin_chips:
+num(
+r.min_buyin_chips
+),
+
+max_buyin_chips:
+num(
+r.max_buyin_chips
+),
+
+small_blind_chips:
+num(
+r.small_blind_chips
+),
+
+big_blind_chips:
+num(
+r.big_blind_chips
+),
+
+dealer_seat_no:
+r.dealer_seat_no,
+
+room_status:
+r.room_status,
+
+is_host:
+Boolean(
+r.is_host
+)
+
+};
+
+
+return true;
 
 }
 
 
 /* ==========================================================
-   방 만들기 미리보기
+   재접속 위치
+========================================================== */
+
+async function restoreLocation(){
+
+if(
+!await syncCurrentRoom()
+){
+
+return false;
+
+}
+
+
+const {
+data
+} =
+await db.rpc(
+"get_latest_classic_hand_summary",
+{
+
+p_room_id:
+currentRoom.room_id
+
+}
+);
+
+
+const hand =
+data?.[0];
+
+
+if(
+hand &&
+hand.street !==
+"finished"
+){
+
+await enterGame();
+
+return true;
+
+}
+
+
+await enterLobby();
+
+return true;
+
+}
+
+
+/* ==========================================================
+   방 생성 미리보기
 ========================================================== */
 
 function updateChipPreview(){
 
-const chipValue =
+const value =
 Math.max(
 
 1,
 
-intValue(
+int(
 byId(
 "createChipValue"
 )
@@ -3868,12 +3803,12 @@ byId(
 );
 
 
-const maxBuyin =
+const max =
 Math.max(
 
 0,
 
-intValue(
+int(
 byId(
 "createMaxBuyin"
 )
@@ -3884,1867 +3819,26 @@ byId(
 
 
 byId(
-"chipValueLabel"
-)
-.textContent =
-`칩 가치 (100칩 = ${formatNumber(chipValue * 100)}퍼)`;
-
-
-byId(
 "singleChipPreview"
 )
 .textContent =
-`1칩 = ${formatNumber(chipValue)}퍼`;
+`1칩 = ${formatNumber(value)}퍼`;
 
 
 byId(
 "maxBuyinPreview"
 )
 .textContent =
-`최대 환전 시 ${formatNumber(maxBuyin * chipValue)}퍼 필요`;
+`최대 환전 시 ${formatPer(value * max)} 필요`;
 
 }
 
-
-/* ==========================================================
-   픽셀 아바타
-========================================================== */
-
-function avatarSvg(
-color,
-ear,
-eye,
-nose
-){
-
-const fur =
-normalizeHexColor(
-color
-);
-
-
-const earType =
-ear ||
-"none";
-
-
-const eyeType =
-eye ||
-"default";
-
-
-const noseType =
-nose ||
-"none";
-
-
-let ears =
-"";
-
-
-let eyes =
-"";
-
-
-let noseHtml =
-"";
-
-
-if(earType === "round"){
-
-ears = `
-<rect x="5" y="6" width="7" height="8" fill="${fur}"/>
-<rect x="20" y="6" width="7" height="8" fill="${fur}"/>
-<rect x="7" y="8" width="3" height="4" fill="#8F5F5F"/>
-<rect x="22" y="8" width="3" height="4" fill="#8F5F5F"/>
-`;
-
-}
-
-
-if(earType === "cat"){
-
-ears = `
-<rect x="6" y="5" width="4" height="4" fill="${fur}"/>
-<rect x="8" y="3" width="4" height="8" fill="${fur}"/>
-<rect x="22" y="5" width="4" height="4" fill="${fur}"/>
-<rect x="20" y="3" width="4" height="8" fill="${fur}"/>
-<rect x="9" y="5" width="2" height="4" fill="#8F5F5F"/>
-<rect x="21" y="5" width="2" height="4" fill="#8F5F5F"/>
-`;
-
-}
-
-
-if(earType === "long"){
-
-ears = `
-<rect x="5" y="2" width="6" height="12" fill="${fur}"/>
-<rect x="21" y="2" width="6" height="12" fill="${fur}"/>
-<rect x="7" y="4" width="2" height="7" fill="#8F5F5F"/>
-<rect x="23" y="4" width="2" height="7" fill="#8F5F5F"/>
-`;
-
-}
-
-
-if(eyeType === "default"){
-
-eyes = `
-<rect x="11" y="15" width="2" height="2" fill="#191919"/>
-<rect x="19" y="15" width="2" height="2" fill="#191919"/>
-`;
-
-}
-
-
-if(eyeType === "round"){
-
-eyes = `
-<rect x="10" y="14" width="4" height="4" fill="#191919"/>
-<rect x="18" y="14" width="4" height="4" fill="#191919"/>
-<rect x="11" y="14" width="1" height="1" fill="#FFFFFF"/>
-<rect x="19" y="14" width="1" height="1" fill="#FFFFFF"/>
-`;
-
-}
-
-
-if(eyeType === "happy"){
-
-eyes = `
-<rect x="10" y="15" width="2" height="2" fill="#191919"/>
-<rect x="12" y="14" width="2" height="2" fill="#191919"/>
-<rect x="18" y="14" width="2" height="2" fill="#191919"/>
-<rect x="20" y="15" width="2" height="2" fill="#191919"/>
-`;
-
-}
-
-
-if(eyeType === "sleepy"){
-
-eyes = `
-<rect x="10" y="16" width="4" height="1" fill="#191919"/>
-<rect x="18" y="16" width="4" height="1" fill="#191919"/>
-`;
-
-}
-
-
-if(noseType === "dot"){
-
-noseHtml = `
-<rect x="15" y="19" width="2" height="2" fill="#3B2828"/>
-`;
-
-}
-
-
-if(noseType === "triangle"){
-
-noseHtml = `
-<rect x="14" y="19" width="4" height="2" fill="#3B2828"/>
-<rect x="15" y="21" width="2" height="1" fill="#3B2828"/>
-`;
-
-}
-
-
-if(noseType === "pink"){
-
-noseHtml = `
-<rect x="14" y="19" width="4" height="2" fill="#E28A9B"/>
-<rect x="15" y="21" width="2" height="1" fill="#B96173"/>
-`;
-
-}
-
-
-return `
-
-<svg
-viewBox="0 0 32 32"
-xmlns="http://www.w3.org/2000/svg"
->
-
-${ears}
-
-<rect x="9" y="7" width="14" height="2" fill="${fur}"/>
-<rect x="6" y="9" width="20" height="3" fill="${fur}"/>
-<rect x="4" y="12" width="24" height="10" fill="${fur}"/>
-<rect x="6" y="22" width="20" height="4" fill="${fur}"/>
-<rect x="9" y="26" width="14" height="2" fill="${fur}"/>
-
-<rect x="3" y="15" width="2" height="5" fill="${fur}"/>
-<rect x="27" y="15" width="2" height="5" fill="${fur}"/>
-
-<rect x="8" y="10" width="2" height="2" fill="rgba(255,255,255,.13)"/>
-<rect x="22" y="12" width="2" height="2" fill="rgba(0,0,0,.08)"/>
-
-${eyes}
-
-${noseHtml}
-
-<rect x="12" y="28" width="3" height="2" fill="${fur}"/>
-<rect x="17" y="28" width="3" height="2" fill="${fur}"/>
-
-</svg>
-
-`;
-
-}
-
-
-function avatarDataForRender(
-player
-){
-
-return {
-
-color:
-player?.avatar_color ??
-"#C89B61",
-
-ear:
-String(
-player?.avatar_ears ??
-"ears_none"
-)
-.replace(
-"ears_",
-""
-),
-
-eye:
-String(
-player?.avatar_eyes ??
-"eyes_dot"
-)
-.replace(
-"eyes_dot",
-"default"
-)
-.replace(
-"eyes_",
-""
-),
-
-nose:
-String(
-player?.avatar_nose ??
-"nose_none"
-)
-.replace(
-"nose_",
-""
-)
-
-};
-
-}
-
-
-function playerAvatarHtml(
-player,
-large = false
-){
-
-const a =
-avatarDataForRender(
-player
-);
-
-
-return `
-
-<div class="pixelAvatar${large ? " pixelAvatarLarge" : ""}">
-
-${avatarSvg(
-a.color,
-a.ear,
-a.eye,
-a.nose
-)}
-
-</div>
-
-`;
-
-}
-
-
-/* ==========================================================
-   카드
-========================================================== */
-
-function parseCard(
-card
-){
-
-if(!card){
-
-return null;
-
-}
-
-
-const rank =
-card.rank_text ??
-card.rank ??
-card.value ??
-"?";
-
-
-const suit =
-card.suit ??
-"?";
-
-
-const suits = {
-
-hearts:"♥",
-
-diamonds:"♦",
-
-clubs:"♣",
-
-spades:"♠",
-
-H:"♥",
-
-D:"♦",
-
-C:"♣",
-
-S:"♠",
-
-"♥":"♥",
-
-"♦":"♦",
-
-"♣":"♣",
-
-"♠":"♠"
-
-};
-
-
-return {
-
-rank:
-String(
-rank
-),
-
-suit:
-suits[suit] ??
-String(
-suit
-)
-
-};
-
-}
-
-
-function cardHtml(
-card
-){
-
-const parsed =
-parseCard(
-card
-);
-
-
-if(!parsed){
-
-return `
-<div class="cardPlaceholder"></div>
-`;
-
-}
-
-
-const red =
-parsed.suit === "♥" ||
-parsed.suit === "♦";
-
-
-return `
-
-<div class="pixelCard ${red ? "red" : ""}">
-
-<div class="pixelCardRank">
-${escapeHtml(parsed.rank)}
-</div>
-
-<div class="pixelCardSuit">
-${escapeHtml(parsed.suit)}
-</div>
-
-</div>
-
-`;
-
-}
-
-
-function cardBackHtml(){
-
-return `
-<div class="pixelCard pixelCardBack"></div>
-`;
-
-}
-
-
-/* ==========================================================
-   아바타 화면
-========================================================== */
-
-function avatarPartName(
-type,
-value
-){
-
-const names = {
-
-ear:{
-
-none:"귀 없음",
-
-round:"동그란 귀",
-
-cat:"뾰족 귀",
-
-long:"긴 귀"
-
-},
-
-eye:{
-
-default:"기본 점눈",
-
-round:"동그란 눈",
-
-happy:"웃는 눈",
-
-sleepy:"졸린 눈"
-
-},
-
-nose:{
-
-none:"코 없음",
-
-dot:"점 코",
-
-triangle:"삼각 코",
-
-pink:"분홍 코"
-
-}
-
-};
-
-
-return names[type]?.[value]
-??
-value
-??
-"-";
-
-}
-
-
-function renderAvatarScreen(){
-
-if(!currentProfile){
-
-return;
-
-}
-
-
-const a =
-avatarDataForRender(
-currentProfile
-);
-
-
-const color =
-normalizeHexColor(
-currentProfile.avatar_color
-);
-
-
-byId(
-"avatarNickname"
-)
-.textContent =
-currentProfile.nickname;
-
-
-byId(
-"avatarColorPicker"
-)
-.value =
-color;
-
-
-byId(
-"avatarColorCode"
-)
-.textContent =
-color;
-
-
-byId(
-"myAvatarPreview"
-)
-.innerHTML =
-avatarSvg(
-a.color,
-a.ear,
-a.eye,
-a.nose
-);
-
-
-byId(
-"equippedEarName"
-)
-.textContent =
-avatarPartName(
-"ear",
-a.ear
-);
-
-
-byId(
-"equippedEyeName"
-)
-.textContent =
-avatarPartName(
-"eye",
-a.eye
-);
-
-
-byId(
-"equippedNoseName"
-)
-.textContent =
-avatarPartName(
-"nose",
-a.nose
-);
-
-}
-
-
-function previewAvatarColor(){
-
-if(!currentProfile){
-
-return;
-
-}
-
-
-const color =
-normalizeHexColor(
-byId(
-"avatarColorPicker"
-)
-.value
-);
-
-
-const a =
-avatarDataForRender(
-currentProfile
-);
-
-
-byId(
-"avatarColorCode"
-)
-.textContent =
-color;
-
-
-byId(
-"myAvatarPreview"
-)
-.innerHTML =
-avatarSvg(
-color,
-a.ear,
-a.eye,
-a.nose
-);
-
-}
-
-
-async function changeAvatarColor(){
-
-const color =
-normalizeHexColor(
-byId(
-"avatarColorPicker"
-)
-.value
-);
-
-
-const {
-error
-} =
-await supabaseClient.rpc(
-"change_avatar_color",
-{
-
-p_color:
-color
-
-}
-);
-
-
-if(error){
-
-openModal(
-"털 색 변경 오류",
-
-`${escapeHtml(error.message)}
-<br><br>
-<span style="color:#888">
-code: ${escapeHtml(error.code || "-")}
-</span>`
-
-);
-
-return;
-
-}
-
-
-await loadMyProfile();
-
-renderAvatarScreen();
-
-
-showMessage(
-"avatarMessage",
-"털 색을 변경했습니다."
-);
-
-}
-
-
-async function unequipAvatarPart(
-type
-){
-
-const {
-error
-} =
-await supabaseClient.rpc(
-"equip_avatar_part",
-{
-
-p_part_type:
-type,
-
-p_item_key:
-null
-
-}
-);
-
-
-if(error){
-
-showMessage(
-"avatarMessage",
-error.message
-);
-
-return;
-
-}
-
-
-await loadMyProfile();
-
-renderAvatarScreen();
-
-}
-
-
-async function equipDefaultEyes(){
-
-const {
-error
-} =
-await supabaseClient.rpc(
-"equip_avatar_part",
-{
-
-p_part_type:
-"eye",
-
-p_item_key:
-"default"
-
-}
-);
-
-
-if(error){
-
-showMessage(
-"avatarMessage",
-error.message
-);
-
-return;
-
-}
-
-
-await loadMyProfile();
-
-renderAvatarScreen();
-
-}
-
-
-/* ==========================================================
-   상점
-========================================================== */
-
-const SHOP_ITEMS = [
-
-{
-type:"ear",
-key:"round",
-name:"동그란 귀",
-description:"작고 둥근 귀",
-price:300
-},
-
-{
-type:"ear",
-key:"cat",
-name:"뾰족 귀",
-description:"위로 솟은 작은 귀",
-price:500
-},
-
-{
-type:"ear",
-key:"long",
-name:"긴 귀",
-description:"길쭉하게 올라온 귀",
-price:700
-},
-
-{
-type:"eye",
-key:"round",
-name:"동그란 눈",
-description:"커다란 픽셀 눈",
-price:300
-},
-
-{
-type:"eye",
-key:"happy",
-name:"웃는 눈",
-description:"살짝 접힌 눈",
-price:500
-},
-
-{
-type:"eye",
-key:"sleepy",
-name:"졸린 눈",
-description:"가늘게 감긴 눈",
-price:500
-},
-
-{
-type:"nose",
-key:"dot",
-name:"점 코",
-description:"작은 점 코",
-price:200
-},
-
-{
-type:"nose",
-key:"triangle",
-name:"삼각 코",
-description:"삼각형 모양 코",
-price:400
-},
-
-{
-type:"nose",
-key:"pink",
-name:"분홍 코",
-description:"작은 분홍색 코",
-price:500
-}
-
-];
-
-
-let ownedAvatarItems = [];
-
-
-async function loadShop(){
-
-byId(
-"shopPer"
-)
-.textContent =
-formatPer(
-currentProfile.balance_per
-);
-
-
-const {
-data,
-error
-} =
-await supabaseClient
-.from(
-"avatar_inventory"
-)
-.select(
-"*"
-)
-.eq(
-"user_id",
-currentUser.id
-);
-
-
-if(error){
-
-console.error(
-"avatar_inventory:",
-error
-);
-
-ownedAvatarItems =
-[];
-
-}else{
-
-ownedAvatarItems =
-data ?? [];
-
-}
-
-
-renderShop();
-
-}
-
-
-function ownsAvatarItem(
-type,
-key
-){
-
-return ownedAvatarItems.some(
-item =>
-item.part_type === type &&
-item.item_key === key
-);
-
-}
-
-
-function isAvatarItemEquipped(
-type,
-key
-){
-
-const a =
-avatarDataForRender(
-currentProfile
-);
-
-
-if(type === "ear"){
-
-return a.ear === key;
-
-}
-
-
-if(type === "eye"){
-
-return a.eye === key;
-
-}
-
-
-if(type === "nose"){
-
-return a.nose === key;
-
-}
-
-
-return false;
-
-}
-
-
-function renderShop(){
-
-const groups = {
-
-ear:
-byId(
-"shopEarList"
-),
-
-eye:
-byId(
-"shopEyeList"
-),
-
-nose:
-byId(
-"shopNoseList"
-)
-
-};
-
-
-Object
-.values(
-groups
-)
-.forEach(
-box => {
-
-box.innerHTML =
-"";
-
-}
-);
-
-
-const current =
-avatarDataForRender(
-currentProfile
-);
-
-
-SHOP_ITEMS.forEach(
-item => {
-
-const owned =
-ownsAvatarItem(
-item.type,
-item.key
-);
-
-
-const equipped =
-isAvatarItemEquipped(
-item.type,
-item.key
-);
-
-
-const ear =
-item.type === "ear"
-?
-item.key
-:
-current.ear;
-
-
-const eye =
-item.type === "eye"
-?
-item.key
-:
-current.eye;
-
-
-const nose =
-item.type === "nose"
-?
-item.key
-:
-current.nose;
-
-
-let action = "";
-
-
-if(equipped){
-
-action =
-'<span class="equippedTag">착용 중</span>';
-
-}else if(owned){
-
-action = `
-
-<button
-class="secondary"
-onclick="equipShopItem('${item.type}','${item.key}')"
->
-착용
-</button>
-
-`;
-
-}else{
-
-action = `
-
-<button
-class="primary"
-onclick="buyShopItem('${item.type}','${item.key}')"
->
-${formatNumber(item.price)}퍼
-</button>
-
-`;
-
-}
-
-
-groups[
-item.type
-]
-.insertAdjacentHTML(
-"beforeend",
-
-`
-
-<div class="shopItem">
-
-<div class="shopAvatarPreview">
-
-<div class="pixelAvatar">
-
-${avatarSvg(
-current.color,
-ear,
-eye,
-nose
-)}
-
-</div>
-
-</div>
-
-<div class="shopInfo">
-
-<div class="shopName">
-${escapeHtml(item.name)}
-</div>
-
-<div class="shopDescription">
-${escapeHtml(item.description)}
-</div>
-
-<div class="shopPrice">
-${owned ? "보유 중" : formatPer(item.price)}
-</div>
-
-</div>
-
-${action}
-
-</div>
-
-`
-
-);
-
-}
-);
-
-}
-
-
-async function buyShopItem(
-type,
-key
-){
-
-const item =
-SHOP_ITEMS.find(
-x =>
-x.type === type &&
-x.key === key
-);
-
-
-if(!item){
-
-return;
-
-}
-
-
-const {
-error
-} =
-await supabaseClient.rpc(
-"buy_avatar_item",
-{
-
-p_part_type:
-type,
-
-p_item_key:
-key
-
-}
-);
-
-
-if(error){
-
-showMessage(
-"shopMessage",
-error.message
-);
-
-return;
-
-}
-
-
-await loadMyProfile();
-
-await loadShop();
-
-
-showMessage(
-"shopMessage",
-`${item.name} 구매 완료`
-);
-
-}
-
-
-async function equipShopItem(
-type,
-key
-){
-
-const {
-error
-} =
-await supabaseClient.rpc(
-"equip_avatar_part",
-{
-
-p_part_type:
-type,
-
-p_item_key:
-key
-
-}
-);
-
-
-if(error){
-
-showMessage(
-"shopMessage",
-error.message
-);
-
-return;
-
-}
-
-
-await loadMyProfile();
-
-await loadShop();
-
-}
-
-
-/* ==========================================================
-   은행
-========================================================== */
-
-function updateBank(){
-
-if(!currentProfile){
-
-return;
-
-}
-
-
-byId(
-"bankWallet"
-)
-.textContent =
-formatPer(
-currentProfile.balance_per
-);
-
-
-byId(
-"bankDeposit"
-)
-.textContent =
-formatPer(
-currentProfile.bank_per
-);
-
-
-byId(
-"bankLoan"
-)
-.textContent =
-formatPer(
-currentProfile.loan_per
-);
-
-
-const loan =
-numberValue(
-currentProfile.loan_per
-);
-
-
-const info =
-byId(
-"bankInterestInfo"
-);
-
-
-if(loan >= 100000){
-
-info.classList.add(
-"interestDanger"
-);
-
-
-info.innerHTML =
-
-`현재 대출금은 고금리 구간입니다.<br>
-판 종료 시 현재 대출금의 10% 이자가 붙습니다.<br>
-예금에는 1% 이자가 붙습니다.`;
-
-}else{
-
-info.classList.remove(
-"interestDanger"
-);
-
-
-info.innerHTML =
-
-`판 종료 시 예금에는 1% 이자가 붙습니다.<br>
-현재 대출금에는 2% 이자가 붙습니다.<br>
-현재 대출금이 100,000퍼 이상이면 10%가 적용됩니다.`;
-
-}
-
-}
-
-
-function showBankMoney(){
-
-byId(
-"bankActionPanel"
-)
-.classList.add(
-"hidden"
-);
-
-}
-
-
-function showBankAction(
-type
-){
-
-currentBankAction =
-type;
-
-
-const titles = {
-
-deposit:"예금하기",
-
-withdraw:"출금하기",
-
-loan:"대출받기",
-
-repay:"대출 상환"
-
-};
-
-
-const buttons = {
-
-deposit:"예금하기",
-
-withdraw:"출금하기",
-
-loan:"대출받기",
-
-repay:"상환하기"
-
-};
-
-
-byId(
-"bankActionTitle"
-)
-.textContent =
-titles[type];
-
-
-byId(
-"bankActionButton"
-)
-.textContent =
-buttons[type];
-
-
-byId(
-"bankAmountInput"
-)
-.value =
-"";
-
-
-byId(
-"bankActionPanel"
-)
-.classList.remove(
-"hidden"
-);
-
-}
-
-
-function setBankAmount(
-amount
-){
-
-byId(
-"bankAmountInput"
-)
-.value =
-amount;
-
-}
-
-
-async function executeBankAction(){
-
-if(!currentBankAction){
-
-return;
-
-}
-
-
-const amount =
-intValue(
-byId(
-"bankAmountInput"
-)
-.value
-);
-
-
-if(amount <= 0){
-
-showMessage(
-"bankMessage",
-"1 이상의 정수로 입력해주세요."
-);
-
-return;
-
-}
-
-
-const rpcNames = {
-
-deposit:
-"bank_deposit",
-
-withdraw:
-"bank_withdraw",
-
-loan:
-"bank_borrow",
-
-repay:
-"bank_repay"
-
-};
-
-
-const {
-error
-} =
-await supabaseClient.rpc(
-rpcNames[
-currentBankAction
-],
-{
-
-p_amount:
-amount
-
-}
-);
-
-
-if(error){
-
-showMessage(
-"bankMessage",
-error.message
-);
-
-return;
-
-}
-
-
-await loadMyProfile();
-
-updateBank();
-
-renderHome();
-
-
-byId(
-"bankAmountInput"
-)
-.value =
-"";
-
-
-showMessage(
-"bankMessage",
-"처리되었습니다."
-);
-
-}
-
-
-/* ==========================================================
-   송금
-========================================================== */
-
-function clearTransferRecipient(){
-
-selectedTransferRecipient =
-null;
-
-
-byId(
-"transferRecipientBox"
-)
-.classList.add(
-"hidden"
-);
-
-}
-
-
-async function findTransferRecipient(){
-
-const nickname =
-byId(
-"transferNicknameInput"
-)
-.value
-.trim();
-
-
-clearTransferRecipient();
-
-
-if(!nickname){
-
-showMessage(
-"bankMessage",
-"닉네임을 입력해주세요."
-);
-
-return;
-
-}
-
-
-const {
-data,
-error
-} =
-await supabaseClient.rpc(
-"find_transfer_recipient",
-{
-
-p_nickname:
-nickname
-
-}
-);
-
-
-if(error){
-
-showMessage(
-"bankMessage",
-error.message
-);
-
-return;
-
-}
-
-
-const recipient =
-data?.[0];
-
-
-if(!recipient){
-
-showMessage(
-"bankMessage",
-"해당 사용자를 찾지 못했습니다."
-);
-
-return;
-
-}
-
-
-if(
-recipient.profile_id ===
-currentUser.id
-){
-
-showMessage(
-"bankMessage",
-"자기 자신에게 송금할 수 없습니다."
-);
-
-return;
-
-}
-
-
-selectedTransferRecipient = {
-
-profile_id:
-recipient.profile_id,
-
-nickname:
-recipient.nickname
-
-};
-
-
-byId(
-"transferRecipientName"
-)
-.textContent =
-recipient.nickname;
-
-
-byId(
-"transferRecipientBox"
-)
-.classList.remove(
-"hidden"
-);
-
-}
-
-
-async function sendTransfer(){
-
-if(!selectedTransferRecipient){
-
-showMessage(
-"bankMessage",
-"먼저 받는 사람을 확인해주세요."
-);
-
-return;
-
-}
-
-
-const amount =
-intValue(
-byId(
-"transferAmountInput"
-)
-.value
-);
-
-
-if(amount <= 0){
-
-showMessage(
-"bankMessage",
-"송금 금액을 입력해주세요."
-);
-
-return;
-
-}
-
-
-const {
-error
-} =
-await supabaseClient.rpc(
-"transfer_per",
-{
-
-p_receiver_profile_id:
-selectedTransferRecipient.profile_id,
-
-p_amount:
-amount
-
-}
-);
-
-
-if(error){
-
-showMessage(
-"bankMessage",
-error.message
-);
-
-return;
-
-}
-
-
-byId(
-"transferNicknameInput"
-)
-.value =
-"";
-
-
-byId(
-"transferAmountInput"
-)
-.value =
-"";
-
-
-clearTransferRecipient();
-
-
-await loadMyProfile();
-
-updateBank();
-
-renderHome();
-
-await loadTransferHistory();
-
-
-showMessage(
-"bankMessage",
-"송금했습니다."
-);
-
-}
-
-
-async function loadTransferHistory(){
-
-const box =
-byId(
-"transferHistory"
-);
-
-
-const {
-data,
-error
-} =
-await supabaseClient.rpc(
-"get_my_transfer_history"
-);
-
-
-if(error){
-
-box.innerHTML =
-'<div class="emptyText">송금 내역을 불러오지 못했습니다.</div>';
-
-return;
-
-}
-
-
-if(
-!data ||
-data.length === 0
-){
-
-box.innerHTML =
-'<div class="emptyText">아직 송금 내역이 없습니다.</div>';
-
-return;
-
-}
-
-
-box.innerHTML =
-data.map(
-item => {
-
-const sent =
-item.direction ===
-"sent";
-
-
-const date =
-new Date(
-item.created_at
-);
-
-
-const timeText =
-Number.isNaN(
-date.getTime()
-)
-?
-""
-:
-date.toLocaleString(
-"ko-KR"
-);
-
-
-return `
-
-<div class="transferHistoryRow">
-
-<div>
-
-<div class="transferHistoryName">
-${escapeHtml(item.counterpart_nickname)}
-</div>
-
-<div class="transferHistorySub">
-
-${sent ? "보냄" : "받음"}
-
-${timeText ? " · " + escapeHtml(timeText) : ""}
-
-</div>
-
-</div>
-
-<div class="${sent ? "transferSent" : "transferReceived"}">
-
-${sent ? "-" : "+"}${formatPer(item.amount)}
-
-</div>
-
-</div>
-
-`;
-
-}
-)
-.join("");
-
-}
-
-
-/* ==========================================================
-   게임 중 빠른 룰북
-========================================================== */
-
-function showGameRulebook(){
-
-openModal(
-"빠른 룰북",
-
-`
-<b>진행</b><br>
-프리플랍 → 플랍 3장 → 턴 1장 → 리버 1장 → 쇼다운
-
-<br><br>
-
-<b>체크</b><br>
-추가로 따라갈 베팅이 없을 때 차례를 넘깁니다.
-
-<br><br>
-
-<b>콜</b><br>
-현재 기준 베팅까지 맞춥니다.
-
-<br><br>
-
-<b>레이즈</b><br>
-현재 기준 베팅보다 높게 베팅합니다.
-
-<br><br>
-
-<b>폴드</b><br>
-이번 판을 포기합니다.
-
-<br><br>
-
-<b>족보</b><br>
-로열 플러시 ＞ 스트레이트 플러시 ＞ 포카드 ＞ 풀하우스 ＞ 플러시 ＞ 스트레이트 ＞ 트리플 ＞ 투페어 ＞ 원페어 ＞ 하이카드
-`
-
-);
-
-}
 
 /* ==========================================================
    방 생성
 ========================================================== */
 
 async function createRoom(){
-
-showMessage(
-"createRoomMessage",
-""
-);
-
 
 const roomName =
 byId(
@@ -5755,7 +3849,7 @@ byId(
 
 
 const chipValue =
-intValue(
+int(
 byId(
 "createChipValue"
 )
@@ -5764,7 +3858,7 @@ byId(
 
 
 const minBuyin =
-intValue(
+int(
 byId(
 "createMinBuyin"
 )
@@ -5773,7 +3867,7 @@ byId(
 
 
 const maxBuyin =
-intValue(
+int(
 byId(
 "createMaxBuyin"
 )
@@ -5781,8 +3875,8 @@ byId(
 );
 
 
-const smallBlind =
-intValue(
+const sb =
+int(
 byId(
 "createSmallBlind"
 )
@@ -5790,8 +3884,8 @@ byId(
 );
 
 
-const bigBlind =
-intValue(
+const bb =
+int(
 byId(
 "createBigBlind"
 )
@@ -5799,12 +3893,20 @@ byId(
 );
 
 
+const message =
+byId(
+"createRoomMessage"
+);
+
+
+message.textContent =
+"";
+
+
 if(!roomName){
 
-showMessage(
-"createRoomMessage",
-"방 이름을 입력해주세요."
-);
+message.textContent =
+"방 이름을 입력해주세요.";
 
 return;
 
@@ -5817,10 +3919,8 @@ minBuyin <= 0 ||
 maxBuyin < minBuyin
 ){
 
-showMessage(
-"createRoomMessage",
-"칩 설정값을 확인해주세요."
-);
+message.textContent =
+"칩 설정을 확인해주세요.";
 
 return;
 
@@ -5828,28 +3928,12 @@ return;
 
 
 if(
-smallBlind < 1 ||
-bigBlind <= smallBlind
+sb < 1 ||
+bb <= sb
 ){
 
-showMessage(
-"createRoomMessage",
-"BB는 SB보다 커야 합니다."
-);
-
-return;
-
-}
-
-
-if(
-minBuyin < bigBlind
-){
-
-showMessage(
-"createRoomMessage",
-"최소 환전 칩은 BB 이상이어야 합니다."
-);
+message.textContent =
+"BB는 SB보다 커야 합니다.";
 
 return;
 
@@ -5859,7 +3943,7 @@ return;
 const {
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "create_classic_game_room",
 {
 
@@ -5876,10 +3960,10 @@ p_max_buyin_chips:
 maxBuyin,
 
 p_small_blind_chips:
-smallBlind,
+sb,
 
 p_big_blind_chips:
-bigBlind
+bb
 
 }
 );
@@ -5887,10 +3971,8 @@ bigBlind
 
 if(error){
 
-showMessage(
-"createRoomMessage",
-error.message
-);
+message.textContent =
+error.message;
 
 return;
 
@@ -5901,10 +3983,8 @@ if(
 !await syncCurrentRoom()
 ){
 
-showMessage(
-"createRoomMessage",
-"생성한 방을 다시 불러오지 못했습니다."
-);
+message.textContent =
+"생성한 방을 불러오지 못했습니다.";
 
 return;
 
@@ -5917,7 +3997,7 @@ await enterLobby();
 
 
 /* ==========================================================
-   열린 방
+   방 목록
 ========================================================== */
 
 async function loadRooms(){
@@ -5936,7 +4016,7 @@ const {
 data,
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "get_classic_waiting_rooms"
 );
 
@@ -5993,31 +4073,22 @@ ${escapeHtml(room.room_code)}
 
 <div class="roomInfo">
 
-방장:
-${escapeHtml(room.host_nickname)}
-
+방장 ${escapeHtml(room.host_nickname)}
 <br>
 
-참가자:
-${formatNumber(room.player_count)}명
-
+${formatNumber(room.player_count)}명 참가
 <br>
 
-1칩 =
-${formatNumber(room.chip_value_per)}퍼
-
+1칩 = ${formatNumber(room.chip_value_per)}퍼
 <br>
 
-환전:
-${formatNumber(room.min_buyin_chips)}
+환전 ${formatNumber(room.min_buyin_chips)}
 ~
 ${formatNumber(room.max_buyin_chips)}칩
-
 <br>
 
-블라인드:
 SB ${formatNumber(room.small_blind_chips)}
-/
+·
 BB ${formatNumber(room.big_blind_chips)}
 
 </div>
@@ -6036,7 +4107,7 @@ button.className =
 
 
 button.textContent =
-"방 참가";
+"참가";
 
 
 button.onclick =
@@ -6072,7 +4143,7 @@ room
 const {
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "join_game_room",
 {
 
@@ -6085,11 +4156,9 @@ room.room_id
 
 if(error){
 
-openModal(
+showModal(
 "방 참가 오류",
-escapeHtml(
 error.message
-)
 );
 
 return;
@@ -6101,9 +4170,9 @@ if(
 !await syncCurrentRoom()
 ){
 
-openModal(
+showModal(
 "방 참가 오류",
-"참가한 방 정보를 다시 불러오지 못했습니다."
+"방 정보를 불러오지 못했습니다."
 );
 
 return;
@@ -6117,25 +4186,387 @@ await enterLobby();
 
 
 /* ==========================================================
-   현재 방 동기화
+   픽셀 털복숭이
+   베이스 실루엣은 고정
 ========================================================== */
 
-async function syncCurrentRoom(){
+function avatarSvg(
+color,
+ears,
+eyes,
+nose
+){
+
+const fur =
+normalizeColor(
+color
+);
+
+
+const ear =
+String(
+ears ??
+"ears_none"
+);
+
+
+const eye =
+String(
+eyes ??
+"eyes_dot"
+);
+
+
+const noseType =
+String(
+nose ??
+"nose_none"
+);
+
+
+let earHtml =
+"";
+
+
+let eyeHtml =
+"";
+
+
+let noseHtml =
+"";
+
+
+/* 귀 */
+
+if(
+ear ===
+"ears_round"
+){
+
+earHtml = `
+
+<rect x="5" y="6" width="7" height="8" fill="${fur}"/>
+<rect x="20" y="6" width="7" height="8" fill="${fur}"/>
+
+<rect x="7" y="8" width="3" height="4" fill="#8F5F5F"/>
+<rect x="22" y="8" width="3" height="4" fill="#8F5F5F"/>
+
+`;
+
+}
+
+
+if(
+ear ===
+"ears_pointy"
+){
+
+earHtml = `
+
+<rect x="6" y="5" width="4" height="4" fill="${fur}"/>
+<rect x="8" y="3" width="4" height="8" fill="${fur}"/>
+
+<rect x="22" y="5" width="4" height="4" fill="${fur}"/>
+<rect x="20" y="3" width="4" height="8" fill="${fur}"/>
+
+<rect x="9" y="5" width="2" height="4" fill="#8F5F5F"/>
+<rect x="21" y="5" width="2" height="4" fill="#8F5F5F"/>
+
+`;
+
+}
+
+
+if(
+ear ===
+"ears_long"
+){
+
+earHtml = `
+
+<rect x="5" y="2" width="6" height="12" fill="${fur}"/>
+<rect x="21" y="2" width="6" height="12" fill="${fur}"/>
+
+<rect x="7" y="4" width="2" height="7" fill="#8F5F5F"/>
+<rect x="23" y="4" width="2" height="7" fill="#8F5F5F"/>
+
+`;
+
+}
+
+
+/* 눈 */
+
+if(
+eye ===
+"eyes_dot"
+){
+
+eyeHtml = `
+
+<rect x="11" y="15" width="2" height="2" fill="#191919"/>
+<rect x="19" y="15" width="2" height="2" fill="#191919"/>
+
+`;
+
+}
+
+
+if(
+eye ===
+"eyes_round"
+){
+
+eyeHtml = `
+
+<rect x="10" y="14" width="4" height="4" fill="#191919"/>
+<rect x="18" y="14" width="4" height="4" fill="#191919"/>
+
+<rect x="11" y="14" width="1" height="1" fill="#FFFFFF"/>
+<rect x="19" y="14" width="1" height="1" fill="#FFFFFF"/>
+
+`;
+
+}
+
+
+/* 초롱초롱 */
+
+if(
+eye ===
+"eyes_sparkle"
+){
+
+eyeHtml = `
+
+<rect x="9" y="13" width="5" height="6" fill="#171717"/>
+<rect x="18" y="13" width="5" height="6" fill="#171717"/>
+
+<rect x="10" y="14" width="2" height="2" fill="#FFFFFF"/>
+<rect x="19" y="14" width="2" height="2" fill="#FFFFFF"/>
+
+<rect x="12" y="17" width="1" height="1" fill="#FFFFFF"/>
+<rect x="21" y="17" width="1" height="1" fill="#FFFFFF"/>
+
+`;
+
+}
+
+
+/* 지루 */
+
+if(
+eye ===
+"eyes_bored"
+){
+
+eyeHtml = `
+
+<rect x="10" y="15" width="5" height="2" fill="#191919"/>
+<rect x="17" y="15" width="5" height="2" fill="#191919"/>
+
+<rect x="11" y="17" width="3" height="1" fill="#191919"/>
+<rect x="18" y="17" width="3" height="1" fill="#191919"/>
+
+`;
+
+}
+
+
+/* 화남 */
+
+if(
+eye ===
+"eyes_angry"
+){
+
+eyeHtml = `
+
+<rect x="9" y="13" width="2" height="1" fill="#191919"/>
+<rect x="11" y="14" width="3" height="1" fill="#191919"/>
+
+<rect x="21" y="13" width="2" height="1" fill="#191919"/>
+<rect x="18" y="14" width="3" height="1" fill="#191919"/>
+
+<rect x="11" y="16" width="2" height="2" fill="#191919"/>
+<rect x="19" y="16" width="2" height="2" fill="#191919"/>
+
+`;
+
+}
+
+
+/* 부리 */
+
+if(
+noseType ===
+"nose_beak"
+){
+
+noseHtml = `
+
+<rect x="14" y="19" width="4" height="2" fill="#E3A52B"/>
+<rect x="15" y="21" width="2" height="2" fill="#BC721C"/>
+
+`;
+
+}
+
+
+/*
+베이스 털복숭이
+이 부분은 이후에도 수정하지 않음.
+*/
+
+return `
+
+<svg
+viewBox="0 0 32 32"
+xmlns="http://www.w3.org/2000/svg"
+>
+
+${earHtml}
+
+<rect x="9" y="7" width="14" height="2" fill="${fur}"/>
+
+<rect x="6" y="9" width="20" height="3" fill="${fur}"/>
+
+<rect x="4" y="12" width="24" height="10" fill="${fur}"/>
+
+<rect x="6" y="22" width="20" height="4" fill="${fur}"/>
+
+<rect x="9" y="26" width="14" height="2" fill="${fur}"/>
+
+<rect x="3" y="15" width="2" height="5" fill="${fur}"/>
+
+<rect x="27" y="15" width="2" height="5" fill="${fur}"/>
+
+<rect x="8" y="10" width="2" height="2" fill="rgba(255,255,255,.13)"/>
+
+<rect x="22" y="12" width="2" height="2" fill="rgba(0,0,0,.08)"/>
+
+${eyeHtml}
+
+${noseHtml}
+
+<rect x="12" y="28" width="3" height="2" fill="${fur}"/>
+
+<rect x="17" y="28" width="3" height="2" fill="${fur}"/>
+
+</svg>
+
+`;
+
+}
+
+
+function playerAvatar(
+player,
+large = false
+){
+
+return `
+
+<div class="pixelAvatar${large ? " pixelAvatarLarge" : ""}">
+
+${avatarSvg(
+
+player?.avatar_color ??
+"#C89B61",
+
+player?.avatar_ears ??
+"ears_none",
+
+player?.avatar_eyes ??
+"eyes_dot",
+
+player?.avatar_nose ??
+"nose_none"
+
+)}
+
+</div>
+
+`;
+
+}
+
+
+/* ==========================================================
+   아바타 이름
+========================================================== */
+
+function avatarItemName(
+key
+){
+
+const names = {
+
+ears_none:
+"귀 없음",
+
+ears_round:
+"동그란 귀",
+
+ears_pointy:
+"뾰족 귀",
+
+ears_long:
+"긴 귀",
+
+eyes_dot:
+"기본 점눈",
+
+eyes_round:
+"동그란 눈",
+
+eyes_sparkle:
+"초롱초롱 눈",
+
+eyes_bored:
+"지루한 눈",
+
+eyes_angry:
+"화난 눈",
+
+nose_none:
+"코 없음",
+
+nose_beak:
+"부리"
+
+};
+
+
+return names[key]
+??
+key
+??
+"-";
+
+}
+
+
+/* ==========================================================
+   내 아바타
+========================================================== */
+
+async function loadMyAvatar(){
 
 const {
 data,
 error
 } =
-await supabaseClient.rpc(
-"get_my_classic_active_room"
+await db.rpc(
+"get_my_avatar_v2"
 );
 
 
 if(error){
 
-console.error(
-"현재 방:",
-error
+showModal(
+"아바타 오류",
+error.message
 );
 
 return false;
@@ -6148,72 +4579,13 @@ if(
 data.length === 0
 ){
 
-currentRoom =
-null;
-
 return false;
 
 }
 
 
-const room =
+myAvatar =
 data[0];
-
-
-currentRoom = {
-
-room_id:
-room.room_id,
-
-room_code:
-room.room_code,
-
-room_name:
-room.room_name,
-
-host_profile_id:
-room.host_profile_id,
-
-host_nickname:
-room.host_nickname,
-
-chip_value_per:
-numberValue(
-room.chip_value_per
-),
-
-min_buyin_chips:
-numberValue(
-room.min_buyin_chips
-),
-
-max_buyin_chips:
-numberValue(
-room.max_buyin_chips
-),
-
-small_blind_chips:
-numberValue(
-room.small_blind_chips
-),
-
-big_blind_chips:
-numberValue(
-room.big_blind_chips
-),
-
-dealer_seat_no:
-room.dealer_seat_no,
-
-room_status:
-room.room_status,
-
-is_host:
-Boolean(
-room.is_host
-)
-
-};
 
 
 return true;
@@ -6221,33 +4593,184 @@ return true;
 }
 
 
-/* ==========================================================
-   재접속 위치 복원
-========================================================== */
+async function showAvatar(){
 
-async function restoreActiveRoom(){
-
-const found =
-await syncCurrentRoom();
+hideAllScreens();
 
 
-if(!found){
+await refreshProfile();
 
-return false;
+
+if(
+!await loadMyAvatar()
+){
+
+await showHome();
+
+return;
 
 }
 
 
+renderAvatar();
+
+
+byId(
+"avatarScreen"
+)
+.classList.remove(
+"hidden"
+);
+
+}
+
+
+function renderAvatar(){
+
+if(!myAvatar){
+
+return;
+
+}
+
+
+byId(
+"avatarNickname"
+)
+.textContent =
+myAvatar.nickname;
+
+
+byId(
+"avatarLarge"
+)
+.innerHTML =
+avatarSvg(
+
+myAvatar.avatar_color,
+
+myAvatar.avatar_ears,
+
+myAvatar.avatar_eyes,
+
+myAvatar.avatar_nose
+
+);
+
+
+const color =
+normalizeColor(
+myAvatar.avatar_color
+);
+
+
+byId(
+"avatarColorPicker"
+)
+.value =
+color;
+
+
+byId(
+"avatarColorCode"
+)
+.textContent =
+color;
+
+
+byId(
+"avatarEarName"
+)
+.textContent =
+avatarItemName(
+myAvatar.avatar_ears
+);
+
+
+byId(
+"avatarEyeName"
+)
+.textContent =
+avatarItemName(
+myAvatar.avatar_eyes
+);
+
+
+byId(
+"avatarNoseName"
+)
+.textContent =
+avatarItemName(
+myAvatar.avatar_nose
+);
+
+}
+
+
+function previewAvatarColor(){
+
+if(!myAvatar){
+
+return;
+
+}
+
+
+const color =
+normalizeColor(
+byId(
+"avatarColorPicker"
+)
+.value
+);
+
+
+byId(
+"avatarColorCode"
+)
+.textContent =
+color;
+
+
+byId(
+"avatarLarge"
+)
+.innerHTML =
+avatarSvg(
+
+color,
+
+myAvatar.avatar_ears,
+
+myAvatar.avatar_eyes,
+
+myAvatar.avatar_nose
+
+);
+
+}
+
+
+async function saveAvatarColor(){
+
+const color =
+normalizeColor(
+byId(
+"avatarColorPicker"
+)
+.value
+);
+
+
 const {
-data,
 error
 } =
-await supabaseClient.rpc(
-"get_latest_classic_hand_summary",
+await db.rpc(
+"change_avatar_color_v2",
 {
 
-p_room_id:
-currentRoom.room_id
+p_color:
+color
 
 }
 );
@@ -6255,50 +4778,461 @@ currentRoom.room_id
 
 if(error){
 
-console.error(
-"판 복원:",
-error
-);
+byId(
+"avatarMessage"
+)
+.textContent =
+error.message;
 
-
-await enterLobby();
-
-return true;
+return;
 
 }
 
 
-const hand =
-data?.[0];
+await refreshProfile();
+
+await loadMyAvatar();
+
+renderAvatar();
+
+renderHome();
 
 
-if(hand){
-
-await enterGame();
-
-return true;
-
-}
-
-
-await enterLobby();
-
-return true;
+byId(
+"avatarMessage"
+)
+.textContent =
+"털 색을 변경했습니다.";
 
 }
 
 
 /* ==========================================================
-   좌석
+   기본 파츠
 ========================================================== */
 
-async function loadLobbySeats(){
+async function resetAvatarPart(
+category
+){
+
+const {
+error
+} =
+await db.rpc(
+"reset_avatar_part_v2",
+{
+
+p_category:
+category
+
+}
+);
+
+
+if(error){
+
+byId(
+"avatarMessage"
+)
+.textContent =
+error.message;
+
+return;
+
+}
+
+
+await refreshProfile();
+
+await loadMyAvatar();
+
+renderAvatar();
+
+}
+
+
+/* ==========================================================
+   상점
+========================================================== */
+
+async function showShop(){
+
+hideAllScreens();
+
+
+await refreshProfile();
+
+
+byId(
+"shopScreen"
+)
+.classList.remove(
+"hidden"
+);
+
+
+await loadShop();
+
+}
+
+
+async function loadShop(){
 
 const {
 data,
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
+"get_avatar_shop_v2"
+);
+
+
+if(error){
+
+byId(
+"shopItems"
+)
+.innerHTML =
+`<div class="emptyText">${escapeHtml(error.message)}</div>`;
+
+return;
+
+}
+
+
+shopItems =
+data ??
+[];
+
+
+renderShop();
+
+}
+
+
+function renderShop(){
+
+byId(
+"shopBalance"
+)
+.textContent =
+formatPer(
+currentProfile.balance_per
+);
+
+
+const box =
+byId(
+"shopItems"
+);
+
+
+box.innerHTML =
+"";
+
+
+const categories = [
+
+{
+key:"ears",
+name:"귀"
+},
+
+{
+key:"eyes",
+name:"눈"
+},
+
+{
+key:"nose",
+name:"코"
+}
+
+];
+
+
+categories.forEach(
+category => {
+
+const items =
+shopItems.filter(
+x =>
+x.category ===
+category.key
+);
+
+
+if(items.length === 0){
+
+return;
+
+}
+
+
+box.insertAdjacentHTML(
+"beforeend",
+
+`<div class="shopCategory">${category.name}</div>`
+
+);
+
+
+items.forEach(
+item => {
+
+const preview = {
+
+avatar_color:
+currentProfile.avatar_color,
+
+avatar_ears:
+currentProfile.avatar_ears,
+
+avatar_eyes:
+currentProfile.avatar_eyes,
+
+avatar_nose:
+currentProfile.avatar_nose
+
+};
+
+
+if(
+item.category ===
+"ears"
+){
+
+preview.avatar_ears =
+item.item_key;
+
+}
+
+
+if(
+item.category ===
+"eyes"
+){
+
+preview.avatar_eyes =
+item.item_key;
+
+}
+
+
+if(
+item.category ===
+"nose"
+){
+
+preview.avatar_nose =
+item.item_key;
+
+}
+
+
+let action = "";
+
+
+if(item.equipped){
+
+action =
+'<span class="equippedTag">장착 중</span>';
+
+}else if(item.owned){
+
+action = `
+
+<button
+class="secondary shopAction"
+onclick="equipAvatarItem('${item.item_key}')"
+>
+장착
+</button>
+
+`;
+
+}else{
+
+action = `
+
+<button
+class="primary shopAction"
+onclick="buyAvatarItem('${item.item_key}')"
+>
+구매
+</button>
+
+`;
+
+}
+
+
+box.insertAdjacentHTML(
+"beforeend",
+
+`
+
+<div class="shopItem">
+
+<div class="shopPreview">
+
+${playerAvatar(preview)}
+
+</div>
+
+<div class="shopInfo">
+
+<div class="shopName">
+${escapeHtml(item.name)}
+</div>
+
+<div class="shopDescription">
+${escapeHtml(item.description)}
+</div>
+
+<div class="shopPrice">
+${formatPer(item.price_per)}
+</div>
+
+</div>
+
+${action}
+
+</div>
+
+`
+
+);
+
+}
+);
+
+}
+);
+
+}
+
+
+async function buyAvatarItem(
+itemKey
+){
+
+const item =
+shopItems.find(
+x =>
+x.item_key ===
+itemKey
+);
+
+
+if(!item){
+
+return;
+
+}
+
+
+if(
+!confirm(
+`${item.name}을(를) ${formatPer(item.price_per)}에 구매하시겠습니까?`
+)
+){
+
+return;
+
+}
+
+
+const {
+error
+} =
+await db.rpc(
+"purchase_avatar_item_v2",
+{
+
+p_item_key:
+itemKey
+
+}
+);
+
+
+if(error){
+
+byId(
+"shopMessage"
+)
+.textContent =
+error.message;
+
+return;
+
+}
+
+
+await refreshProfile();
+
+await loadShop();
+
+
+byId(
+"shopMessage"
+)
+.textContent =
+`${item.name} 구매 완료`;
+
+}
+
+
+async function equipAvatarItem(
+itemKey
+){
+
+const {
+error
+} =
+await db.rpc(
+"equip_avatar_item_v2",
+{
+
+p_item_key:
+itemKey
+
+}
+);
+
+
+if(error){
+
+byId(
+"shopMessage"
+)
+.textContent =
+error.message;
+
+return;
+
+}
+
+
+await refreshProfile();
+
+await loadShop();
+
+}
+
+
+/* ==========================================================
+   대기실 좌석
+========================================================== */
+
+async function loadRoomSeats(){
+
+const {
+data,
+error
+} =
+await db.rpc(
 "get_room_seats",
 {
 
@@ -6312,7 +5246,7 @@ currentRoom.room_id
 if(error){
 
 console.error(
-"좌석:",
+"get_room_seats:",
 error
 );
 
@@ -6322,7 +5256,8 @@ return false;
 
 
 currentRoomSeats =
-data ?? [];
+data ??
+[];
 
 
 return true;
@@ -6337,7 +5272,7 @@ seatNo
 const {
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "choose_room_seat",
 {
 
@@ -6353,11 +5288,9 @@ seatNo
 
 if(error){
 
-openModal(
+showModal(
 "자리 선택 오류",
-escapeHtml(
 error.message
-)
 );
 
 return;
@@ -6374,26 +5307,17 @@ await refreshLobby();
    대기실 테이블
 ========================================================== */
 
-function renderLobbyPokerTable(){
+function renderLobbyTable(){
 
 const box =
 byId(
-"lobbyPokerTable"
+"lobbyPokerArea"
 );
 
 
 let html = `
 
 <div class="pokerTable">
-
-<div class="tableCenter">
-
-<div class="tableCenterLogo">
-HOLDEM A
-</div>
-
-</div>
-
 </div>
 
 `;
@@ -6422,14 +5346,14 @@ html += `
 <div class="seat seat${seatNo}">
 
 <button
-class="emptySeatButton"
+class="emptySeat"
 onclick="chooseSeat(${seatNo})"
 >
 빈자리
 </button>
 
-<div class="seatNumber">
-${seatNo}번
+<div class="seatSub">
+${seatNo}
 </div>
 
 </div>
@@ -6441,19 +5365,20 @@ continue;
 }
 
 
-const isMe =
+const me =
 player.profile_id ===
 currentUser.id;
 
 
 html += `
 
-<div class="seat seat${seatNo}${isMe ? " seatMe" : ""}">
+<div class="seat seat${seatNo}">
 
-${playerAvatarHtml(player)}
+${playerAvatar(player)}
 
-<div class="seatNickname">
+<div class="seatName">
 ${escapeHtml(player.nickname)}
+${me ? " · 나" : ""}
 </div>
 
 <div class="seatSub">
@@ -6464,10 +5389,6 @@ ${player.is_ready ? " · 준비" : ""}
 
 ${player.is_host ? " · 방장" : ""}
 
-</div>
-
-<div class="seatNumber">
-${seatNo}번
 </div>
 
 </div>
@@ -6489,7 +5410,7 @@ html;
 
 async function enterLobby(){
 
-stopAllRefresh();
+hideAllScreens();
 
 
 if(
@@ -6503,8 +5424,14 @@ return;
 }
 
 
-showScreen(
+await refreshProfile();
+
+
+byId(
 "roomLobbyScreen"
+)
+.classList.remove(
+"hidden"
 );
 
 
@@ -6522,103 +5449,14 @@ byId(
 currentRoom.room_code;
 
 
-renderLobbyRoomInfo();
-
-
-await loadMyProfile();
-
 await refreshLobby();
 
 
-lobbyRefreshTimer =
+lobbyTimer =
 setInterval(
 refreshLobby,
 2200
 );
-
-}
-
-
-function renderLobbyRoomInfo(){
-
-byId(
-"lobbyRoomSettings"
-)
-.innerHTML =
-
-`방장: ${escapeHtml(currentRoom.host_nickname)}
-<br>
-1칩 = ${formatNumber(currentRoom.chip_value_per)}퍼
-<br>
-환전: ${formatNumber(currentRoom.min_buyin_chips)}
-~
-${formatNumber(currentRoom.max_buyin_chips)}칩
-<br>
-블라인드:
-SB ${formatNumber(currentRoom.small_blind_chips)}
-/
-BB ${formatNumber(currentRoom.big_blind_chips)}`;
-
-
-const start =
-byId(
-"startGameButton"
-);
-
-
-const leave =
-byId(
-"leaveRoomButton"
-);
-
-
-const destroy =
-byId(
-"destroyRoomButton"
-);
-
-
-if(currentRoom.is_host){
-
-start.classList.remove(
-"hidden"
-);
-
-
-leave.classList.remove(
-"hidden"
-);
-
-
-destroy.classList.remove(
-"hidden"
-);
-
-
-leave.textContent =
-"방 나가기 · 방장 넘기기";
-
-}else{
-
-start.classList.add(
-"hidden"
-);
-
-
-destroy.classList.add(
-"hidden"
-);
-
-
-leave.classList.remove(
-"hidden"
-);
-
-
-leave.textContent =
-"방 나가기";
-
-}
 
 }
 
@@ -6636,8 +5474,6 @@ if(
 !await syncCurrentRoom()
 ){
 
-stopLobbyRefresh();
-
 await showHome();
 
 return;
@@ -6645,12 +5481,12 @@ return;
 }
 
 
-/* 게임 시작 여부 */
+/* 다른 사용자가 게임 시작했는지 */
 
 const {
 data:handData
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "get_latest_classic_hand_summary",
 {
 
@@ -6661,13 +5497,14 @@ currentRoom.room_id
 );
 
 
-const hand =
+const latestHand =
 handData?.[0];
 
 
 if(
-hand &&
-hand.street !== "finished"
+latestHand &&
+latestHand.street !==
+"finished"
 ){
 
 await enterGame();
@@ -6677,14 +5514,11 @@ return;
 }
 
 
-renderLobbyRoomInfo();
-
-
 const {
 data,
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "get_room_lobby_players",
 {
 
@@ -6698,7 +5532,7 @@ currentRoom.room_id
 if(error){
 
 console.error(
-"대기실:",
+"lobby:",
 error
 );
 
@@ -6707,35 +5541,15 @@ return;
 }
 
 
-if(
-!data ||
-data.length === 0
-){
-
-stopLobbyRefresh();
-
-await showHome();
-
-return;
-
-}
-
-
-currentPlayers =
-data;
-
-
-currentMembership =
-data.find(
+currentLobbyPlayer =
+data?.find(
 x =>
 x.profile_id ===
 currentUser.id
 );
 
 
-if(!currentMembership){
-
-stopLobbyRefresh();
+if(!currentLobbyPlayer){
 
 await showHome();
 
@@ -6744,10 +5558,12 @@ return;
 }
 
 
-await loadLobbySeats();
+await loadRoomSeats();
 
 
-renderLobbyPokerTable();
+renderLobbyTable();
+
+renderLobbyInfo();
 
 
 byId(
@@ -6764,11 +5580,11 @@ byId(
 )
 .textContent =
 formatChip(
-currentMembership.chips
+currentLobbyPlayer.chips
 );
 
 
-const target =
+const input =
 byId(
 "targetChipInput"
 );
@@ -6776,11 +5592,11 @@ byId(
 
 if(
 document.activeElement !==
-target
+input
 ){
 
-target.value =
-currentMembership.chips;
+input.value =
+currentLobbyPlayer.chips;
 
 }
 
@@ -6788,8 +5604,8 @@ currentMembership.chips;
 updateExchangePreview();
 
 
-const mySeat =
-currentRoomSeats.find(
+const seated =
+currentRoomSeats.some(
 x =>
 x.profile_id ===
 currentUser.id &&
@@ -6798,7 +5614,8 @@ x.seat_no !== null
 
 
 const everybodySeated =
-data.every(
+(data ?? [])
+.every(
 player =>
 currentRoomSeats.some(
 seat =>
@@ -6809,21 +5626,12 @@ seat.seat_no !== null
 );
 
 
-const everybodyReady =
-data.length >= 2 &&
+const allReady =
+(data?.length ?? 0) >= 2 &&
 everybodySeated &&
 data.every(
 x =>
 x.is_ready
-);
-
-
-byId(
-"allReadyNotice"
-)
-.classList.toggle(
-"hidden",
-!everybodyReady
 );
 
 
@@ -6834,24 +5642,28 @@ byId(
 
 
 ready.disabled =
-!mySeat;
+!seated;
 
-
-if(!mySeat){
 
 ready.textContent =
-"먼저 자리를 선택하세요";
-
-}else{
-
-ready.textContent =
-currentMembership.is_ready
+!seated
+?
+"먼저 자리를 선택하세요"
+:
+currentLobbyPlayer.is_ready
 ?
 "준비 취소"
 :
 "준비 완료";
 
-}
+
+byId(
+"allReadyNotice"
+)
+.classList.toggle(
+"hidden",
+!allReady
+);
 
 
 if(currentRoom.is_host){
@@ -6860,9 +5672,217 @@ byId(
 "startGameButton"
 )
 .disabled =
-!everybodyReady;
+!allReady;
 
 }
+
+}
+
+
+/* ==========================================================
+   대기실 정보 / 블라인드
+========================================================== */
+
+function renderLobbyInfo(){
+
+byId(
+"lobbyRoomSettings"
+)
+.innerHTML =
+
+`방장: ${escapeHtml(currentRoom.host_nickname)}
+<br>
+1칩 = ${formatNumber(currentRoom.chip_value_per)}퍼
+<br>
+환전 ${formatNumber(currentRoom.min_buyin_chips)}
+~
+${formatNumber(currentRoom.max_buyin_chips)}칩`;
+
+
+byId(
+"lobbyBlindValue"
+)
+.textContent =
+`SB ${formatNumber(currentRoom.small_blind_chips)}칩 · BB ${formatNumber(currentRoom.big_blind_chips)}칩`;
+
+
+const edit =
+byId(
+"blindEditArea"
+);
+
+
+const label =
+byId(
+"blindHostLabel"
+);
+
+
+if(currentRoom.is_host){
+
+edit.classList.remove(
+"hidden"
+);
+
+
+label.classList.remove(
+"hidden"
+);
+
+
+if(
+document.activeElement !==
+byId(
+"lobbySmallBlind"
+)
+){
+
+byId(
+"lobbySmallBlind"
+)
+.value =
+currentRoom.small_blind_chips;
+
+}
+
+
+if(
+document.activeElement !==
+byId(
+"lobbyBigBlind"
+)
+){
+
+byId(
+"lobbyBigBlind"
+)
+.value =
+currentRoom.big_blind_chips;
+
+}
+
+}else{
+
+edit.classList.add(
+"hidden"
+);
+
+
+label.classList.add(
+"hidden"
+);
+
+}
+
+
+byId(
+"startGameButton"
+)
+.classList.toggle(
+"hidden",
+!currentRoom.is_host
+);
+
+
+byId(
+"destroyRoomButton"
+)
+.classList.toggle(
+"hidden",
+!currentRoom.is_host
+);
+
+
+byId(
+"leaveRoomButton"
+)
+.classList.remove(
+"hidden"
+);
+
+}
+
+
+async function saveLobbyBlinds(){
+
+const sb =
+int(
+byId(
+"lobbySmallBlind"
+)
+.value
+);
+
+
+const bb =
+int(
+byId(
+"lobbyBigBlind"
+)
+.value
+);
+
+
+const message =
+byId(
+"blindMessage"
+);
+
+
+message.textContent =
+"";
+
+
+if(
+sb < 1 ||
+bb <= sb
+){
+
+message.textContent =
+"BB는 SB보다 커야 합니다.";
+
+return;
+
+}
+
+
+const {
+error
+} =
+await db.rpc(
+"update_room_blinds",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_small_blind_chips:
+sb,
+
+p_big_blind_chips:
+bb
+
+}
+);
+
+
+if(error){
+
+message.textContent =
+error.message;
+
+return;
+
+}
+
+
+await syncCurrentRoom();
+
+renderLobbyInfo();
+
+
+message.textContent =
+"블라인드를 변경했습니다.";
 
 }
 
@@ -6875,7 +5895,7 @@ function updateExchangePreview(){
 
 if(
 !currentRoom ||
-!currentMembership
+!currentLobbyPlayer
 ){
 
 return;
@@ -6884,7 +5904,7 @@ return;
 
 
 const target =
-intValue(
+int(
 byId(
 "targetChipInput"
 )
@@ -6893,8 +5913,8 @@ byId(
 
 
 const current =
-numberValue(
-currentMembership.chips
+num(
+currentLobbyPlayer.chips
 );
 
 
@@ -6907,7 +5927,7 @@ byId(
 if(target < 0){
 
 box.textContent =
-"0 이상의 정수로 입력해주세요.";
+"0 이상의 숫자를 입력해주세요.";
 
 return;
 
@@ -6917,13 +5937,16 @@ return;
 if(
 target !== 0 &&
 (
-target < currentRoom.min_buyin_chips ||
-target > currentRoom.max_buyin_chips
+target <
+currentRoom.min_buyin_chips ||
+
+target >
+currentRoom.max_buyin_chips
 )
 ){
 
 box.textContent =
-`0칩 또는 ${formatNumber(currentRoom.min_buyin_chips)}~${formatNumber(currentRoom.max_buyin_chips)}칩 사이로 설정해주세요.`;
+`${formatNumber(currentRoom.min_buyin_chips)}~${formatNumber(currentRoom.max_buyin_chips)}칩 또는 0칩으로 설정할 수 있습니다.`;
 
 return;
 
@@ -6935,75 +5958,28 @@ target -
 current;
 
 
-const per =
-Math.abs(
-difference
-) *
-currentRoom.chip_value_per;
-
-
 if(difference > 0){
 
 box.textContent =
-`${formatChip(current)} → ${formatChip(target)}
-
-${formatPer(per)}를 사용합니다.`;
+`${formatPer(
+difference *
+currentRoom.chip_value_per
+)} 사용`;
 
 }else if(difference < 0){
 
 box.textContent =
-`${formatChip(current)} → ${formatChip(target)}
-
-${formatPer(per)}가 보유 퍼로 돌아옵니다.`;
+`${formatPer(
+Math.abs(difference) *
+currentRoom.chip_value_per
+)} 반환`;
 
 }else{
 
 box.textContent =
-"현재 준비한 칩과 같습니다.";
+"현재와 같습니다.";
 
 }
-
-}
-
-
-function setTargetMin(){
-
-byId(
-"targetChipInput"
-)
-.value =
-currentRoom.min_buyin_chips;
-
-
-updateExchangePreview();
-
-}
-
-
-function setTargetMax(){
-
-byId(
-"targetChipInput"
-)
-.value =
-currentRoom.max_buyin_chips;
-
-
-updateExchangePreview();
-
-}
-
-
-function setTargetZero(){
-
-byId(
-"targetChipInput"
-)
-.value =
-0;
-
-
-updateExchangePreview();
 
 }
 
@@ -7011,7 +5987,7 @@ updateExchangePreview();
 async function exchangeChips(){
 
 const target =
-intValue(
+int(
 byId(
 "targetChipInput"
 )
@@ -7022,7 +5998,7 @@ byId(
 const {
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "set_lobby_chips",
 {
 
@@ -7038,11 +6014,9 @@ target
 
 if(error){
 
-openModal(
+showModal(
 "칩 준비 오류",
-escapeHtml(
 error.message
-)
 );
 
 return;
@@ -7050,7 +6024,7 @@ return;
 }
 
 
-await loadMyProfile();
+await refreshProfile();
 
 await refreshLobby();
 
@@ -7058,12 +6032,12 @@ await refreshLobby();
 
 
 /* ==========================================================
-   준비 / 시작
+   준비
 ========================================================== */
 
 async function toggleReady(){
 
-if(!currentMembership){
+if(!currentLobbyPlayer){
 
 return;
 
@@ -7073,7 +6047,7 @@ return;
 const {
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "set_player_ready",
 {
 
@@ -7081,7 +6055,7 @@ p_room_id:
 currentRoom.room_id,
 
 p_ready:
-!currentMembership.is_ready
+!currentLobbyPlayer.is_ready
 
 }
 );
@@ -7089,11 +6063,9 @@ p_ready:
 
 if(error){
 
-openModal(
-"준비 상태 오류",
-escapeHtml(
+showModal(
+"준비 오류",
 error.message
-)
 );
 
 return;
@@ -7106,12 +6078,16 @@ await refreshLobby();
 }
 
 
+/* ==========================================================
+   게임 시작
+========================================================== */
+
 async function startGame(){
 
 const {
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "start_holdem_game",
 {
 
@@ -7124,11 +6100,9 @@ currentRoom.room_id
 
 if(error){
 
-openModal(
+showModal(
 "게임 시작 오류",
-escapeHtml(
 error.message
-)
 );
 
 return;
@@ -7142,12 +6116,110 @@ await enterGame();
 
 
 /* ==========================================================
+   카드
+========================================================== */
+
+function cardHtml(
+card
+){
+
+if(!card){
+
+return '<div class="cardPlaceholder"></div>';
+
+}
+
+
+const rank =
+String(
+card.rank_text ??
+card.rank ??
+"?"
+);
+
+
+const suitMap = {
+
+hearts:
+"♥",
+
+diamonds:
+"♦",
+
+clubs:
+"♣",
+
+spades:
+"♠",
+
+H:
+"♥",
+
+D:
+"♦",
+
+C:
+"♣",
+
+S:
+"♠"
+
+};
+
+
+const suit =
+suitMap[
+card.suit
+]
+??
+card.suit
+??
+"?";
+
+
+const red =
+suit === "♥" ||
+suit === "♦";
+
+
+return `
+
+<div class="pixelCard${red ? " red" : ""}">
+
+<div class="pixelCardRank">
+${escapeHtml(rank)}
+</div>
+
+<div class="pixelCardSuit">
+${escapeHtml(suit)}
+</div>
+
+</div>
+
+`;
+
+}
+
+
+function cardBackHtml(){
+
+return `
+
+<div class="pixelCard pixelCardBack">
+</div>
+
+`;
+
+}
+
+
+/* ==========================================================
    게임 진입
 ========================================================== */
 
 async function enterGame(){
 
-stopAllRefresh();
+hideAllScreens();
 
 
 if(
@@ -7165,18 +6237,29 @@ myCardsVisible =
 false;
 
 
-showScreen(
+byId(
 "gameScreen"
+)
+.classList.remove(
+"hidden"
+);
+
+
+byId(
+"sideTools"
+)
+.classList.remove(
+"hidden"
 );
 
 
 await refreshGame();
 
 
-gameRefreshTimer =
+gameTimer =
 setInterval(
 refreshGame,
-1500
+1400
 );
 
 }
@@ -7199,8 +6282,6 @@ if(
 !await syncCurrentRoom()
 ){
 
-stopGameRefresh();
-
 await showHome();
 
 return;
@@ -7212,7 +6293,7 @@ const {
 data:handData,
 error:handError
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "get_latest_classic_hand_summary",
 {
 
@@ -7226,7 +6307,7 @@ currentRoom.room_id
 if(handError){
 
 console.error(
-"판 상태:",
+"hand:",
 handError
 );
 
@@ -7249,74 +6330,68 @@ currentHand =
 handData[0];
 
 
-const {
-data:players,
-error:playersError
-} =
-await supabaseClient.rpc(
+const [
+playerResult,
+communityResult,
+holeResult
+] =
+await Promise.all([
+
+db.rpc(
 "get_classic_table_players",
 {
-
 p_room_id:
 currentRoom.room_id
-
 }
-);
+),
 
-
-if(!playersError){
-
-currentHandPlayers =
-players ?? [];
-
-}
-
-
-const {
-data:community,
-error:communityError
-} =
-await supabaseClient.rpc(
+db.rpc(
 "get_holdem_community_cards",
 {
-
 p_room_id:
 currentRoom.room_id
-
 }
-);
+),
 
-
-if(!communityError){
-
-currentCommunityCards =
-community ?? [];
-
-}
-
-
-const {
-data:holeCards,
-error:holeError
-} =
-await supabaseClient.rpc(
+db.rpc(
 "get_my_holdem_cards_ui",
 {
-
 p_room_id:
 currentRoom.room_id
+}
+)
+
+]);
+
+
+if(!playerResult.error){
+
+currentHandPlayers =
+playerResult.data ??
+[];
 
 }
-);
 
 
-if(!holeError){
+if(!communityResult.error){
+
+currentCommunityCards =
+communityResult.data ??
+[];
+
+}
+
+
+if(!holeResult.error){
 
 currentHoleCards =
-holeCards ?? [];
+holeResult.data ??
+[];
 
 }
 
+
+/* 행동 가능 상태 */
 
 if(
 [
@@ -7331,10 +6406,10 @@ currentHand.street
 ){
 
 const {
-data:options,
-error:optionError
+data,
+error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "get_my_classic_action_options",
 {
 
@@ -7345,7 +6420,13 @@ currentRoom.room_id
 );
 
 
-if(optionError){
+if(error){
+
+console.error(
+"action options:",
+error
+);
+
 
 myActionOptions =
 null;
@@ -7353,7 +6434,7 @@ null;
 }else{
 
 myActionOptions =
-options?.[0] ??
+data?.[0] ??
 null;
 
 }
@@ -7374,7 +6455,7 @@ currentHand.street ===
 "finished"
 ){
 
-await renderFinishedResult();
+await renderFinished();
 
 }
 
@@ -7391,29 +6472,36 @@ street
 
 const names = {
 
-preflop:"프리플랍",
+preflop:
+"프리플랍",
 
-flop:"플랍",
+flop:
+"플랍",
 
-turn:"턴",
+turn:
+"턴",
 
-river:"리버",
+river:
+"리버",
 
-showdown:"쇼다운",
+showdown:
+"쇼다운",
 
-finished:"판 종료"
+finished:
+"종료"
 
 };
 
 
-return names[street] ??
+return names[street]
+??
 street;
 
 }
 
 
 /* ==========================================================
-   게임 화면
+   게임 렌더
 ========================================================== */
 
 function renderGame(){
@@ -7426,13 +6514,6 @@ return;
 
 
 byId(
-"gameHandNumber"
-)
-.textContent =
-`${formatNumber(currentHand.hand_number)}번째 판`;
-
-
-byId(
 "gameStreet"
 )
 .textContent =
@@ -7442,68 +6523,48 @@ currentHand.street
 
 
 byId(
-"gameCurrentBet"
+"gameHandNumber"
 )
 .textContent =
-formatChip(
-currentHand.current_bet
-);
+`${formatNumber(currentHand.hand_number)}번째 판`;
 
 
 byId(
-"gameHandCap"
+"gameTopPot"
 )
 .textContent =
 formatChip(
-currentHand.hand_cap
+currentHand.pot
 );
 
 
-renderGameTable();
+renderCommunity();
+
+renderPot();
+
+renderGameSeats();
 
 renderMyCards();
 
-renderTurn();
-
-renderActions();
-
-
-const finished =
-currentHand.street ===
-"finished";
-
-
-byId(
-"finishedSection"
-)
-.classList.toggle(
-"hidden",
-!finished
-);
+renderActionArea();
 
 }
 
 
 /* ==========================================================
-   게임 테이블
+   공용 카드
 ========================================================== */
 
-function renderGameTable(){
+function renderCommunity(){
 
-const box =
-byId(
-"gamePokerTable"
-);
-
-
-let communityHtml =
+let html =
 "";
 
 
 for(
-let i = 1;
-i <= 5;
-i++
+let position = 1;
+position <= 5;
+position++
 ){
 
 const card =
@@ -7512,11 +6573,11 @@ x =>
 Number(
 x.card_position
 ) ===
-i
+position
 );
 
 
-communityHtml +=
+html +=
 card
 ?
 cardHtml(
@@ -7528,33 +6589,85 @@ card
 }
 
 
-let html = `
+byId(
+"communityCards"
+)
+.innerHTML =
+html;
 
-<div class="pokerTable">
+}
 
-<div class="tableCenter">
 
-<div class="tableCenterLogo">
-HOLDEM A
-</div>
+/* ==========================================================
+   팟 시각화
+========================================================== */
 
-<div class="communityTitle">
-공용 카드
-</div>
+function renderPot(){
 
-<div class="communityCards">
-${communityHtml}
-</div>
+const pot =
+Math.max(
+0,
+int(
+currentHand.pot
+)
+);
 
-<div class="tablePot">
-팟 ${formatChip(currentHand.pot)}
-</div>
 
-</div>
+const visible =
+Math.min(
+pot,
+40
+);
 
-</div>
 
-`;
+let html =
+"";
+
+
+for(
+let i = 0;
+i < visible;
+i++
+){
+
+html +=
+'<div class="potCoin"></div>';
+
+}
+
+
+byId(
+"potCoins"
+)
+.innerHTML =
+html;
+
+
+byId(
+"potText"
+)
+.textContent =
+formatChip(
+pot
+);
+
+}
+
+
+/* ==========================================================
+   게임 좌석
+========================================================== */
+
+function renderGameSeats(){
+
+const box =
+byId(
+"gameSeats"
+);
+
+
+let html =
+"";
 
 
 for(
@@ -7575,95 +6688,65 @@ seatNo
 
 if(!player){
 
-html += `
-
-<div class="seat seat${seatNo}">
-
-<div
-class="emptySeatButton"
-style="display:flex;align-items:center;justify-content:center;cursor:default"
->
-빈자리
-</div>
-
-</div>
-
-`;
-
 continue;
 
 }
 
 
-const isMe =
-player.profile_id ===
-currentUser.id;
+let classes =
+`gameSeat gameSeat${seatNo}`;
 
 
-const isCurrent =
+if(
 Number(
 currentHand.current_actor_seat_no
 ) ===
-seatNo;
+seatNo
+){
 
-
-let className =
-`seat seat${seatNo}`;
-
-
-if(isMe){
-
-className +=
-" seatMe";
-
-}
-
-
-if(isCurrent){
-
-className +=
-" seatCurrent";
+classes +=
+" currentActor";
 
 }
 
 
 if(player.folded){
 
-className +=
-" seatFolded";
+classes +=
+" folded";
 
 }
 
 
-let badges =
+let roles =
 "";
 
 
 if(player.is_dealer){
 
-badges +=
-'<span class="roleBadge">D</span>';
+roles +=
+'<span class="role">D</span>';
 
 }
 
 
 if(player.is_small_blind){
 
-badges +=
-'<span class="roleBadge sb">SB</span>';
+roles +=
+'<span class="role sb">SB</span>';
 
 }
 
 
 if(player.is_big_blind){
 
-badges +=
-'<span class="roleBadge bb">BB</span>';
+roles +=
+'<span class="role bb">BB</span>';
 
 }
 
 
-let stateText =
+let info =
 formatChip(
 player.chips
 );
@@ -7671,45 +6754,34 @@ player.chips
 
 if(player.folded){
 
-stateText =
-"폴드";
+info =
+"FOLD";
 
 }else if(player.all_in){
 
-stateText +=
+info +=
 " · ALL IN";
-
-}
-
-
-if(
-numberValue(
-player.round_bet
-) > 0
-){
-
-stateText +=
-` · ${formatChip(player.round_bet)} 베팅`;
 
 }
 
 
 html += `
 
-<div class="${className}">
+<div class="${classes}">
 
-${playerAvatarHtml(player)}
+${playerAvatar(player)}
 
-<div class="roleBadges">
-${badges}
+<div class="roleLine">
+${roles}
 </div>
 
-<div class="seatNickname">
+<div class="seatName">
 ${escapeHtml(player.nickname)}
+${player.profile_id === currentUser.id ? " · 나" : ""}
 </div>
 
 <div class="seatSub">
-${escapeHtml(stateText)}
+${escapeHtml(info)}
 </div>
 
 </div>
@@ -7726,64 +6798,6 @@ html;
 
 
 /* ==========================================================
-   현재 차례
-========================================================== */
-
-function renderTurn(){
-
-const section =
-byId(
-"turnSection"
-);
-
-
-const actor =
-currentHandPlayers.find(
-x =>
-Number(
-x.seat_no
-) ===
-Number(
-currentHand.current_actor_seat_no
-)
-);
-
-
-if(
-!actor ||
-currentHand.street ===
-"finished"
-){
-
-section.classList.add(
-"hidden"
-);
-
-return;
-
-}
-
-
-section.classList.remove(
-"hidden"
-);
-
-
-byId(
-"turnName"
-)
-.textContent =
-actor.profile_id ===
-currentUser.id
-?
-`${actor.nickname} · 내 차례`
-:
-actor.nickname;
-
-}
-
-
-/* ==========================================================
    내 카드
 ========================================================== */
 
@@ -7791,50 +6805,14 @@ function renderMyCards(){
 
 const box =
 byId(
-"myCards"
+"myTableCards"
 );
 
 
 if(
-!myCardsVisible
+myCardsVisible &&
+currentHoleCards.length > 0
 ){
-
-box.innerHTML =
-cardBackHtml() +
-cardBackHtml();
-
-
-byId(
-"peekCardsButton"
-)
-.textContent =
-"내 카드 보기";
-
-
-byId(
-"cardPeekHelp"
-)
-.textContent =
-"눌러서 내 홀카드를 확인할 수 있습니다.";
-
-
-return;
-
-}
-
-
-if(
-currentHoleCards.length === 0
-){
-
-box.innerHTML =
-cardBackHtml() +
-cardBackHtml();
-
-return;
-
-}
-
 
 box.innerHTML =
 currentHoleCards
@@ -7854,17 +6832,25 @@ card
 
 
 byId(
-"peekCardsButton"
+"peekLabel"
 )
 .textContent =
-"카드 다시 덮기";
+"눌러서 덮기";
+
+}else{
+
+box.innerHTML =
+cardBackHtml() +
+cardBackHtml();
 
 
 byId(
-"cardPeekHelp"
+"peekLabel"
 )
 .textContent =
-"이 카드는 본인에게만 보입니다.";
+"카드를 눌러 확인";
+
+}
 
 }
 
@@ -7881,57 +6867,100 @@ renderMyCards();
 
 
 /* ==========================================================
-   행동 UI
+   행동 영역
 ========================================================== */
 
-function renderActions(){
+function renderActionArea(){
 
-const area =
+const panel =
 byId(
-"actionArea"
+"actionPanel"
+);
+
+
+const waiting =
+byId(
+"waitStrip"
 );
 
 
 if(
-!myActionOptions ||
 currentHand.street ===
 "finished"
 ){
 
-area.classList.add(
+panel.classList.add(
 "hidden"
 );
+
+
+waiting.classList.add(
+"hidden"
+);
+
+
+byId(
+"finishedSection"
+)
+.classList.remove(
+"hidden"
+);
+
 
 return;
 
 }
 
 
-area.classList.remove(
+byId(
+"finishedSection"
+)
+.classList.add(
 "hidden"
 );
+
+
+if(!myActionOptions){
+
+panel.classList.add(
+"hidden"
+);
+
+
+waiting.classList.remove(
+"hidden"
+);
+
+
+waiting.textContent =
+"게임 상태를 기다리고 있습니다.";
+
+
+renderChipTray(
+0
+);
+
+
+return;
+
+}
 
 
 const o =
 myActionOptions;
 
 
-if(o.is_my_turn){
+if(!o.is_my_turn){
 
-byId(
-"actionStatus"
-)
-.textContent =
+panel.classList.add(
+"hidden"
+);
 
-`내 차례입니다.
 
-남은 칩: ${formatChip(o.my_chips)}
-이번 라운드 베팅: ${formatChip(o.my_round_bet)}
-이번 판 총 베팅: ${formatChip(o.my_total_bet)}
-콜 필요: ${formatChip(o.call_amount)}
-현재 베팅 상한: ${formatChip(o.hand_cap)}`;
+waiting.classList.remove(
+"hidden"
+);
 
-}else{
 
 const actor =
 currentHandPlayers.find(
@@ -7945,18 +6974,62 @@ currentHand.current_actor_seat_no
 );
 
 
-byId(
-"actionStatus"
-)
-.textContent =
+waiting.textContent =
 actor
 ?
-`${actor.nickname}님의 행동을 기다리고 있습니다.`
+`${actor.nickname}님의 행동을 기다리는 중`
 :
-"다른 플레이어의 행동을 기다리고 있습니다.";
+"다른 플레이어의 행동을 기다리는 중";
+
+
+renderChipTray(
+0
+);
+
+
+return;
 
 }
 
+
+waiting.classList.add(
+"hidden"
+);
+
+
+panel.classList.remove(
+"hidden"
+);
+
+
+byId(
+"uiCurrentBet"
+)
+.textContent =
+formatChip(
+o.current_bet
+);
+
+
+byId(
+"uiMyBet"
+)
+.textContent =
+formatChip(
+o.my_round_bet
+);
+
+
+byId(
+"uiCall"
+)
+.textContent =
+formatChip(
+o.call_amount
+);
+
+
+/* 버튼 */
 
 byId(
 "foldButton"
@@ -7987,39 +7060,58 @@ byId(
 
 
 byId(
-"callButton"
+"callSub"
 )
 .textContent =
-numberValue(
+num(
 o.call_amount
 ) > 0
 ?
-`콜 · ${formatChip(o.call_amount)}`
+`+${formatNumber(o.call_amount)}`
 :
-"콜";
+"";
+
+
+/* 베팅인지 레이즈인지 */
+
+const isBet =
+num(
+o.current_bet
+) ===
+0;
+
+
+byId(
+"raiseLabel"
+)
+.textContent =
+isBet
+?
+"베팅"
+:
+"레이즈";
 
 
 const input =
 byId(
-"raiseInput"
+"betInput"
 );
 
 
 const min =
-numberValue(
+num(
 o.min_raise_to
 );
 
 
 const max =
-numberValue(
+num(
 o.max_raise_to
 );
 
 
 input.min =
 min;
-
 
 input.max =
 max;
@@ -8030,16 +7122,16 @@ document.activeElement !==
 input
 ){
 
-const current =
-numberValue(
+const value =
+num(
 input.value
 );
 
 
 if(
 !o.can_raise ||
-current < min ||
-current > max
+value < min ||
+value > max
 ){
 
 input.value =
@@ -8054,16 +7146,169 @@ max;
 }
 
 
-updateRaisePreview();
+updateBetPreview();
 
 }
 
 
-function changeRaise(
+/* ==========================================================
+   칩 트레이
+========================================================== */
+
+function renderChipTray(
+selectedAdditional
+){
+
+let myChips =
+0;
+
+
+if(myActionOptions){
+
+myChips =
+Math.max(
+0,
+int(
+myActionOptions.my_chips
+)
+);
+
+}else{
+
+const me =
+currentHandPlayers.find(
+x =>
+x.profile_id ===
+currentUser.id
+);
+
+
+myChips =
+Math.max(
+0,
+int(
+me?.chips
+)
+);
+
+}
+
+
+byId(
+"chipTrayCount"
+)
+.textContent =
+formatChip(
+myChips
+);
+
+
+const box =
+byId(
+"chipRows"
+);
+
+
+box.innerHTML =
+"";
+
+
+if(myChips === 0){
+
+box.innerHTML =
+'<div class="fieldHelp" style="margin:0">남은 칩 없음</div>';
+
+return;
+
+}
+
+
+/*
+1칩 = 1코인.
+20개마다 다음 줄.
+트레이 내부만 스크롤되므로
+게임 전체 화면 길이는 크게 늘어나지 않는다.
+*/
+
+for(
+let start = 0;
+start < myChips;
+start += 20
+){
+
+const row =
+document.createElement(
+"div"
+);
+
+
+row.className =
+"chipRow";
+
+
+const end =
+Math.min(
+start + 20,
+myChips
+);
+
+
+for(
+let i = start;
+i < end;
+i++
+){
+
+const coin =
+document.createElement(
+"div"
+);
+
+
+coin.className =
+"chipCoin";
+
+
+if(
+i <
+selectedAdditional
+){
+
+coin.classList.add(
+"selected"
+);
+
+}
+
+
+row.appendChild(
+coin
+);
+
+}
+
+
+box.appendChild(
+row
+);
+
+}
+
+}
+
+
+/* ==========================================================
+   베팅 조절
+========================================================== */
+
+function changeBet(
 delta
 ){
 
-if(!myActionOptions){
+if(
+!myActionOptions ||
+!myActionOptions.can_raise
+){
 
 return;
 
@@ -8072,32 +7317,40 @@ return;
 
 const input =
 byId(
-"raiseInput"
+"betInput"
 );
 
 
 let value =
-numberValue(
+int(
 input.value
-) +
+);
+
+
+value +=
 delta;
+
+
+const min =
+int(
+myActionOptions.min_raise_to
+);
+
+
+const max =
+int(
+myActionOptions.max_raise_to
+);
 
 
 value =
 Math.max(
 
-numberValue(
-myActionOptions.min_raise_to
-),
+min,
 
 Math.min(
-
 value,
-
-numberValue(
-myActionOptions.max_raise_to
-)
-
+max
 )
 
 );
@@ -8107,58 +7360,72 @@ input.value =
 value;
 
 
-updateRaisePreview();
+updateBetPreview();
 
 }
 
 
-function updateRaisePreview(){
+function onBetInput(){
 
-const box =
-byId(
-"raisePreview"
-);
+updateBetPreview();
 
+}
+
+
+function updateBetPreview(){
 
 if(!myActionOptions){
 
-box.textContent =
-"-";
-
 return;
 
 }
 
 
-if(!myActionOptions.can_raise){
+const o =
+myActionOptions;
 
-box.textContent =
-"현재는 레이즈할 수 없습니다.";
 
-return;
-
-}
+const input =
+byId(
+"betInput"
+);
 
 
 const target =
-intValue(
-byId(
-"raiseInput"
-)
-.value
+int(
+input.value
 );
 
 
 const min =
-numberValue(
-myActionOptions.min_raise_to
+int(
+o.min_raise_to
 );
 
 
 const max =
-numberValue(
-myActionOptions.max_raise_to
+int(
+o.max_raise_to
 );
+
+
+if(!o.can_raise){
+
+byId(
+"betMeta"
+)
+.textContent =
+"현재 베팅을 올릴 수 없습니다.";
+
+
+renderChipTray(
+0
+);
+
+
+return;
+
+}
 
 
 if(
@@ -8166,38 +7433,112 @@ target < min ||
 target > max
 ){
 
-box.textContent =
-`레이즈 가능 범위: ${formatChip(min)} ~ ${formatChip(max)}`;
+byId(
+"betMeta"
+)
+.textContent =
+`가능 범위 ${formatChip(min)} ~ ${formatChip(max)}`;
+
+
+renderChipTray(
+0
+);
+
 
 return;
 
 }
 
 
+/*
+target = 이번 라운드의 총 베팅액.
+실제로 손에서 새로 빠져나가는 양만 코인을 들어 올림.
+*/
+
 const additional =
+Math.max(
+
+0,
+
 target -
-numberValue(
-myActionOptions.my_round_bet
+int(
+o.my_round_bet
+)
+
 );
 
 
-box.textContent =
-`이번 라운드 내 총 베팅을 ${formatChip(target)}으로 올립니다.
+const isBet =
+num(
+o.current_bet
+) ===
+0;
 
-지금 추가로 내는 칩: ${formatChip(additional)}`;
+
+byId(
+"betMeta"
+)
+textContent =
+isBet
+?
+`지금 ${formatChip(additional)}을 앞으로 냅니다 · 총 베팅 ${formatChip(target)}`
+:
+`지금 ${formatChip(additional)}을 더 냅니다 · 레이즈 후 ${formatChip(target)}`;
+
+
+renderChipTray(
+additional
+);
+
+
+byId(
+"allInButton"
+)
+.textContent =
+`올인 · ${formatNumber(max)}`;
 
 }
 
 
 /* ==========================================================
-   행동
+   올인
+========================================================== */
+
+function setAllIn(){
+
+if(
+!myActionOptions ||
+!myActionOptions.can_raise
+){
+
+return;
+
+}
+
+
+byId(
+"betInput"
+)
+.value =
+int(
+myActionOptions.max_raise_to
+);
+
+
+updateBetPreview();
+
+}
+
+
+/* ==========================================================
+   폴드 / 체크 / 콜
 ========================================================== */
 
 async function doAction(
 action
 ){
 
-disableGameActions(
+disableActions(
 true
 );
 
@@ -8205,7 +7546,7 @@ true
 const {
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "holdem_action",
 {
 
@@ -8222,21 +7563,17 @@ null
 );
 
 
-disableGameActions(
+disableActions(
 false
 );
 
 
 if(error){
 
-openModal(
-"행동 처리 오류",
-escapeHtml(
+showModal(
+"행동 오류",
 error.message
-)
 );
-
-await refreshGame();
 
 return;
 
@@ -8248,18 +7585,32 @@ await refreshGame();
 }
 
 
+/* ==========================================================
+   베팅 / 레이즈
+========================================================== */
+
 async function doRaise(){
 
+if(
+!myActionOptions ||
+!myActionOptions.can_raise
+){
+
+return;
+
+}
+
+
 const target =
-intValue(
+int(
 byId(
-"raiseInput"
+"betInput"
 )
 .value
 );
 
 
-disableGameActions(
+disableActions(
 true
 );
 
@@ -8267,7 +7618,7 @@ true
 const {
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "holdem_action",
 {
 
@@ -8284,21 +7635,17 @@ target
 );
 
 
-disableGameActions(
+disableActions(
 false
 );
 
 
 if(error){
 
-openModal(
-"레이즈 오류",
-escapeHtml(
+showModal(
+"베팅 오류",
 error.message
-)
 );
-
-await refreshGame();
 
 return;
 
@@ -8310,7 +7657,7 @@ await refreshGame();
 }
 
 
-function disableGameActions(
+function disableActions(
 disabled
 ){
 
@@ -8318,7 +7665,8 @@ disabled
 "foldButton",
 "checkButton",
 "callButton",
-"raiseButton"
+"raiseButton",
+"allInButton"
 ]
 .forEach(
 id => {
@@ -8336,11 +7684,187 @@ disabled;
 
 
 /* ==========================================================
-   힌트
-   현재 완성 족보만
+   사이드 드로어
 ========================================================== */
 
-async function showHint(){
+function openDrawer(
+title,
+html
+){
+
+byId(
+"drawerTitle"
+)
+.textContent =
+title;
+
+
+byId(
+"drawerContent"
+)
+.innerHTML =
+html;
+
+
+byId(
+"drawerBackdrop"
+)
+.classList.remove(
+"hidden"
+);
+
+
+byId(
+"drawer"
+)
+.classList.remove(
+"hidden"
+);
+
+}
+
+
+function closeDrawer(){
+
+const backdrop =
+byId(
+"drawerBackdrop"
+);
+
+
+const drawer =
+byId(
+"drawer"
+);
+
+
+if(backdrop){
+
+backdrop.classList.add(
+"hidden"
+);
+
+}
+
+
+if(drawer){
+
+drawer.classList.add(
+"hidden"
+);
+
+}
+
+}
+
+
+/* ==========================================================
+   게임 중 룰북
+========================================================== */
+
+function openRuleDrawer(){
+
+openDrawer(
+"룰북",
+
+`
+
+<div class="drawerSection">
+
+<b>진행</b>
+
+프리플랍 →
+플랍 3장 →
+턴 1장 →
+리버 1장 →
+쇼다운
+
+</div>
+
+
+<div class="drawerSection">
+
+<b>체크</b>
+
+추가로 맞춰야 할 칩이 없을 때
+칩을 내지 않고 차례를 넘깁니다.
+
+</div>
+
+
+<div class="drawerSection">
+
+<b>콜</b>
+
+현재 베팅까지 필요한 만큼 칩을 냅니다.
+
+</div>
+
+
+<div class="drawerSection">
+
+<b>베팅 / 레이즈</b>
+
+아직 베팅이 없다면 베팅,
+이미 베팅이 있다면 더 높은 금액으로 레이즈합니다.
+
+</div>
+
+
+<div class="drawerSection">
+
+<b>폴드</b>
+
+이번 판을 포기합니다.
+이미 낸 칩은 팟에 남습니다.
+
+</div>
+
+
+<div class="drawerSection">
+
+<b>HOLDEM A 베팅 상한</b>
+
+사이드 팟을 사용하지 않습니다.
+
+현재 판에 남아 있는 플레이어 중
+가장 적은 총 가용 칩을 기준으로
+최대 총 베팅이 결정됩니다.
+
+누군가 폴드하면 상한이 다시 계산될 수 있습니다.
+
+</div>
+
+
+<div class="drawerSection">
+
+<b>족보</b>
+
+로열 플러시<br>
+스트레이트 플러시<br>
+포카드<br>
+풀하우스<br>
+플러시<br>
+스트레이트<br>
+트리플<br>
+투페어<br>
+원페어<br>
+하이카드
+
+</div>
+
+`
+
+);
+
+}
+
+
+/* ==========================================================
+   힌트
+========================================================== */
+
+async function openHintDrawer(){
 
 if(!currentRoom){
 
@@ -8349,11 +7873,17 @@ return;
 }
 
 
+openDrawer(
+"힌트",
+'<div class="drawerSection">확인 중...</div>'
+);
+
+
 const {
 data,
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "get_my_holdem_hint",
 {
 
@@ -8366,12 +7896,11 @@ currentRoom.room_id
 
 if(error){
 
-openModal(
-"힌트",
-escapeHtml(
-error.message
+byId(
+"drawerContent"
 )
-);
+.innerHTML =
+`<div class="drawerSection">${escapeHtml(error.message)}</div>`;
 
 return;
 
@@ -8384,10 +7913,18 @@ data?.[0];
 
 if(!hint){
 
-openModal(
-"힌트",
-"현재 확인할 수 있는 힌트가 없습니다."
-);
+byId(
+"drawerContent"
+)
+.innerHTML = `
+
+<div class="drawerSection">
+
+현재 표시할 힌트가 없습니다.
+
+</div>
+
+`;
 
 return;
 
@@ -8396,146 +7933,75 @@ return;
 
 if(!hint.enough_cards){
 
-openModal(
-"힌트",
+byId(
+"drawerContent"
+)
+.innerHTML = `
 
-`아직 5장짜리 완성 족보를 만들 수 있을 만큼
-카드가 공개되지 않았습니다.`
+<div class="drawerSection">
 
-);
+아직 5장짜리 완성 족보를 만들 수 있을 만큼
+카드가 공개되지 않았습니다.
+
+</div>
+
+`;
 
 return;
 
 }
 
 
-openModal(
-"힌트",
+byId(
+"drawerContent"
+)
+.innerHTML = `
 
-`현재 공개된 카드 기준으로 완성된 족보는
+<div class="drawerSection">
 
-<br><br>
+<b>현재 완성된 족보</b>
 
-<b style="font-size:22px">
+<div style="font-size:22px;font-weight:900;margin-top:8px">
+
 ${escapeHtml(hint.hand_name)}
-</b>`
 
-);
+</div>
 
-}
-
-
-/* ==========================================================
-   카드 ID 변환
-========================================================== */
-
-function cardFromId(
-cardId
-){
-
-const id =
-Number(
-cardId
-);
+</div>
 
 
-const suitIndex =
-Math.floor(
-id / 13
-);
+<div class="drawerSection">
 
+승률, 상대 패 추정,
+앞으로 필요한 카드,
+추천 행동이나 추천 베팅 금액은 표시하지 않습니다.
 
-const rankValue =
-(id % 13) + 2;
+</div>
 
-
-let rankText =
-String(
-rankValue
-);
-
-
-if(rankValue === 11){
-
-rankText =
-"J";
-
-}else if(rankValue === 12){
-
-rankText =
-"Q";
-
-}else if(rankValue === 13){
-
-rankText =
-"K";
-
-}else if(rankValue === 14){
-
-rankText =
-"A";
-
-}
-
-
-const suits = [
-
-"clubs",
-
-"diamonds",
-
-"hearts",
-
-"spades"
-
-];
-
-
-return {
-
-rank_text:
-rankText,
-
-suit:
-suits[
-suitIndex
-]
-
-};
+`;
 
 }
 
 
 /* ==========================================================
-   판 결과
+   판 종료
 ========================================================== */
 
-async function renderFinishedResult(){
+async function renderFinished(){
 
-const section =
 byId(
 "finishedSection"
-);
-
-
-section.classList.remove(
-"hidden"
-);
-
-
-byId(
-"actionArea"
 )
-.classList.add(
+.classList.remove(
 "hidden"
 );
 
 
 const {
 data:winners,
-error:winnerError
+error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "get_last_classic_winners",
 {
 
@@ -8546,11 +8012,11 @@ currentRoom.room_id
 );
 
 
-if(winnerError){
+if(error){
 
 console.error(
-"승자:",
-winnerError
+"winner:",
+error
 );
 
 return;
@@ -8574,7 +8040,7 @@ byId(
 )
 .textContent =
 names ||
-"승자 확인 완료";
+"승자 확인";
 
 
 if(
@@ -8586,7 +8052,7 @@ byId(
 "finishedReason"
 )
 .textContent =
-"다른 플레이어가 모두 폴드하여 승리했습니다. 홀카드는 공개되지 않습니다.";
+"다른 플레이어가 모두 폴드했습니다. 홀카드는 공개되지 않습니다.";
 
 
 byId(
@@ -8605,14 +8071,19 @@ byId(
 "finishedReason"
 )
 .textContent =
-"쇼다운 결과";
+"쇼다운으로 승자가 결정되었습니다.";
 
+
+/*
+상세 결과 RPC가 있는 경우만 카드까지 표시.
+없어도 승자 표시는 정상 유지.
+*/
 
 const {
 data:results,
 error:resultError
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "get_last_classic_result",
 {
 
@@ -8625,10 +8096,11 @@ currentRoom.room_id
 
 if(resultError){
 
-console.error(
-"쇼다운 결과:",
-resultError
-);
+byId(
+"finishedResults"
+)
+.innerHTML =
+"";
 
 return;
 
@@ -8641,45 +8113,9 @@ byId(
 .innerHTML =
 (results ?? [])
 .map(
-row => {
+row => `
 
-const holeCards =
-[];
-
-
-if(
-row.card_1 !== null &&
-row.card_1 !== undefined
-){
-
-holeCards.push(
-cardFromId(
-row.card_1
-)
-);
-
-}
-
-
-if(
-row.card_2 !== null &&
-row.card_2 !== undefined
-){
-
-holeCards.push(
-cardFromId(
-row.card_2
-)
-);
-
-}
-
-
-return `
-
-<div class="resultPlayer${row.is_winner ? " resultWinner" : ""}">
-
-<div>
+<div class="roomCard" style="text-align:center">
 
 <b>
 ${escapeHtml(row.nickname)}
@@ -8687,39 +8123,24 @@ ${escapeHtml(row.nickname)}
 
 ${row.is_winner ? " · 승리" : ""}
 
-</div>
+<br>
 
-<div class="gameMinor" style="margin-top:4px">
+<span style="font-size:10px;color:#aaa">
 
-${escapeHtml(row.hand_name || "")}
+${escapeHtml(row.hand_name ?? "")}
 
-${numberValue(row.chips_won) > 0
+${num(row.chips_won) > 0
 ?
 ` · +${formatChip(row.chips_won)}`
 :
 ""
 }
 
-</div>
-
-<div class="resultCards">
-
-${holeCards
-.map(
-card =>
-cardHtml(
-card
-)
-)
-.join("")}
+</span>
 
 </div>
 
-</div>
-
-`;
-
-}
+`
 )
 .join("");
 
@@ -8727,26 +8148,12 @@ card
 
 
 /* ==========================================================
-   다음 판 준비
+   다음 판
 ========================================================== */
 
 async function returnToLobby(){
 
-stopGameRefresh();
-
-
-await loadMyProfile();
-
-
-if(
-!await syncCurrentRoom()
-){
-
-await showHome();
-
-return;
-
-}
+stopTimers();
 
 
 currentHand =
@@ -8768,13 +8175,16 @@ myCardsVisible =
 false;
 
 
+await refreshProfile();
+
+
 await enterLobby();
 
 }
 
 
 /* ==========================================================
-   대기실 나가기
+   방 나가기
 ========================================================== */
 
 async function leaveRoom(){
@@ -8786,29 +8196,9 @@ return;
 }
 
 
-let text =
-
-`방에서 나가시겠습니까?
-
-현재 가지고 있는 게임 칩은 퍼로 돌아옵니다.`;
-
-
-if(currentRoom.is_host){
-
-text =
-
-`방에서 나가시겠습니까?
-
-남아 있는 플레이어가 있다면 방장 권한이 자동으로 넘어갑니다.
-
-현재 가지고 있는 게임 칩은 퍼로 돌아옵니다.`;
-
-}
-
-
 if(
 !confirm(
-text
+"방에서 나가시겠습니까?"
 )
 ){
 
@@ -8820,7 +8210,7 @@ return;
 const {
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "leave_game_room",
 {
 
@@ -8833,11 +8223,9 @@ currentRoom.room_id
 
 if(error){
 
-openModal(
+showModal(
 "방 나가기 오류",
-escapeHtml(
 error.message
-)
 );
 
 return;
@@ -8845,14 +8233,11 @@ return;
 }
 
 
-stopAllRefresh();
-
-
 currentRoom =
 null;
 
 
-await loadMyProfile();
+await refreshProfile();
 
 await showHome();
 
@@ -8860,7 +8245,7 @@ await showHome();
 
 
 /* ==========================================================
-   게임 도중 나가기
+   게임 중 나가기
 ========================================================== */
 
 async function leaveDuringGame(){
@@ -8872,29 +8257,12 @@ return;
 }
 
 
-let text =
-
-`현재 판을 포기하고 방에서 나가시겠습니까?
-
-현재 판에서는 즉시 폴드 처리됩니다.
-
-이미 팟에 들어간 칩은 돌려받지 못합니다.`;
-
-
-if(currentRoom.is_host){
-
-text +=
-
-`
-
-방장 권한은 남아 있는 플레이어에게 자동으로 넘어갑니다.`;
-
-}
-
-
 if(
 !confirm(
-text
+`현재 판을 포기하고 나가시겠습니까?
+
+현재 판에서는 폴드 처리됩니다.
+이미 팟에 들어간 칩은 돌려받지 못합니다.`
 )
 ){
 
@@ -8906,7 +8274,7 @@ return;
 const {
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "leave_game_room",
 {
 
@@ -8919,11 +8287,9 @@ currentRoom.room_id
 
 if(error){
 
-openModal(
+showModal(
 "게임 나가기 오류",
-escapeHtml(
 error.message
-)
 );
 
 return;
@@ -8931,29 +8297,11 @@ return;
 }
 
 
-stopAllRefresh();
-
-
 currentRoom =
 null;
 
-currentHand =
-null;
 
-currentHandPlayers =
-[];
-
-currentHoleCards =
-[];
-
-currentCommunityCards =
-[];
-
-myActionOptions =
-null;
-
-
-await loadMyProfile();
+await refreshProfile();
 
 await showHome();
 
@@ -8975,9 +8323,7 @@ return;
 
 if(
 !confirm(
-`정말 이 방을 종료하시겠습니까?
-
-참가자들의 남은 게임 칩은 퍼로 정산됩니다.`
+"정말 방을 종료하시겠습니까?"
 )
 ){
 
@@ -8989,7 +8335,7 @@ return;
 const {
 error
 } =
-await supabaseClient.rpc(
+await db.rpc(
 "destroy_game_room",
 {
 
@@ -9002,11 +8348,9 @@ currentRoom.room_id
 
 if(error){
 
-openModal(
+showModal(
 "방 종료 오류",
-escapeHtml(
 error.message
-)
 );
 
 return;
@@ -9014,14 +8358,11 @@ return;
 }
 
 
-stopAllRefresh();
-
-
 currentRoom =
 null;
 
 
-await loadMyProfile();
+await refreshProfile();
 
 await showHome();
 
@@ -9029,7 +8370,638 @@ await showHome();
 
 
 /* ==========================================================
-   시작
+   은행
+========================================================== */
+
+async function showBank(){
+
+hideAllScreens();
+
+
+await refreshProfile();
+
+
+renderBank();
+
+
+byId(
+"bankScreen"
+)
+.classList.remove(
+"hidden"
+);
+
+}
+
+
+function renderBank(){
+
+byId(
+"bankBalance"
+)
+.textContent =
+formatPer(
+currentProfile.balance_per
+);
+
+
+byId(
+"bankDeposit"
+)
+.textContent =
+formatPer(
+currentProfile.bank_per
+);
+
+
+byId(
+"bankLoan"
+)
+.textContent =
+formatPer(
+currentProfile.loan_per
+);
+
+
+const loan =
+num(
+currentProfile.loan_per
+);
+
+
+const info =
+byId(
+"bankInterest"
+);
+
+
+if(loan >= 100000){
+
+info.classList.add(
+"interestDanger"
+);
+
+
+info.innerHTML =
+
+`현재 대출금 ${formatPer(loan)}<br>
+현재 대출금 기준으로 판 종료 시 10% 이자가 적용됩니다.<br>
+예금은 1% 이자입니다.`;
+
+}else{
+
+info.classList.remove(
+"interestDanger"
+);
+
+
+info.innerHTML =
+
+`예금은 판 종료 시 1% 이자입니다.<br>
+현재 대출금은 판 종료 시 2% 이자입니다.<br>
+현재 대출금이 100,000퍼 이상이면 10%가 적용됩니다.`;
+
+}
+
+}
+
+
+function readBankAmount(){
+
+const amount =
+int(
+byId(
+"bankAmount"
+)
+.value
+);
+
+
+if(amount <= 0){
+
+byId(
+"bankMessage"
+)
+.textContent =
+"1 이상의 정수를 입력해주세요.";
+
+
+return null;
+
+}
+
+
+return amount;
+
+}
+
+
+async function bankDeposit(){
+
+await runBankRpc(
+"bank_deposit"
+);
+
+}
+
+
+async function bankWithdraw(){
+
+await runBankRpc(
+"bank_withdraw"
+);
+
+}
+
+
+async function bankBorrow(){
+
+await runBankRpc(
+"bank_borrow"
+);
+
+}
+
+
+async function bankRepay(){
+
+await runBankRpc(
+"bank_repay"
+);
+
+}
+
+
+async function runBankRpc(
+rpcName
+){
+
+const amount =
+readBankAmount();
+
+
+if(amount === null){
+
+return;
+
+}
+
+
+const {
+error
+} =
+await db.rpc(
+rpcName,
+{
+
+p_amount:
+amount
+
+}
+);
+
+
+if(error){
+
+byId(
+"bankMessage"
+)
+.textContent =
+error.message;
+
+return;
+
+}
+
+
+byId(
+"bankAmount"
+)
+.value =
+"";
+
+
+await refreshProfile();
+
+
+renderBank();
+
+renderHome();
+
+
+byId(
+"bankMessage"
+)
+.textContent =
+"처리되었습니다.";
+
+}
+
+
+/* ==========================================================
+   송금
+========================================================== */
+
+async function findRecipient(){
+
+const nickname =
+byId(
+"transferNickname"
+)
+.value
+.trim();
+
+
+selectedRecipient =
+null;
+
+
+if(!nickname){
+
+byId(
+"recipientText"
+)
+.textContent =
+"닉네임을 입력해주세요.";
+
+return;
+
+}
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"find_transfer_recipient",
+{
+
+p_nickname:
+nickname
+
+}
+);
+
+
+if(error){
+
+byId(
+"recipientText"
+)
+.textContent =
+error.message;
+
+return;
+
+}
+
+
+const recipient =
+data?.[0];
+
+
+if(!recipient){
+
+byId(
+"recipientText"
+)
+.textContent =
+"사용자를 찾지 못했습니다.";
+
+return;
+
+}
+
+
+if(
+recipient.profile_id ===
+currentUser.id
+){
+
+byId(
+"recipientText"
+)
+.textContent =
+"자기 자신에게는 송금할 수 없습니다.";
+
+return;
+
+}
+
+
+selectedRecipient =
+recipient;
+
+
+byId(
+"recipientText"
+)
+.textContent =
+`받는 사람: ${recipient.nickname}`;
+
+}
+
+
+async function sendTransfer(){
+
+if(!selectedRecipient){
+
+byId(
+"bankMessage"
+)
+.textContent =
+"먼저 받는 사람을 확인해주세요.";
+
+return;
+
+}
+
+
+const amount =
+int(
+byId(
+"transferAmount"
+)
+.value
+);
+
+
+if(amount <= 0){
+
+byId(
+"bankMessage"
+)
+.textContent =
+"송금 금액을 입력해주세요.";
+
+return;
+
+}
+
+
+const {
+error
+} =
+await db.rpc(
+"transfer_per",
+{
+
+p_receiver_profile_id:
+selectedRecipient.profile_id,
+
+p_amount:
+amount
+
+}
+);
+
+
+if(error){
+
+byId(
+"bankMessage"
+)
+.textContent =
+error.message;
+
+return;
+
+}
+
+
+selectedRecipient =
+null;
+
+
+byId(
+"transferNickname"
+)
+.value =
+"";
+
+
+byId(
+"transferAmount"
+)
+.value =
+"";
+
+
+byId(
+"recipientText"
+)
+.textContent =
+"";
+
+
+await refreshProfile();
+
+
+renderBank();
+
+renderHome();
+
+
+byId(
+"bankMessage"
+)
+.textContent =
+"송금했습니다.";
+
+}
+
+
+/* ==========================================================
+   전체 룰북
+========================================================== */
+
+function renderFullRules(){
+
+byId(
+"fullRules"
+)
+.innerHTML = `
+
+<div class="ruleSection">
+
+<div class="ruleNumber">
+01
+</div>
+
+<div class="ruleTitle">
+홀카드와 공용카드
+</div>
+
+각 플레이어는 자신만 볼 수 있는 카드 2장을 받습니다.
+
+공용 카드는
+플랍에서 3장,
+턴에서 1장,
+리버에서 1장이 공개됩니다.
+
+최대 7장 중 가장 좋은 5장으로 승부합니다.
+
+</div>
+
+
+<div class="ruleSection">
+
+<div class="ruleNumber">
+02
+</div>
+
+<div class="ruleTitle">
+D · SB · BB
+</div>
+
+D는 딜러 버튼입니다.
+
+3명 이상에서는 D의 왼쪽이 SB,
+그 다음이 BB입니다.
+
+2명일 때는 D가 동시에 SB이며
+상대가 BB입니다.
+
+판이 끝나면 D는 시계 방향으로 이동합니다.
+
+</div>
+
+
+<div class="ruleSection">
+
+<div class="ruleNumber">
+03
+</div>
+
+<div class="ruleTitle">
+베팅
+</div>
+
+체크는 추가 베팅 없이 넘기기,
+콜은 현재 베팅에 맞추기,
+레이즈는 현재보다 높게 올리기,
+폴드는 현재 판을 포기하는 행동입니다.
+
+</div>
+
+
+<div class="ruleSection">
+
+<div class="ruleNumber">
+04
+</div>
+
+<div class="ruleTitle">
+팟
+</div>
+
+플레이어들이 판에 건 칩이 모이는 곳입니다.
+
+승자가 팟의 칩을 가져갑니다.
+
+</div>
+
+
+<div class="ruleSection">
+
+<div class="ruleNumber">
+05
+</div>
+
+<div class="ruleTitle">
+HOLDEM A 베팅 상한
+</div>
+
+사이드 팟은 사용하지 않습니다.
+
+아직 폴드하지 않은 플레이어 가운데
+가장 적은 총 가용 칩이
+현재 판의 최대 총 베팅액이 됩니다.
+
+예를 들어 활성 플레이어의 총 가용 칩이
+30 / 70 / 100이라면 상한은 30입니다.
+
+30을 가진 플레이어가 폴드하면
+상한은 70으로 바뀝니다.
+
+</div>
+
+
+<div class="ruleSection">
+
+<div class="ruleNumber">
+06
+</div>
+
+<div class="ruleTitle">
+쇼다운
+</div>
+
+리버의 마지막 베팅까지 2명 이상 남으면
+서버가 패를 비교해 승자를 결정합니다.
+
+모두 같은 최종 패라면
+팟을 나눕니다.
+
+다른 모두가 폴드했다면
+카드를 공개하지 않고 즉시 승리합니다.
+
+</div>
+
+
+<div class="ruleSection">
+
+<div class="ruleNumber">
+07
+</div>
+
+<div class="ruleTitle">
+족보
+</div>
+
+1. 로열 플러시<br>
+2. 스트레이트 플러시<br>
+3. 포카드<br>
+4. 풀하우스<br>
+5. 플러시<br>
+6. 스트레이트<br>
+7. 트리플<br>
+8. 투페어<br>
+9. 원페어<br>
+10. 하이카드
+
+</div>
+
+
+<div class="ruleSection">
+
+<div class="ruleNumber">
+08
+</div>
+
+<div class="ruleTitle">
+힌트
+</div>
+
+힌트는 현재 공개된 카드 기준으로
+이미 완성된 자신의 족보 이름만 보여줍니다.
+
+승률,
+상대 패 추정,
+필요한 다음 카드,
+추천 행동,
+추천 베팅 크기는 보여주지 않습니다.
+
+</div>
+
+`;
+
+}
+
+
+/* ==========================================================
+   앱 시작
 ========================================================== */
 
 async function start(){
@@ -9038,16 +9010,14 @@ const {
 data,
 error
 } =
-await supabaseClient.auth.getSession();
+await db.auth.getSession();
 
 
 if(error){
 
-openModal(
+showModal(
 "세션 오류",
-escapeHtml(
 error.message
-)
 );
 
 return;
@@ -9077,4 +9047,5 @@ start();
 </div>
 
 </body>
+
 </html>
