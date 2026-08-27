@@ -709,7 +709,7 @@ button{
   height:430px;
   margin-top:16px;
 }
-}
+
 
 .gameTable{
   position:absolute;
@@ -1600,7 +1600,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.14.2
+v0.14.3
 </div>
 
 <div class="subtitle">
@@ -3152,7 +3152,7 @@ style="white-space:pre-line;line-height:1.5"
 <script>
 
 const APP_VERSION =
-"v0.14.2";
+"v0.14.3";
 
 
 const SUPABASE_URL =
@@ -6876,7 +6876,6 @@ null;
 
 renderGame();
 
-renderGame();
 
 
 /* ==========================================================
@@ -8486,7 +8485,7 @@ o.current_bet
 byId(
 "betMeta"
 )
-textContent =
+.textContent =
 isBet
 ?
 `지금 ${formatChip(additional)}을 앞으로 냅니다 · 총 베팅 ${formatChip(target)}`
