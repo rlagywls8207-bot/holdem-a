@@ -1603,7 +1603,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.14.4
+v0.14.5
 </div>
 
 <div class="subtitle">
@@ -1755,7 +1755,7 @@ onclick="showAvatar()"
 >
 내 아바타
 <small>
-털 색과 귀, 눈, 코를 꾸밉니다.
+아바타를 꾸미고 아이템과 털의 색을 바꿀 수 있습니다!
 </small>
 </button>
 
@@ -1765,7 +1765,7 @@ onclick="showShop()"
 >
 상점
 <small>
-퍼를 사용해 아바타 파츠를 구매합니다.
+아바타를 꾸미기 위한 아이템을 구매합니다.
 </small>
 </button>
 
@@ -2792,7 +2792,51 @@ onclick="saveAvatarColor()"
 
 </div>
 
+<div class="avatarColorBox">
 
+<div class="avatarColorRow">
+
+<input
+id="headwearColorPicker"
+class="avatarColorPicker"
+type="color"
+value="#6B4EFF"
+oninput="previewHeadwearColor()"
+>
+
+<div class="avatarColorText">
+
+<div class="smallLabel">
+머리장식 색
+</div>
+
+<div
+id="headwearColorCode"
+class="avatarColorCode"
+>
+#6B4EFF
+</div>
+
+<div
+class="fieldHelp"
+style="margin:2px 0 0"
+>
+색 변경 가능 장식만 적용 · 1회 1,000퍼
+</div>
+
+</div>
+
+</div>
+
+<button
+class="secondary"
+onclick="saveHeadwearColor()"
+>
+이 색으로 변경 · 1,000퍼
+</button>
+
+</div>
+  
 <div class="avatarSlots">
 
 <div class="avatarSlot">
@@ -2863,7 +2907,54 @@ onclick="resetAvatarPart('nose')"
 
 </div>
 
+
+<div class="avatarSlot">
+
+<div class="smallLabel">
+머리장식
 </div>
+
+<div
+id="avatarHeadwearName"
+class="avatarSlotName"
+>
+장식 없음
+</div>
+
+<button
+class="secondary"
+onclick="resetAvatarPart('headwear')"
+>
+벗기
+</button>
+
+</div>
+
+
+<div class="avatarSlot">
+
+<div class="smallLabel">
+특수 털
+</div>
+
+<div
+id="avatarFurPatternName"
+class="avatarSlotName"
+>
+기본 털
+</div>
+
+<button
+class="secondary"
+onclick="resetAvatarPart('fur_pattern')"
+>
+기본
+</button>
+
+</div>
+
+</div>
+
 
 </div>
 
@@ -3143,7 +3234,7 @@ style="white-space:pre-line;line-height:1.5"
 <script>
 
 const APP_VERSION =
-"v0.14.4";
+"v0.14.5";
 
 
 const SUPABASE_URL =
@@ -3646,7 +3737,10 @@ loan_per,
 avatar_color,
 avatar_ears,
 avatar_eyes,
-avatar_nose
+avatar_nose,
+avatar_headwear,
+avatar_headwear_color,
+avatar_fur_pattern
 `
 )
 .eq(
@@ -4594,7 +4688,10 @@ function avatarSvg(
 color,
 ears,
 eyes,
-nose
+nose,
+headwear = "headwear_none",
+headwearColor = "#6B4EFF",
+furPattern = "fur_none"
 ){
 
 const fur =
@@ -4623,6 +4720,25 @@ nose ??
 "nose_none"
 );
 
+const hat =
+String(
+headwear ??
+"headwear_none"
+);
+
+
+const hatColor =
+normalizeColor(
+headwearColor
+);
+
+
+const pattern =
+String(
+furPattern ??
+"fur_none"
+);
+
 
 let earHtml =
 "";
@@ -4635,6 +4751,13 @@ let eyeHtml =
 let noseHtml =
 "";
 
+
+let furPatternHtml =
+"";
+
+
+let headwearHtml =
+"";
 
 /* 귀 */
 
@@ -4813,6 +4936,193 @@ noseHtml = `
 }
 
 
+/* ==========================================================
+   특수 털
+========================================================== */
+
+if(
+pattern ===
+"fur_patches"
+){
+
+furPatternHtml = `
+
+<rect x="7" y="12" width="5" height="4" fill="rgba(255,255,255,.24)"/>
+<rect x="20" y="18" width="6" height="4" fill="rgba(0,0,0,.13)"/>
+<rect x="9" y="23" width="5" height="3" fill="rgba(255,255,255,.18)"/>
+
+`;
+
+}
+
+
+if(
+pattern ===
+"fur_tiger"
+){
+
+furPatternHtml = `
+
+<rect x="8" y="11" width="2" height="5" fill="rgba(25,20,15,.48)"/>
+<rect x="13" y="10" width="2" height="4" fill="rgba(25,20,15,.48)"/>
+<rect x="22" y="11" width="2" height="5" fill="rgba(25,20,15,.48)"/>
+
+<rect x="6" y="20" width="4" height="2" fill="rgba(25,20,15,.42)"/>
+<rect x="22" y="20" width="4" height="2" fill="rgba(25,20,15,.42)"/>
+
+`;
+
+}
+
+
+if(
+pattern ===
+"fur_gradient"
+){
+
+furPatternHtml = `
+
+<rect x="4" y="19" width="24" height="3" fill="rgba(191,105,210,.16)"/>
+<rect x="6" y="22" width="20" height="4" fill="rgba(121,104,220,.28)"/>
+<rect x="9" y="26" width="14" height="2" fill="rgba(90,78,196,.38)"/>
+
+`;
+
+}
+
+
+if(
+pattern ===
+"fur_galaxy"
+){
+
+furPatternHtml = `
+
+<rect x="4" y="12" width="24" height="10" fill="rgba(38,31,81,.42)"/>
+<rect x="6" y="22" width="20" height="4" fill="rgba(46,35,99,.48)"/>
+
+<rect x="9" y="14" width="1" height="1" fill="#FFFFFF"/>
+<rect x="22" y="16" width="1" height="1" fill="#FFFFFF"/>
+<rect x="16" y="20" width="1" height="1" fill="#D8C9FF"/>
+<rect x="11" y="24" width="1" height="1" fill="#FFFFFF"/>
+<rect x="24" y="21" width="1" height="1" fill="#BFD9FF"/>
+
+`;
+
+}
+
+
+/* ==========================================================
+   머리장식
+========================================================== */
+
+if(
+hat ===
+"headwear_ribbon"
+){
+
+headwearHtml = `
+
+<rect x="21" y="6" width="4" height="4" fill="${hatColor}"/>
+<rect x="25" y="4" width="4" height="5" fill="${hatColor}"/>
+<rect x="25" y="9" width="4" height="5" fill="${hatColor}"/>
+<rect x="24" y="7" width="3" height="3" fill="#F1D8FF"/>
+
+`;
+
+}
+
+
+if(
+hat ===
+"headwear_cap"
+){
+
+headwearHtml = `
+
+<rect x="8" y="4" width="16" height="6" fill="${hatColor}"/>
+<rect x="7" y="9" width="18" height="3" fill="${hatColor}"/>
+<rect x="20" y="11" width="8" height="2" fill="${hatColor}"/>
+
+`;
+
+}
+
+
+if(
+hat ===
+"headwear_beanie"
+){
+
+headwearHtml = `
+
+<rect x="8" y="3" width="16" height="7" fill="${hatColor}"/>
+<rect x="6" y="9" width="20" height="4" fill="${hatColor}"/>
+<rect x="15" y="1" width="3" height="3" fill="${hatColor}"/>
+
+`;
+
+}
+
+
+if(
+hat ===
+"headwear_flower_crown"
+){
+
+headwearHtml = `
+
+<rect x="8" y="8" width="16" height="2" fill="#5E8B4A"/>
+
+<rect x="9" y="6" width="3" height="3" fill="#F1C4D3"/>
+<rect x="14" y="5" width="3" height="3" fill="#FFF0A5"/>
+<rect x="19" y="6" width="3" height="3" fill="#D7C6FF"/>
+
+`;
+
+}
+
+
+if(
+hat ===
+"headwear_wizard"
+){
+
+headwearHtml = `
+
+<rect x="14" y="0" width="5" height="2" fill="${hatColor}"/>
+<rect x="12" y="2" width="8" height="3" fill="${hatColor}"/>
+<rect x="10" y="5" width="12" height="4" fill="${hatColor}"/>
+<rect x="5" y="10" width="22" height="3" fill="${hatColor}"/>
+
+<rect x="13" y="6" width="2" height="2" fill="#EEDC72"/>
+
+`;
+
+}
+
+
+if(
+hat ===
+"headwear_crown"
+){
+
+headwearHtml = `
+
+<rect x="10" y="5" width="12" height="6" fill="#E6B62E"/>
+
+<rect x="10" y="2" width="3" height="5" fill="#E6B62E"/>
+<rect x="15" y="1" width="3" height="6" fill="#F2CB43"/>
+<rect x="20" y="2" width="3" height="5" fill="#E6B62E"/>
+
+<rect x="12" y="7" width="2" height="2" fill="#D84E4E"/>
+<rect x="16" y="7" width="2" height="2" fill="#4E78D8"/>
+<rect x="20" y="7" width="2" height="2" fill="#5AB866"/>
+
+`;
+
+}
+
 /*
 베이스 털복숭이
 이 부분은 이후에도 수정하지 않음.
@@ -4845,6 +5155,8 @@ ${earHtml}
 
 <rect x="22" y="12" width="2" height="2" fill="rgba(0,0,0,.08)"/>
 
+${furPatternHtml}
+
 ${eyeHtml}
 
 ${noseHtml}
@@ -4852,6 +5164,8 @@ ${noseHtml}
 <rect x="12" y="28" width="3" height="2" fill="${fur}"/>
 
 <rect x="17" y="28" width="3" height="2" fill="${fur}"/>
+
+${headwearHtml}
 
 </svg>
 
@@ -4881,7 +5195,16 @@ player?.avatar_eyes ??
 "eyes_dot",
 
 player?.avatar_nose ??
-"nose_none"
+"nose_none",
+
+player?.avatar_headwear ??
+"headwear_none",
+
+player?.avatar_headwear_color ??
+"#6B4EFF",
+
+player?.avatar_fur_pattern ??
+"fur_none"
 
 )}
 
@@ -4890,7 +5213,6 @@ player?.avatar_nose ??
 `;
 
 }
-
 
 /* ==========================================================
    아바타 이름
@@ -4902,6 +5224,8 @@ key
 
 const names = {
 
+
+  
 ears_none:
 "귀 없음",
 
@@ -4933,7 +5257,43 @@ nose_none:
 "코 없음",
 
 nose_beak:
-"부리"
+"부리",
+
+headwear_none:
+"장식 없음",
+
+headwear_ribbon:
+"리본",
+
+headwear_cap:
+"캡모자",
+
+headwear_beanie:
+"비니",
+
+headwear_flower_crown:
+"화관",
+
+headwear_wizard:
+"마법사 모자",
+
+headwear_crown:
+"왕관",
+
+fur_none:
+"기본 털",
+
+fur_patches:
+"얼룩 털",
+
+fur_tiger:
+"호랑이 털",
+
+fur_gradient:
+"그라데이션 털",
+
+fur_galaxy:
+"별빛 털",
 
 };
 
@@ -5034,6 +5394,18 @@ return;
 }
 
 
+const color =
+normalizeColor(
+myAvatar.avatar_color
+);
+
+
+const headwearColor =
+normalizeColor(
+myAvatar.avatar_headwear_color
+);
+
+
 byId(
 "avatarNickname"
 )
@@ -5047,20 +5419,20 @@ byId(
 .innerHTML =
 avatarSvg(
 
-myAvatar.avatar_color,
+color,
 
 myAvatar.avatar_ears,
 
 myAvatar.avatar_eyes,
 
-myAvatar.avatar_nose
+myAvatar.avatar_nose,
 
-);
+myAvatar.avatar_headwear,
 
+headwearColor,
 
-const color =
-normalizeColor(
-myAvatar.avatar_color
+myAvatar.avatar_fur_pattern
+
 );
 
 
@@ -5104,10 +5476,41 @@ avatarItemName(
 myAvatar.avatar_nose
 );
 
+
+byId(
+"avatarHeadwearName"
+)
+.textContent =
+avatarItemName(
+myAvatar.avatar_headwear
+);
+
+
+byId(
+"avatarFurPatternName"
+)
+.textContent =
+avatarItemName(
+myAvatar.avatar_fur_pattern
+);
+
+
+byId(
+"headwearColorPicker"
+)
+.value =
+headwearColor;
+
+
+byId(
+"headwearColorCode"
+)
+.textContent =
+headwearColor;
+
 }
 
-
-function previewAvatarColor(){
+function previewHeadwearColor(){
 
 if(!myAvatar){
 
@@ -5119,14 +5522,14 @@ return;
 const color =
 normalizeColor(
 byId(
-"avatarColorPicker"
+"headwearColorPicker"
 )
 .value
 );
 
 
 byId(
-"avatarColorCode"
+"headwearColorCode"
 )
 .textContent =
 color;
@@ -5138,18 +5541,23 @@ byId(
 .innerHTML =
 avatarSvg(
 
-color,
+myAvatar.avatar_color,
 
 myAvatar.avatar_ears,
 
 myAvatar.avatar_eyes,
 
-myAvatar.avatar_nose
+myAvatar.avatar_nose,
+
+myAvatar.avatar_headwear,
+
+color,
+
+myAvatar.avatar_fur_pattern
 
 );
 
 }
-
 
 async function saveAvatarColor(){
 
@@ -5206,7 +5614,119 @@ byId(
 
 }
 
+/* ==========================================================
+   머리장식 색
+========================================================== */
 
+function previewAvatarColor(){
+
+if(!myAvatar){
+
+return;
+
+}
+
+
+const color =
+normalizeColor(
+byId(
+"avatarColorPicker"
+)
+.value
+);
+
+
+byId(
+"avatarColorCode"
+)
+.textContent =
+color;
+
+
+byId(
+"avatarLarge"
+)
+.innerHTML =
+avatarSvg(
+
+color,
+
+myAvatar.avatar_ears,
+
+myAvatar.avatar_eyes,
+
+myAvatar.avatar_nose,
+
+myAvatar.avatar_headwear,
+
+myAvatar.avatar_headwear_color,
+
+myAvatar.avatar_fur_pattern
+
+);
+
+}
+
+
+async function saveHeadwearColor(){
+
+if(!myAvatar){
+
+return;
+
+}
+
+
+const color =
+normalizeColor(
+byId(
+"headwearColorPicker"
+)
+.value
+);
+
+
+const {
+error
+} =
+await db.rpc(
+"change_avatar_headwear_color_v2",
+{
+
+p_color:
+color
+
+}
+);
+
+
+if(error){
+
+byId(
+"avatarMessage"
+)
+.textContent =
+error.message;
+
+return;
+
+}
+
+
+await refreshProfile();
+
+await loadMyAvatar();
+
+renderAvatar();
+
+
+byId(
+"avatarMessage"
+)
+.textContent =
+"머리장식 색을 변경했습니다.";
+
+}
 /* ==========================================================
    기본 파츠
 ========================================================== */
@@ -5346,10 +5866,19 @@ name:"눈"
 {
 key:"nose",
 name:"코"
+},
+
+{
+key:"headwear",
+name:"머리장식"
+},
+
+{
+key:"fur_pattern",
+name:"특수 털"
 }
 
 ];
-
 
 categories.forEach(
 category => {
@@ -5392,7 +5921,19 @@ avatar_eyes:
 currentProfile.avatar_eyes,
 
 avatar_nose:
-currentProfile.avatar_nose
+currentProfile.avatar_nose,
+
+avatar_headwear:
+currentProfile.avatar_headwear ??
+"headwear_none",
+
+avatar_headwear_color:
+currentProfile.avatar_headwear_color ??
+"#6B4EFF",
+
+avatar_fur_pattern:
+currentProfile.avatar_fur_pattern ??
+"fur_none"
 
 };
 
@@ -5429,6 +5970,26 @@ item.item_key;
 
 }
 
+if(
+item.category ===
+"headwear"
+){
+
+preview.avatar_headwear =
+item.item_key;
+
+}
+
+
+if(
+item.category ===
+"fur_pattern"
+){
+
+preview.avatar_fur_pattern =
+item.item_key;
+
+}
 
 let action = "";
 
@@ -7523,7 +8084,8 @@ formatChip(
 currentHand.pot
 );
 
-
+renderStreetProgress();
+  
 renderCommunity();
 
 renderPot();
