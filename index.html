@@ -588,7 +588,118 @@ button{
   font-weight:900;
 }
 
+/* ==========================================================
+   홀덤 진행 단계
+========================================================== */
 
+.streetProgress{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  width:100%;
+  margin:4px 0 6px;
+  padding:5px 4px;
+  border:1px solid #292929;
+  border-radius:9px;
+  background:#101010;
+}
+
+.streetProgressStep{
+  flex:0 0 auto;
+  min-width:43px;
+  padding:4px 5px;
+  border-radius:10px;
+  color:#555;
+  text-align:center;
+  font-size:8px;
+  font-weight:900;
+  white-space:nowrap;
+  transition:
+    background .2s ease,
+    color .2s ease,
+    box-shadow .2s ease;
+}
+
+.streetProgressStep.done{
+  color:#a0a0a0;
+}
+
+.streetProgressStep.current{
+  background:#eee;
+  color:#111;
+  box-shadow:
+    0 0 5px rgba(255,255,255,.7),
+    0 0 12px rgba(255,255,255,.35);
+}
+
+.streetProgressArrow{
+  color:#444;
+  font-size:8px;
+}
+
+.streetProgressArrow.done{
+  color:#aaa;
+}
+
+
+/* ==========================================================
+   게임 진행 팝업
+========================================================== */
+
+.gameNotice{
+  position:fixed;
+  z-index:900;
+  left:50%;
+  top:16%;
+  width:min(86%,350px);
+  transform:translateX(-50%);
+  padding:13px 14px;
+  border:1px solid #555;
+  border-radius:14px;
+  background:rgba(25,25,25,.97);
+  box-shadow:0 8px 26px rgba(0,0,0,.65);
+  text-align:center;
+  pointer-events:none;
+  animation:gameNoticeIn .18s ease-out;
+}
+
+.gameNotice.role{
+  border-color:#766847;
+}
+
+.gameNotice.street{
+  border-color:#46644d;
+}
+
+.gameNoticeTitle{
+  font-size:15px;
+  font-weight:900;
+}
+
+.gameNoticeText{
+  margin-top:6px;
+  color:#bbb;
+  font-size:10px;
+  line-height:1.55;
+  white-space:pre-line;
+}
+
+@keyframes gameNoticeIn{
+
+  from{
+    opacity:0;
+    transform:
+      translate(-50%,-8px);
+  }
+
+  to{
+    opacity:1;
+    transform:
+      translate(-50%,0);
+  }
+
+}
 /* ==========================================================
    게임 테이블
 ========================================================== */
@@ -1251,6 +1362,16 @@ button{
 
 @media(max-width:390px){
 
+    .streetProgressStep{
+    min-width:37px;
+    padding:4px 3px;
+    font-size:7px;
+  }
+
+  .streetProgress{
+    gap:1px;
+  }
+
   .gameTableArea{
     height:365px;
   }
@@ -1287,7 +1408,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.14.0
+v0.14.1
 </div>
 
 <div class="subtitle">
@@ -1926,16 +2047,7 @@ class="card hidden"
 <div>
 
 <div class="gameTopTitle">
-
 HOLDEM
-
-<span
-id="gameStreet"
-class="streetBadge"
->
--
-</span>
-
 </div>
 
 <div
@@ -1964,6 +2076,76 @@ class="topPotNumber"
 
 </div>
 
+
+<div
+id="streetProgress"
+class="streetProgress"
+>
+
+<div
+id="streetStepPreflop"
+class="streetProgressStep"
+>
+프리플랍
+</div>
+
+<div
+id="streetArrowFlop"
+class="streetProgressArrow"
+>
+→
+</div>
+
+<div
+id="streetStepFlop"
+class="streetProgressStep"
+>
+플랍
+</div>
+
+<div
+id="streetArrowTurn"
+class="streetProgressArrow"
+>
+→
+</div>
+
+<div
+id="streetStepTurn"
+class="streetProgressStep"
+>
+턴
+</div>
+
+<div
+id="streetArrowRiver"
+class="streetProgressArrow"
+>
+→
+</div>
+
+<div
+id="streetStepRiver"
+class="streetProgressStep"
+>
+리버
+</div>
+
+<div
+id="streetArrowShowdown"
+class="streetProgressArrow"
+>
+→
+</div>
+
+<div
+id="streetStepShowdown"
+class="streetProgressStep"
+>
+쇼다운
+</div>
+
+</div>
 
 <div
 id="gameTableArea"
@@ -2264,6 +2446,26 @@ onclick="leaveDuringGame()"
 <!-- =====================================================
      게임 오른쪽 탭
 ===================================================== -->
+  <div
+id="gameNotice"
+class="gameNotice hidden"
+>
+
+<div
+id="gameNoticeTitle"
+class="gameNoticeTitle"
+>
+-
+</div>
+
+<div
+id="gameNoticeText"
+class="gameNoticeText"
+>
+-
+</div>
+
+</div>
 
 <div
 id="sideTools"
@@ -2758,7 +2960,7 @@ style="white-space:pre-line;line-height:1.5"
 <script>
 
 const APP_VERSION =
-"v0.14.0";
+"v0.14.1";
 
 
 const SUPABASE_URL =
@@ -2808,6 +3010,21 @@ let lobbyTimer = null;
 
 let gameTimer = null;
 
+/* ==========================================================
+   게임 진행 안내 상태
+========================================================== */
+
+let observedHandNumber =
+null;
+
+let observedStreet =
+null;
+
+let announcedRoleHandNumber =
+null;
+
+let gameNoticeTimer =
+null;  
 /* ==========================================================
    기본 도우미
 ========================================================== */
@@ -6326,8 +6543,26 @@ return;
 }
 
 
+const previousHandNumber =
+observedHandNumber;
+
+
+const previousStreet =
+observedStreet;
+
+
 currentHand =
 handData[0];
+
+
+const newHandNumber =
+Number(
+currentHand.hand_number
+);
+
+
+const newStreet =
+currentHand.street;
 
 
 const [
@@ -6449,6 +6684,62 @@ null;
 
 renderGame();
 
+renderGame();
+
+
+/* ==========================================================
+   새 판 감지
+========================================================== */
+
+if(
+previousHandNumber === null ||
+previousHandNumber !==
+newHandNumber
+){
+
+observedHandNumber =
+newHandNumber;
+
+
+observedStreet =
+newStreet;
+
+
+/*
+플레이어 목록을 모두 읽은 뒤
+내 역할 안내
+*/
+
+announceMyHandRole();
+
+}else{
+
+/* ==========================================================
+   같은 판의 스트리트 변화
+========================================================== */
+
+if(
+previousStreet !==
+newStreet
+){
+
+announceStreetChange(
+previousStreet,
+newStreet
+);
+
+
+observedStreet =
+newStreet;
+
+}
+
+}
+
+
+/* ==========================================================
+   판 종료
+========================================================== */
 
 if(
 currentHand.street ===
@@ -6499,6 +6790,536 @@ street;
 
 }
 
+  /* ==========================================================
+   스트리트 순서
+========================================================== */
+
+const HOLDEM_STREET_ORDER = [
+
+"preflop",
+"flop",
+"turn",
+"river",
+"showdown"
+
+];
+
+
+/* ==========================================================
+   상단 진행표
+========================================================== */
+
+function renderStreetProgress(){
+
+if(!currentHand){
+
+return;
+
+}
+
+
+let street =
+currentHand.street;
+
+
+/*
+finished는 쇼다운까지 완료된 것으로 표시
+*/
+
+if(
+street ===
+"finished"
+){
+
+street =
+"showdown";
+
+}
+
+
+const currentIndex =
+HOLDEM_STREET_ORDER.indexOf(
+street
+);
+
+
+const steps = [
+
+{
+street:"preflop",
+id:"streetStepPreflop",
+arrow:null
+},
+
+{
+street:"flop",
+id:"streetStepFlop",
+arrow:"streetArrowFlop"
+},
+
+{
+street:"turn",
+id:"streetStepTurn",
+arrow:"streetArrowTurn"
+},
+
+{
+street:"river",
+id:"streetStepRiver",
+arrow:"streetArrowRiver"
+},
+
+{
+street:"showdown",
+id:"streetStepShowdown",
+arrow:"streetArrowShowdown"
+}
+
+];
+
+
+steps.forEach(
+(
+item,
+index
+) => {
+
+const element =
+byId(
+item.id
+);
+
+
+element.classList.remove(
+"done",
+"current"
+);
+
+
+if(index < currentIndex){
+
+element.classList.add(
+"done"
+);
+
+}
+
+
+if(index === currentIndex){
+
+element.classList.add(
+"current"
+);
+
+}
+
+
+if(item.arrow){
+
+byId(
+item.arrow
+)
+.classList.toggle(
+"done",
+index <= currentIndex
+);
+
+}
+
+}
+);
+
+}
+
+
+/* ==========================================================
+   게임 안내 팝업
+========================================================== */
+
+function showGameNotice(
+title,
+text,
+type = "street",
+duration = 2800
+){
+
+const box =
+byId(
+"gameNotice"
+);
+
+
+if(!box){
+
+return;
+
+}
+
+
+if(gameNoticeTimer){
+
+clearTimeout(
+gameNoticeTimer
+);
+
+}
+
+
+byId(
+"gameNoticeTitle"
+)
+.textContent =
+title;
+
+
+byId(
+"gameNoticeText"
+)
+.textContent =
+text;
+
+
+box.className =
+`gameNotice ${type}`;
+
+
+gameNoticeTimer =
+setTimeout(
+() => {
+
+box.classList.add(
+"hidden"
+);
+
+
+gameNoticeTimer =
+null;
+
+},
+duration
+);
+
+}
+
+
+/* ==========================================================
+   내 D / SB / BB 역할 안내
+========================================================== */
+
+function announceMyHandRole(){
+
+if(
+!currentHand ||
+!currentUser
+){
+
+return;
+
+}
+
+
+const handNumber =
+Number(
+currentHand.hand_number
+);
+
+
+if(
+announcedRoleHandNumber ===
+handNumber
+){
+
+return;
+
+}
+
+
+const me =
+currentHandPlayers.find(
+player =>
+player.profile_id ===
+currentUser.id
+);
+
+
+if(!me){
+
+return;
+
+}
+
+
+announcedRoleHandNumber =
+handNumber;
+
+
+const roles =
+[];
+
+
+if(me.is_dealer){
+
+roles.push(
+"D"
+);
+
+}
+
+
+if(me.is_small_blind){
+
+roles.push(
+"SB"
+);
+
+}
+
+
+if(me.is_big_blind){
+
+roles.push(
+"BB"
+);
+
+}
+
+
+/*
+역할 없는 일반 플레이어는
+팝업을 띄우지 않음
+*/
+
+if(
+roles.length === 0
+){
+
+return;
+
+}
+
+
+/*
+2인 게임에서는 D와 SB가 동일할 수 있음
+*/
+
+if(
+me.is_dealer &&
+me.is_small_blind
+){
+
+showGameNotice(
+
+"이번 판은 D · SB입니다",
+
+`딜러 버튼과 스몰 블라인드입니다.
+
+SB ${formatChip(
+currentRoom.small_blind_chips
+)}이 자동으로 베팅되었습니다.
+
+이 강제 베팅과 별개로
+프리플랍에서 자신의 행동 차례가 옵니다.`,
+
+"role",
+3600
+
+);
+
+
+return;
+
+}
+
+
+if(me.is_big_blind){
+
+showGameNotice(
+
+"이번 판은 BB입니다",
+
+`빅 블라인드입니다.
+
+BB ${formatChip(
+currentRoom.big_blind_chips
+)}이 자동으로 베팅되었습니다.
+
+블라인드는 자동 베팅이며
+프리플랍 행동 차례가 오면 다시 행동합니다.`,
+
+"role",
+3600
+
+);
+
+
+return;
+
+}
+
+
+if(me.is_small_blind){
+
+showGameNotice(
+
+"이번 판은 SB입니다",
+
+`스몰 블라인드입니다.
+
+SB ${formatChip(
+currentRoom.small_blind_chips
+)}이 자동으로 베팅되었습니다.
+
+프리플랍 행동 차례를 기다려주세요.`,
+
+"role",
+3200
+
+);
+
+
+return;
+
+}
+
+
+if(me.is_dealer){
+
+showGameNotice(
+
+"이번 판은 D입니다",
+
+`이번 판의 딜러 버튼입니다.
+
+판이 끝날 때마다 딜러 버튼은
+다음 자리로 이동합니다.`,
+
+"role",
+2800
+
+);
+
+}
+
+}
+
+
+/* ==========================================================
+   실제 서버 스트리트 전환 안내
+========================================================== */
+
+function announceStreetChange(
+before,
+after
+){
+
+if(
+before === after
+){
+
+return;
+
+}
+
+
+/*
+서버에서 실제로 관측한
+1단계 전환만 안내한다.
+*/
+
+if(
+before === "preflop" &&
+after === "flop"
+){
+
+showGameNotice(
+
+"프리플랍 종료",
+
+`프리플랍 베팅이 종료되었습니다.
+
+플랍 카드 3장이 공개됩니다.`,
+
+"street",
+2700
+
+);
+
+
+return;
+
+}
+
+
+if(
+before === "flop" &&
+after === "turn"
+){
+
+showGameNotice(
+
+"플랍 종료",
+
+`플랍 베팅이 종료되었습니다.
+
+턴 카드 1장이 공개됩니다.`,
+
+"street",
+2700
+
+);
+
+
+return;
+
+}
+
+
+if(
+before === "turn" &&
+after === "river"
+){
+
+showGameNotice(
+
+"턴 종료",
+
+`턴 베팅이 종료되었습니다.
+
+리버 카드 1장이 공개됩니다.`,
+
+"street",
+2700
+
+);
+
+
+return;
+
+}
+
+
+if(
+before === "river" &&
+after === "showdown"
+){
+
+showGameNotice(
+
+"리버 종료",
+
+`리버 베팅이 종료되었습니다.
+
+남아 있는 플레이어의 패를 비교합니다.`,
+
+"street",
+2900
+
+);
+
+}
+
+}
+
 
 /* ==========================================================
    게임 렌더
@@ -6513,13 +7334,7 @@ return;
 }
 
 
-byId(
-"gameStreet"
-)
-.textContent =
-streetName(
-currentHand.street
-);
+
 
 
 byId(
@@ -6527,6 +7342,7 @@ byId(
 )
 .textContent =
 `${formatNumber(currentHand.hand_number)}번째 판`;
+  renderStreetProgress();
 
 
 byId(
@@ -8173,6 +8989,34 @@ null;
 
 myCardsVisible =
 false;
+  observedHandNumber =
+null;
+
+observedStreet =
+null;
+
+announcedRoleHandNumber =
+null;
+
+
+if(gameNoticeTimer){
+
+clearTimeout(
+gameNoticeTimer
+);
+
+gameNoticeTimer =
+null;
+
+}
+
+
+byId(
+"gameNotice"
+)
+.classList.add(
+"hidden"
+);
 
 
 await refreshProfile();
@@ -8772,7 +9616,26 @@ return;
 
 selectedRecipient =
 null;
+observedHandNumber =
+null;
 
+observedStreet =
+null;
+
+announcedRoleHandNumber =
+null;
+
+
+if(gameNoticeTimer){
+
+clearTimeout(
+gameNoticeTimer
+);
+
+gameNoticeTimer =
+null;
+
+}
 
 byId(
 "transferNickname"
