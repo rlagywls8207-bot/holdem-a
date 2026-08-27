@@ -550,8 +550,8 @@ button{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  min-height:33px;
-  margin-bottom:2px;
+  min-height:24px;
+  margin-bottom:0;
 }
 
 .gameTopTitle{
@@ -575,6 +575,9 @@ button{
 }
 
 .topPot{
+  display:flex;
+  align-items:center;
+  gap:5px;
   text-align:right;
 }
 
@@ -598,7 +601,7 @@ button{
   justify-content:center;
   gap:3px;
   width:100%;
-  margin:4px 0 6px;
+  margin:1px 0 6px;
   padding:5px 4px;
   border:1px solid #292929;
   border-radius:9px;
@@ -1600,7 +1603,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.14.3
+v0.14.4
 </div>
 
 <div class="subtitle">
@@ -2236,39 +2239,27 @@ class="card hidden"
 
 <div class="gameTop">
 
-<div>
-
 <div class="gameTopTitle">
 HOLDEM
 </div>
 
-<div
-id="gameHandNumber"
-class="gameTopSub"
->
--
-</div>
-
-</div>
-
 <div class="topPot">
 
-<div class="topPotLabel">
+<span class="topPotLabel">
 POT
-</div>
+</span>
 
-<div
+<span
 id="gameTopPot"
 class="topPotNumber"
 >
-0
-</div>
+0칩
+</span>
 
 </div>
 
 </div>
-
-
+  
 <div
 id="streetProgress"
 class="streetProgress"
@@ -3152,7 +3143,7 @@ style="white-space:pre-line;line-height:1.5"
 <script>
 
 const APP_VERSION =
-"v0.14.3";
+"v0.14.4";
 
 
 const SUPABASE_URL =
@@ -7523,18 +7514,6 @@ if(!currentHand){
 return;
 
 }
-
-
-
-
-
-byId(
-"gameHandNumber"
-)
-.textContent =
-`${formatNumber(currentHand.hand_number)}번째 판`;
-  renderStreetProgress();
-
 
 byId(
 "gameTopPot"
