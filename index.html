@@ -3071,7 +3071,7 @@ class="balanceValue"
 </div>
 
 <div
-id="bankLoan"
+id="bankLoanValue"
 class="balanceValue"
 >
 0퍼
@@ -10195,7 +10195,7 @@ byId(
 .trim();
 
 
-selectedRecipient =
+
 null;
 
 
@@ -10355,33 +10355,13 @@ return;
 
 selectedRecipient =
 null;
-observedHandNumber =
-null;
 
-observedStreet =
-null;
-
-announcedRoleHandNumber =
-null;
-
-
-if(gameNoticeTimer){
-
-clearTimeout(
-gameNoticeTimer
-);
-
-gameNoticeTimer =
-null;
-
-}
 
 byId(
 "transferNickname"
 )
 .value =
 "";
-
 
 byId(
 "transferAmount"
