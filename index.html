@@ -3041,7 +3041,7 @@ onclick="showHome()"
 </div>
 
 <div
-id="bankBalance"
+id="bankBalanceValue"
 class="balanceValue"
 >
 0퍼
@@ -3056,7 +3056,7 @@ class="balanceValue"
 </div>
 
 <div
-id="bankDeposit"
+id="bankDepositValue"
 class="balanceValue"
 >
 0퍼
@@ -9972,8 +9972,15 @@ byId(
 
 function renderBank(){
 
+if(!currentProfile){
+
+return;
+
+}
+
+
 byId(
-"bankBalance"
+"bankBalanceValue"
 )
 .textContent =
 formatPer(
@@ -9982,7 +9989,7 @@ currentProfile.balance_per
 
 
 byId(
-"bankDeposit"
+"bankDepositValue"
 )
 .textContent =
 formatPer(
@@ -9991,7 +9998,7 @@ currentProfile.bank_per
 
 
 byId(
-"bankLoan"
+"bankLoanValue"
 )
 .textContent =
 formatPer(
