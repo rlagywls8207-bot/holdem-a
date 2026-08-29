@@ -946,64 +946,267 @@ button{
 
 
 /* ==========================================================
-   내 칩 트레이
+   내 칩 더미 + BET 트레이
 ========================================================== */
 
-.chipTray{
+.chipZone{
   margin-top:-3px;
-  padding:7px;
+  padding:8px;
   border:1px solid #292929;
-  border-radius:10px;
+  border-radius:11px;
   background:#101010;
 }
 
-.chipTrayHeader{
+
+/* ==========================================================
+   BET 트레이
+========================================================== */
+
+.betTray{
+  position:relative;
+  min-height:76px;
+  margin-bottom:7px;
+  padding:7px 8px 6px;
+  border:1px solid #333;
+  border-radius:10px;
+  background:#151515;
+  overflow:visible;
+}
+
+.betTrayHeader{
   display:flex;
   justify-content:space-between;
-  margin-bottom:5px;
+  align-items:center;
+  min-height:18px;
 }
 
-.chipTrayTitle{
-  color:#888;
-  font-size:9px;
-}
-
-.chipTrayCount{
-  font-size:10px;
+.betTrayTitle{
+  color:#999;
+  font-size:11px;
   font-weight:900;
 }
 
-.chipRows{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-  max-height:73px;
-  overflow:hidden;
+.betTrayAmount{
+  font-size:14px;
+  font-weight:900;
 }
 
-.chipRow{
+.betTrayStacks{
+  min-height:42px;
   display:flex;
-  gap:1px;
+  justify-content:center;
+  align-items:flex-end;
+  gap:7px;
+  padding-top:5px;
 }
 
-.chipCoin{
-  width:9px;
-  height:9px;
-  flex:0 0 9px;
-  border:2px solid #ddd;
+.betTrayEmpty{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:40px;
+  color:#555;
+  font-size:11px;
+}
+
+
+/* ==========================================================
+   실제 BET 칩 스택
+========================================================== */
+
+.betStack{
+  position:relative;
+  width:29px;
+  height:38px;
+  flex:0 0 29px;
+}
+
+.betChip{
+  position:absolute;
+  left:1px;
+  bottom:calc(var(--chip-index) * 4px);
+  width:27px;
+  height:10px;
+  border:2px solid rgba(255,255,255,.72);
   border-radius:50%;
-  background:#454545;
-  box-shadow:inset 0 0 0 1px #171717;
-  transition:
-    transform .12s ease,
-    background .12s ease;
+  box-shadow:
+    inset 0 0 0 2px rgba(0,0,0,.22),
+    0 2px 2px rgba(0,0,0,.35);
 }
 
-.chipCoin.selected{
-  transform:translateY(-5px);
-  background:#eee;
+.betChip::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:8px;
+  height:3px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:rgba(255,255,255,.38);
 }
 
+.betChipValue{
+  position:absolute;
+  z-index:10;
+  left:50%;
+  bottom:-13px;
+  transform:translateX(-50%);
+  min-width:27px;
+  text-align:center;
+  color:#aaa;
+  font-size:9px;
+  font-weight:900;
+}
+
+
+/* 칩 단위 */
+
+.betChip.d1{
+  background:#d9d9d9;
+  border-color:#ffffff;
+}
+
+.betChip.d5{
+  background:#b64d4d;
+  border-color:#efb2b2;
+}
+
+.betChip.d10{
+  background:#4777b8;
+  border-color:#aec8ee;
+}
+
+.betChip.d25{
+  background:#4b8a5b;
+  border-color:#abd8b5;
+}
+
+.betChip.d100{
+  background:#292929;
+  border-color:#d8c66e;
+}
+
+
+/* ==========================================================
+   BET → 테이블 이동 느낌
+========================================================== */
+
+.betTray.betSending .betTrayStacks{
+  animation:betSendToTable .42s ease-in forwards;
+}
+
+@keyframes betSendToTable{
+
+  0%{
+    transform:translateY(0) scale(1);
+    opacity:1;
+  }
+
+  45%{
+    transform:translateY(-8px) scale(.98);
+    opacity:1;
+  }
+
+  100%{
+    transform:translateY(-24px) scale(.82);
+    opacity:0;
+  }
+
+}
+
+
+/* ==========================================================
+   보유 칩 더미
+========================================================== */
+
+.playerChipArea{
+  padding:6px 8px 7px;
+  border-radius:10px;
+  background:#0d0d0d;
+}
+
+.playerChipHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  min-height:19px;
+}
+
+.playerChipTitle{
+  color:#888;
+  font-size:11px;
+  font-weight:900;
+}
+
+.playerChipCount{
+  font-size:15px;
+  font-weight:900;
+}
+
+.playerChipPile{
+  min-height:63px;
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  gap:5px;
+  padding-top:5px;
+}
+
+.playerChipEmpty{
+  min-height:52px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#555;
+  font-size:11px;
+}
+
+
+/* ==========================================================
+   장식용 보유 칩 스택
+========================================================== */
+
+.pileStack{
+  position:relative;
+  width:28px;
+  height:56px;
+  flex:0 0 28px;
+}
+
+.pileChip{
+  position:absolute;
+  left:1px;
+  bottom:calc(var(--pile-index) * 4px);
+  width:26px;
+  height:10px;
+  border:2px solid rgba(255,255,255,.58);
+  border-radius:50%;
+  box-shadow:
+    inset 0 0 0 2px rgba(0,0,0,.18),
+    0 2px 2px rgba(0,0,0,.3);
+}
+
+.pileTone1{
+  background:#b64d4d;
+}
+
+.pileTone2{
+  background:#4777b8;
+}
+
+.pileTone3{
+  background:#4b8a5b;
+}
+
+.pileTone4{
+  background:#d2a348;
+}
+
+.pileTone5{
+  background:#333;
+  border-color:#d2c47c;
+}
 
 /* ==========================================================
    행동 패널
@@ -1391,11 +1594,6 @@ button{
     height:43px;
   }
 
-  .chipCoin{
-    width:8px;
-    height:8px;
-    flex-basis:8px;
-  }
 
 }
 /* ==========================================================
@@ -1496,13 +1694,19 @@ button{
 }
 
 
-/* 칩 트레이 */
-.chipTrayTitle{
+/* 칩 영역 */
+.betTrayTitle,
+.playerChipTitle{
   font-size:13px;
 }
 
-.chipTrayCount{
-  font-size:14px;
+.betTrayAmount,
+.playerChipCount{
+  font-size:15px;
+}
+
+.betChipValue{
+  font-size:10px;
 }
 
 
@@ -1603,7 +1807,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.14.5
+v0.14.6
 </div>
 
 <div class="subtitle">
@@ -2390,17 +2594,25 @@ class="peekLabel"
 </div>
 
 
-<div class="chipTray">
+<div
+id="chipZone"
+class="chipZone"
+>
 
-<div class="chipTrayHeader">
+<div
+id="betTray"
+class="betTray"
+>
 
-<div class="chipTrayTitle">
-내 칩
+<div class="betTrayHeader">
+
+<div class="betTrayTitle">
+BET
 </div>
 
 <div
-id="chipTrayCount"
-class="chipTrayCount"
+id="betTrayAmount"
+class="betTrayAmount"
 >
 0칩
 </div>
@@ -2408,13 +2620,40 @@ class="chipTrayCount"
 </div>
 
 <div
-id="chipRows"
-class="chipRows"
+id="betTrayStacks"
+class="betTrayStacks"
 >
 </div>
 
 </div>
 
+
+<div class="playerChipArea">
+
+<div class="playerChipHeader">
+
+<div class="playerChipTitle">
+내 칩
+</div>
+
+<div
+id="playerChipCount"
+class="playerChipCount"
+>
+0칩
+</div>
+
+</div>
+
+<div
+id="playerChipPile"
+class="playerChipPile"
+>
+</div>
+
+</div>
+
+</div>
 
 <div
 id="waitStrip"
@@ -3234,7 +3473,7 @@ style="white-space:pre-line;line-height:1.5"
 <script>
 
 const APP_VERSION =
-"v0.14.5";
+"v0.14.6";
 
 
 const SUPABASE_URL =
@@ -3299,6 +3538,10 @@ null;
 
 let gameNoticeTimer =
 null;  
+
+let betAnimationRunning =
+false;
+  
 /* ==========================================================
    기본 도우미
 ========================================================== */
@@ -8076,6 +8319,7 @@ return;
 
 }
 
+
 byId(
 "gameTopPot"
 )
@@ -8084,8 +8328,9 @@ formatChip(
 currentHand.pot
 );
 
+
 renderStreetProgress();
-  
+
 renderCommunity();
 
 renderPot();
@@ -8094,10 +8339,18 @@ renderGameSeats();
 
 renderMyCards();
 
+
+/*
+보유 칩 더미는
+내 차례 여부와 관계없이 항상 표시한다.
+*/
+
+renderPlayerChipPile();
+
+
 renderActionArea();
 
 }
-
 
 /* ==========================================================
    공용 카드
@@ -8484,10 +8737,13 @@ waiting.textContent =
 "게임 상태를 기다리고 있습니다.";
 
 
-renderChipTray(
+if(!betAnimationRunning){
+
+renderBetTray(
 0
 );
 
+}
 
 return;
 
@@ -8530,10 +8786,13 @@ actor
 "다른 플레이어의 행동을 기다리는 중";
 
 
-renderChipTray(
+if(!betAnimationRunning){
+
+renderBetTray(
 0
 );
 
+}
 
 return;
 
@@ -8700,12 +8959,137 @@ updateBetPreview();
 
 
 /* ==========================================================
-   칩 트레이
+   보유 칩 더미 설정
 ========================================================== */
 
-function renderChipTray(
-selectedAdditional
+function getPlayerChipPilePreset(
+chips
 ){
+
+const amount =
+Math.max(
+0,
+int(
+chips
+)
+);
+
+
+if(amount === 0){
+
+return [];
+
+}
+
+
+if(amount <= 10){
+
+return [
+2
+];
+
+}
+
+
+if(amount <= 25){
+
+return [
+3,
+2
+];
+
+}
+
+
+if(amount <= 50){
+
+return [
+4,
+3,
+2
+];
+
+}
+
+
+if(amount <= 100){
+
+return [
+5,
+4,
+3
+];
+
+}
+
+
+if(amount <= 250){
+
+return [
+6,
+5,
+4,
+3
+];
+
+}
+
+
+if(amount <= 500){
+
+return [
+7,
+6,
+5,
+4
+];
+
+}
+
+
+if(amount <= 1000){
+
+return [
+8,
+7,
+6,
+5,
+4
+];
+
+}
+
+
+if(amount <= 2500){
+
+return [
+9,
+8,
+7,
+6,
+5
+];
+
+}
+
+
+return [
+10,
+9,
+8,
+7,
+6,
+5
+];
+
+}
+
+
+/* ==========================================================
+   보유 칩 더미 렌더
+========================================================== */
+
+function renderPlayerChipPile(){
 
 let myChips =
 0;
@@ -8725,8 +9109,8 @@ myActionOptions.my_chips
 
 const me =
 currentHandPlayers.find(
-x =>
-x.profile_id ===
+player =>
+player.profile_id ===
 currentUser.id
 );
 
@@ -8743,7 +9127,7 @@ me?.chips
 
 
 byId(
-"chipTrayCount"
+"playerChipCount"
 )
 .textContent =
 formatChip(
@@ -8753,7 +9137,7 @@ myChips
 
 const box =
 byId(
-"chipRows"
+"playerChipPile"
 );
 
 
@@ -8763,88 +9147,370 @@ box.innerHTML =
 
 if(myChips === 0){
 
-box.innerHTML =
-'<div class="fieldHelp" style="margin:0">남은 칩 없음</div>';
+box.innerHTML = `
+
+<div class="playerChipEmpty">
+칩 없음
+</div>
+
+`;
 
 return;
 
 }
 
 
-/*
-1칩 = 1코인.
-20개마다 다음 줄.
-트레이 내부만 스크롤되므로
-게임 전체 화면 길이는 크게 늘어나지 않는다.
-*/
-
-for(
-let start = 0;
-start < myChips;
-start += 20
-){
-
-const row =
-document.createElement(
-"div"
-);
-
-
-row.className =
-"chipRow";
-
-
-const end =
-Math.min(
-start + 20,
+const preset =
+getPlayerChipPilePreset(
 myChips
 );
 
 
-for(
-let i = start;
-i < end;
-i++
-){
+preset.forEach(
+(
+stackHeight,
+stackIndex
+) => {
 
-const coin =
+const stack =
 document.createElement(
 "div"
 );
 
 
-coin.className =
-"chipCoin";
+stack.className =
+"pileStack";
 
 
-if(
-i <
-selectedAdditional
+for(
+let chipIndex = 0;
+chipIndex < stackHeight;
+chipIndex++
 ){
 
-coin.classList.add(
-"selected"
+const chip =
+document.createElement(
+"div"
 );
 
-}
+
+const tone =
+(
+(
+stackIndex +
+chipIndex
+) %
+5
+) + 1;
 
 
-row.appendChild(
-coin
+chip.className =
+`pileChip pileTone${tone}`;
+
+
+chip.style.setProperty(
+"--pile-index",
+chipIndex
+);
+
+
+stack.appendChild(
+chip
 );
 
 }
 
 
 box.appendChild(
-row
+stack
+);
+
+}
 );
 
 }
 
+
+/* ==========================================================
+   BET 금액 칩 단위 분해
+========================================================== */
+
+function makeBetChipComposition(
+amount
+){
+
+let remaining =
+Math.max(
+0,
+int(
+amount
+)
+);
+
+
+const denominations = [
+
+100,
+25,
+10,
+5,
+1
+
+];
+
+
+const result =
+[];
+
+
+denominations.forEach(
+value => {
+
+const count =
+Math.floor(
+remaining /
+value
+);
+
+
+if(count > 0){
+
+result.push({
+
+value,
+count
+
+});
+
+
+remaining -=
+count *
+value;
+
+}
+
+}
+);
+
+
+return result;
+
 }
 
 
+/* ==========================================================
+   BET 트레이 렌더
+========================================================== */
+
+function renderBetTray(
+amount
+){
+
+if(betAnimationRunning){
+
+return;
+
+}
+
+
+const value =
+Math.max(
+0,
+int(
+amount
+)
+);
+
+
+byId(
+"betTrayAmount"
+)
+.textContent =
+formatChip(
+value
+);
+
+
+const box =
+byId(
+"betTrayStacks"
+);
+
+
+box.innerHTML =
+"";
+
+
+if(value === 0){
+
+box.innerHTML = `
+
+<div class="betTrayEmpty">
+베팅할 칩을 올려주세요
+</div>
+
+`;
+
+return;
+
+}
+
+
+const composition =
+makeBetChipComposition(
+value
+);
+
+
+composition.forEach(
+item => {
+
+const stack =
+document.createElement(
+"div"
+);
+
+
+stack.className =
+"betStack";
+
+
+for(
+let chipIndex = 0;
+chipIndex < item.count;
+chipIndex++
+){
+
+const chip =
+document.createElement(
+"div"
+);
+
+
+chip.className =
+`betChip d${item.value}`;
+
+
+chip.style.setProperty(
+"--chip-index",
+chipIndex
+);
+
+
+stack.appendChild(
+chip
+);
+
+}
+
+
+const label =
+document.createElement(
+"div"
+);
+
+
+label.className =
+"betChipValue";
+
+
+label.textContent =
+item.value;
+
+
+stack.appendChild(
+label
+);
+
+
+box.appendChild(
+stack
+);
+
+}
+);
+
+}
+
+
+/* ==========================================================
+   BET → 테이블 이동 애니메이션
+========================================================== */
+
+function animateBetToTable(){
+
+return new Promise(
+resolve => {
+
+const tray =
+byId(
+"betTray"
+);
+
+
+const stacks =
+byId(
+"betTrayStacks"
+);
+
+
+if(
+!tray ||
+!stacks ||
+stacks.children.length === 0
+){
+
+resolve();
+
+return;
+
+}
+
+
+betAnimationRunning =
+true;
+
+
+tray.classList.remove(
+"betSending"
+);
+
+
+void tray.offsetWidth;
+
+
+tray.classList.add(
+"betSending"
+);
+
+
+setTimeout(
+() => {
+
+tray.classList.remove(
+"betSending"
+);
+
+
+betAnimationRunning =
+false;
+
+
+renderBetTray(
+0
+);
+
+
+resolve();
+
+},
+430
+);
+
+}
+);
+
+}
 /* ==========================================================
    베팅 조절
 ========================================================== */
@@ -8966,7 +9632,7 @@ byId(
 "현재 베팅을 올릴 수 없습니다.";
 
 
-renderChipTray(
+renderBetTray(
 0
 );
 
@@ -8988,7 +9654,7 @@ byId(
 `가능 범위 ${formatChip(min)} ~ ${formatChip(max)}`;
 
 
-renderChipTray(
+renderBetTray(
 0
 );
 
@@ -9034,7 +9700,7 @@ isBet
 `지금 ${formatChip(additional)}을 더 냅니다 · 레이즈 후 ${formatChip(target)}`;
 
 
-renderChipTray(
+renderBetTray(
 additional
 );
 
@@ -9086,6 +9752,34 @@ async function doAction(
 action
 ){
 
+if(!myActionOptions){
+
+return;
+
+}
+
+
+/*
+콜 버튼을 눌렀을 당시
+실제로 추가로 내야 하는 칩 수를 미리 저장한다.
+
+RPC가 실행되고 나면
+상태가 바뀔 수 있으므로 먼저 저장해야 한다.
+*/
+
+const callAmount =
+action === "call"
+?
+Math.max(
+0,
+int(
+myActionOptions.call_amount
+)
+)
+:
+0;
+
+
 disableActions(
 true
 );
@@ -9111,37 +9805,67 @@ null
 );
 
 
+if(error){
+
 disableActions(
 false
 );
 
-
-if(error){
 
 showModal(
 "행동 오류",
 error.message
 );
 
+
 return;
+
+}
+
+
+/*
+콜이 서버에서 정상 처리된 뒤에만
+BET 트레이 애니메이션을 실행한다.
+
+체크와 폴드는 칩 이동이 없으므로
+애니메이션을 실행하지 않는다.
+*/
+
+if(
+action === "call" &&
+callAmount > 0
+){
+
+renderBetTray(
+callAmount
+);
+
+
+await animateBetToTable();
 
 }
 
 
 await refreshGame();
 
-}
 
+disableActions(
+false
+);
+
+}
 
 /* ==========================================================
    베팅 / 레이즈
+   BET 트레이 → 테이블 이동 애니메이션
 ========================================================== */
 
 async function doRaise(){
 
 if(
 !myActionOptions ||
-!myActionOptions.can_raise
+!myActionOptions.can_raise ||
+betAnimationRunning
 ){
 
 return;
@@ -9155,6 +9879,29 @@ byId(
 "betInput"
 )
 .value
+);
+
+
+const additional =
+Math.max(
+
+0,
+
+target -
+int(
+myActionOptions.my_round_bet
+)
+
+);
+
+
+/*
+BET 트레이에 실제로 앞으로 낼 칩을
+마지막으로 확실히 표시
+*/
+
+renderBetTray(
+additional
 );
 
 
@@ -9183,21 +9930,75 @@ target
 );
 
 
+if(error){
+
 disableActions(
 false
 );
 
-
-if(error){
 
 showModal(
 "베팅 오류",
 error.message
 );
 
+
 return;
 
 }
+
+
+/*
+서버에서 베팅 성공 후에만
+칩이 테이블 쪽으로 사라지는 연출
+*/
+
+betAnimationRunning =
+true;
+
+
+const tray =
+byId(
+"betTray"
+);
+
+
+tray.classList.add(
+"betSending"
+);
+
+
+await new Promise(
+resolve =>
+setTimeout(
+resolve,
+430
+)
+);
+
+
+tray.classList.remove(
+"betSending"
+);
+
+
+/*
+애니메이션이 끝나면
+BET 트레이를 비운다.
+*/
+
+renderBetTray(
+0
+);
+
+
+betAnimationRunning =
+false;
+
+
+disableActions(
+false
+);
 
 
 await refreshGame();
