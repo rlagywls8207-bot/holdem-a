@@ -703,6 +703,75 @@ button{
   }
 
 }
+
+/* ==========================================================
+   v0.14.7 행동 알림
+========================================================== */
+
+.gameNotice.turn{
+  border-color:#8ca8d4;
+  background:rgba(22,29,40,.97);
+}
+
+.gameNotice.action{
+  border-color:#555;
+  background:rgba(24,24,24,.97);
+}
+
+.gameNotice.fold{
+  border-color:#814848;
+  background:rgba(45,25,25,.97);
+}
+
+
+/* ==========================================================
+   쇼다운 카드 공개
+========================================================== */
+
+.showdownPlayer{
+  margin-top:8px;
+  padding:11px;
+  border:1px solid #333;
+  border-radius:12px;
+  background:#101010;
+}
+
+.showdownPlayer.winner{
+  border-color:#8a7540;
+}
+
+.showdownPlayerName{
+  margin-bottom:7px;
+  font-size:15px;
+  font-weight:900;
+}
+
+.showdownCards{
+  display:flex;
+  justify-content:center;
+  gap:5px;
+  margin:5px 0 7px;
+}
+
+.showdownCards .pixelCard{
+  width:42px;
+  height:59px;
+  flex-basis:42px;
+}
+
+.showdownHandName{
+  color:#bbb;
+  font-size:13px;
+  font-weight:800;
+}
+
+.showdownWin{
+  margin-top:3px;
+  font-size:12px;
+  font-weight:900;
+}
+  
+  
 /* ==========================================================
    게임 테이블
 ========================================================== */
@@ -1807,7 +1876,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.14.6
+v0.14.7
 </div>
 
 <div class="subtitle">
@@ -3473,7 +3542,7 @@ style="white-space:pre-line;line-height:1.5"
 <script>
 
 const APP_VERSION =
-"v0.14.6";
+"v0.14.7";
 
 
 const SUPABASE_URL =
@@ -3538,6 +3607,21 @@ null;
 
 let gameNoticeTimer =
 null;  
+
+let gameNoticeQueue =
+[];
+
+let gameNoticeRunning =
+false;
+
+let lastActionEventId =
+0;
+
+let observedActorSeat =
+null;
+
+let observedActionHandNumber =
+null;
 
 let betAnimationRunning =
 false;
@@ -4279,12 +4363,73 @@ shopItems =
 selectedRecipient =
 null;
 
+myCardsVisible =
+false;
 
-showLogin();
+
+/* 게임 진행 상태 초기화 */
+
+observedHandNumber =
+null;
+
+observedStreet =
+null;
+
+announcedRoleHandNumber =
+null;
+
+
+/* v0.14.7 행동 알림 상태 초기화 */
+
+gameNoticeQueue =
+[];
+
+gameNoticeRunning =
+false;
+
+lastActionEventId =
+0;
+
+observedActorSeat =
+null;
+
+observedActionHandNumber =
+null;
+
+
+/* 기존 알림 타이머 정리 */
+
+if(gameNoticeTimer){
+
+clearTimeout(
+gameNoticeTimer
+);
+
+gameNoticeTimer =
+null;
 
 }
 
 
+/* 떠 있는 게임 알림 숨기기 */
+
+const notice =
+byId(
+"gameNotice"
+);
+
+if(notice){
+
+notice.classList.add(
+"hidden"
+);
+
+}
+
+
+showLogin();
+
+}
 /* ==========================================================
    홈 로드 / 재접속
 ========================================================== */
@@ -7671,6 +7816,10 @@ null;
 
 renderGame();
 
+await refreshActionEvents();
+
+detectMyTurn();
+
 
 
 /* ==========================================================
@@ -7919,15 +8068,51 @@ index <= currentIndex
 
 
 /* ==========================================================
-   게임 안내 팝업
+   게임 안내 팝업 큐
 ========================================================== */
 
 function showGameNotice(
 title,
 text,
 type = "street",
-duration = 2800
+duration = 2200
 ){
+
+gameNoticeQueue.push({
+
+title,
+text,
+type,
+duration
+
+});
+
+
+runGameNoticeQueue();
+
+}
+
+
+async function runGameNoticeQueue(){
+
+if(gameNoticeRunning){
+
+return;
+
+}
+
+
+gameNoticeRunning =
+true;
+
+
+while(
+gameNoticeQueue.length > 0
+){
+
+const notice =
+gameNoticeQueue.shift();
+
 
 const box =
 byId(
@@ -7935,59 +8120,53 @@ byId(
 );
 
 
-if(!box){
-
-return;
-
-}
-
-
-if(gameNoticeTimer){
-
-clearTimeout(
-gameNoticeTimer
-);
-
-}
-
-
 byId(
 "gameNoticeTitle"
 )
 .textContent =
-title;
+notice.title;
 
 
 byId(
 "gameNoticeText"
 )
 .textContent =
-text;
+notice.text;
 
 
 box.className =
-`gameNotice ${type}`;
+`gameNotice ${notice.type}`;
 
 
-gameNoticeTimer =
+await new Promise(
+resolve =>
 setTimeout(
-() => {
+resolve,
+notice.duration
+)
+);
+
 
 box.classList.add(
 "hidden"
 );
 
 
-gameNoticeTimer =
-null;
-
-},
-duration
+await new Promise(
+resolve =>
+setTimeout(
+resolve,
+180
+)
 );
 
 }
 
 
+gameNoticeRunning =
+false;
+
+}
 /* ==========================================================
    내 D / SB / BB 역할 안내
 ========================================================== */
@@ -8306,6 +8485,366 @@ showGameNotice(
 
 }
 
+/* ==========================================================
+   행동 이벤트 읽기
+========================================================== */
+
+async function refreshActionEvents(){
+
+if(
+!currentRoom ||
+!currentHand
+){
+
+return;
+
+}
+
+
+const handNumber =
+Number(
+currentHand.hand_number
+);
+
+
+/*
+새 판이면 과거 행동 알림을 재생하지 않음
+*/
+
+if(
+observedActionHandNumber !==
+handNumber
+){
+
+observedActionHandNumber =
+handNumber;
+
+
+const {
+data
+} =
+await db.rpc(
+"get_classic_action_events",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_after_id:
+0
+
+}
+);
+
+
+const sameHand =
+(data ?? [])
+.filter(
+event =>
+Number(
+event.hand_number
+) ===
+handNumber
+);
+
+
+lastActionEventId =
+sameHand.length
+?
+Math.max(
+...sameHand.map(
+event =>
+Number(
+event.event_id
+)
+)
+)
+:
+0;
+
+
+return;
+
+}
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"get_classic_action_events",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_after_id:
+lastActionEventId
+
+}
+);
+
+
+if(error){
+
+console.error(
+"action events:",
+error
+);
+
+return;
+
+}
+
+
+const events =
+(data ?? [])
+.filter(
+event =>
+Number(
+event.hand_number
+) ===
+handNumber
+);
+
+
+for(
+const event of events
+){
+
+lastActionEventId =
+Math.max(
+lastActionEventId,
+Number(
+event.event_id
+)
+);
+
+
+announcePlayerAction(
+event
+);
+
+}
+
+}
+
+
+/* ==========================================================
+   행동 알림 문구
+========================================================== */
+
+function announcePlayerAction(
+event
+){
+
+const name =
+event.profile_id ===
+currentUser.id
+?
+"내가"
+:
+`${event.nickname}님이`;
+
+
+if(
+event.action_type ===
+"fold"
+){
+
+showGameNotice(
+
+"폴드",
+
+`${name} 폴드했습니다.`,
+
+"fold",
+1500
+
+);
+
+
+return;
+
+}
+
+
+if(
+event.action_type ===
+"check"
+){
+
+showGameNotice(
+
+"체크",
+
+`${name} 체크했습니다.`,
+
+"action",
+1400
+
+);
+
+
+return;
+
+}
+
+
+if(
+event.action_type ===
+"call"
+){
+
+showGameNotice(
+
+"콜",
+
+`${name} ${formatChip(
+event.amount
+)}을 추가로 내고 콜했습니다.`,
+
+"action",
+1700
+
+);
+
+
+return;
+
+}
+
+
+if(
+event.action_type ===
+"raise"
+){
+
+const target =
+num(
+event.raise_to
+);
+
+
+showGameNotice(
+
+"레이즈",
+
+`${name} ${formatChip(
+event.amount
+)}을 추가로 내고
+총 ${formatChip(
+target
+)}까지 올렸습니다.`,
+
+"action",
+1900
+
+);
+
+}
+
+}
+
+/* ==========================================================
+   내 턴 알림
+========================================================== */
+
+function detectMyTurn(){
+
+if(
+!currentHand ||
+!currentUser
+){
+
+return;
+
+}
+
+
+const actorSeat =
+currentHand.current_actor_seat_no === null
+?
+null
+:
+Number(
+currentHand.current_actor_seat_no
+);
+
+
+if(
+actorSeat ===
+observedActorSeat
+){
+
+return;
+
+}
+
+
+observedActorSeat =
+actorSeat;
+
+
+if(actorSeat === null){
+
+return;
+
+}
+
+
+const me =
+currentHandPlayers.find(
+player =>
+player.profile_id ===
+currentUser.id
+);
+
+
+if(!me){
+
+return;
+
+}
+
+
+if(
+Number(
+me.seat_no
+) !==
+actorSeat
+){
+
+return;
+
+}
+
+
+if(
+me.folded ||
+me.all_in
+){
+
+return;
+
+}
+
+
+showGameNotice(
+
+"내 차례입니다",
+
+`행동을 선택해주세요.
+
+폴드 · 체크 · 콜 · 베팅/레이즈`,
+
+"turn",
+2200
+
+);
+
+}
 
 /* ==========================================================
    게임 렌더
@@ -10421,19 +10960,12 @@ byId(
 )
 .textContent =
 "쇼다운으로 승자가 결정되었습니다.";
-
-
-/*
-상세 결과 RPC가 있는 경우만 카드까지 표시.
-없어도 승자 표시는 정상 유지.
-*/
-
 const {
-data:results,
-error:resultError
+data:showdownCards,
+error:showdownCardError
 } =
 await db.rpc(
-"get_last_classic_result",
+"get_last_classic_showdown_cards",
 {
 
 p_room_id:
@@ -10443,57 +10975,112 @@ currentRoom.room_id
 );
 
 
-if(resultError){
+if(
+!showdownCardError &&
+showdownCards &&
+showdownCards.length > 0
+){
 
 byId(
 "finishedResults"
 )
 .innerHTML =
-"";
-
-return;
-
-}
-
-
-byId(
-"finishedResults"
-)
-.innerHTML =
-(results ?? [])
+showdownCards
 .map(
-row => `
+row => {
 
-<div class="roomCard" style="text-align:center">
+const card1 = {
 
-<b>
-${escapeHtml(row.nickname)}
-</b>
+rank_text:
+row.card_1_rank,
+
+suit:
+row.card_1_suit
+
+};
+
+
+const card2 = {
+
+rank_text:
+row.card_2_rank,
+
+suit:
+row.card_2_suit
+
+};
+
+
+return `
+
+<div class="showdownPlayer${row.is_winner ? " winner" : ""}">
+
+<div class="showdownPlayerName">
+
+${escapeHtml(
+row.nickname
+)}
 
 ${row.is_winner ? " · 승리" : ""}
 
-<br>
+</div>
 
-<span style="font-size:10px;color:#aaa">
 
-${escapeHtml(row.hand_name ?? "")}
+<div class="showdownCards">
 
-${num(row.chips_won) > 0
+${cardHtml(
+card1
+)}
+
+${cardHtml(
+card2
+)}
+
+</div>
+
+
+<div class="showdownHandName">
+
+${escapeHtml(
+row.hand_name ??
+""
+)}
+
+</div>
+
+
+${num(
+row.chips_won
+) > 0
 ?
-` · +${formatChip(row.chips_won)}`
+`
+
+<div class="showdownWin">
++${formatChip(
+row.chips_won
+)}
+</div>
+
+`
 :
 ""
 }
 
-</span>
-
 </div>
 
-`
+`;
+
+}
 )
 .join("");
 
 }
+
+/*
+상세 결과 RPC가 있는 경우만 카드까지 표시.
+없어도 승자 표시는 정상 유지.
+*/
+
 
 
 /* ==========================================================
@@ -10522,7 +11109,11 @@ null;
 
 myCardsVisible =
 false;
-  observedHandNumber =
+
+
+/* 기존 진행 상태 초기화 */
+
+observedHandNumber =
 null;
 
 observedStreet =
@@ -10531,6 +11122,26 @@ null;
 announcedRoleHandNumber =
 null;
 
+
+/* v0.14.7 행동 알림 상태 초기화 */
+
+gameNoticeQueue =
+[];
+
+gameNoticeRunning =
+false;
+
+lastActionEventId =
+0;
+
+observedActorSeat =
+null;
+
+observedActionHandNumber =
+null;
+
+
+/* 기존 알림 타이머 정리 */
 
 if(gameNoticeTimer){
 
@@ -10543,6 +11154,8 @@ null;
 
 }
 
+
+/* 혹시 떠 있는 팝업 숨기기 */
 
 byId(
 "gameNotice"
@@ -10558,8 +11171,6 @@ await refreshProfile();
 await enterLobby();
 
 }
-
-
 /* ==========================================================
    방 나가기
 ========================================================== */
