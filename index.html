@@ -249,8 +249,7 @@ button{
 
 
 /* ==========================================================
-   픽셀 털복숭이
-   베이스 실루엣 고정
+   아바타 공통
 ========================================================== */
 
 .pixelAvatar{
@@ -271,13 +270,13 @@ button{
 }
 
 .pixelAvatarLarge{
-  width:128px;
-  height:128px;
+  width:160px;
+  height:160px;
 }
 
 .pixelAvatarLarge svg{
-  width:128px;
-  height:128px;
+  width:160px;
+  height:160px;
 }
 
 
@@ -292,12 +291,29 @@ button{
 }
 
 .avatarHint{
-  margin:7px 0 10px;
+  margin:7px 0 12px;
   text-align:center;
   color:#888;
-  font-size:11px;
+  font-size:13px;
   line-height:1.5;
 }
+
+.avatarPanel{
+  text-align:center;
+}
+
+.avatarPreviewBox{
+  margin:12px 0;
+  padding:16px 10px;
+  border:1px solid #303030;
+  border-radius:14px;
+  background:#111;
+}
+
+
+/* ==========================================================
+   털 색
+========================================================== */
 
 .avatarColorBox{
   margin-top:13px;
@@ -321,6 +337,7 @@ button{
 
 .avatarColorText{
   flex:1;
+  text-align:left;
 }
 
 .avatarColorCode{
@@ -329,29 +346,68 @@ button{
   font-weight:900;
 }
 
+
+/* ==========================================================
+   아바타 장착 슬롯
+========================================================== */
+
 .avatarSlots{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:6px;
-  margin-top:10px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:14px;
 }
 
 .avatarSlot{
-  padding:9px 5px;
-  text-align:center;
-  background:#1a1a1a;
-  border-radius:9px;
+  padding:11px;
+  border:1px solid #303030;
+  border-radius:11px;
+  background:#151515;
+  text-align:left;
 }
 
-.avatarSlotName{
-  margin-top:4px;
-  font-size:11px;
+.avatarSlotHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+}
+
+.avatarSlotLabel{
+  color:#888;
+  font-size:12px;
   font-weight:900;
 }
 
-.avatarSlot button{
-  padding:7px 2px;
-  font-size:9px;
+.avatarSlotName{
+  font-size:14px;
+  font-weight:900;
+}
+
+.avatarSlotItems{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:9px;
+}
+
+.avatarSlotItems button{
+  width:auto;
+  margin:0;
+  padding:7px 9px;
+  border-radius:8px;
+  background:#292929;
+  color:#fff;
+  font-size:11px;
+}
+
+.avatarSlotItems button.selected{
+  background:#eee;
+  color:#111;
+}
+
+.avatarSlotItems button:disabled{
+  opacity:.3;
 }
 
 
@@ -360,66 +416,131 @@ button{
 ========================================================== */
 
 .shopCategory{
-  margin:19px 0 8px;
-  font-size:17px;
+  margin:20px 0 9px;
+  font-size:18px;
   font-weight:900;
 }
 
-.shopItem{
+.shopTheme{
+  margin-bottom:12px;
+  padding:14px;
+  border:1px solid #303030;
+  border-radius:13px;
+  background:#101010;
+}
+
+.shopThemePreview{
   display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:125px;
+  margin-bottom:10px;
+  border-radius:11px;
+  background:#171717;
+}
+
+.shopThemePreview .pixelAvatar{
+  width:112px;
+  height:112px;
+}
+
+.shopThemePreview .pixelAvatar svg{
+  width:112px;
+  height:112px;
+}
+
+.shopThemeName{
+  font-size:18px;
+  font-weight:900;
+}
+
+.shopThemeDescription{
+  margin-top:5px;
+  color:#999;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.shopThemePrice{
+  margin-top:8px;
+  font-size:15px;
+  font-weight:900;
+}
+
+.shopThemeStatus{
+  margin-top:6px;
+  color:#aaa;
+  font-size:12px;
+}
+
+.shopThemeActions{
+  display:flex;
+  gap:6px;
+  margin-top:10px;
+}
+
+.shopThemeActions button{
+  margin:0;
+}
+
+
+/* ==========================================================
+   테마 상세 아이템
+========================================================== */
+
+.shopThemeItems{
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px solid #2d2d2d;
+}
+
+.shopThemeItem{
+  display:flex;
+  justify-content:space-between;
   align-items:center;
   gap:8px;
+  padding:8px 0;
+  border-bottom:1px solid #222;
 }
 
-.shopPreview{
-  width:58px;
-  flex:0 0 58px;
+.shopThemeItem:last-child{
+  border-bottom:0;
 }
 
-.shopPreview .pixelAvatar{
-  width:52px;
-  height:52px;
-}
-
-.shopPreview .pixelAvatar svg{
-  width:52px;
-  height:52px;
-}
-
-.shopInfo{
-  flex:1;
+.shopThemeItemInfo{
   min-width:0;
 }
 
-.shopName{
+.shopThemeItemCategory{
+  color:#777;
+  font-size:11px;
+}
+
+.shopThemeItemName{
+  margin-top:2px;
+  font-size:13px;
   font-weight:900;
 }
 
-.shopDescription{
-  margin-top:3px;
-  color:#888;
+.shopThemeItemMain{
+  margin-left:4px;
+  color:#d8bb72;
   font-size:10px;
-}
-
-.shopPrice{
-  margin-top:5px;
-  font-size:11px;
   font-weight:900;
 }
 
 .shopAction{
   width:auto;
   flex:0 0 auto;
-  padding:8px 9px;
+  padding:8px 10px;
   margin:0;
-  font-size:10px;
+  font-size:11px;
 }
 
 .equippedTag{
-  font-size:9px;
+  font-size:11px;
   font-weight:900;
 }
-
 
 /* ==========================================================
    대기실 테이블
@@ -3024,6 +3145,10 @@ id="drawerContent"
      내 아바타
 ===================================================== -->
 
+<!-- =====================================================
+     내 아바타
+===================================================== -->
+
 <div
 id="avatarScreen"
 class="card hidden"
@@ -3038,6 +3163,7 @@ onclick="showHome()"
 
 <h2>내 아바타</h2>
 
+
 <div class="avatarPanel">
 
 <div
@@ -3048,8 +3174,11 @@ class="avatarNickname"
 </div>
 
 <div class="avatarHint">
-털복숭이 본체는 그대로 두고 귀, 눈, 코와 털 색을 꾸밀 수 있습니다.
+보유한 테마 아이템을 자유롭게 조합할 수 있습니다.
 </div>
+
+
+<div class="avatarPreviewBox">
 
 <div
 id="avatarLarge"
@@ -3057,6 +3186,12 @@ class="pixelAvatar pixelAvatarLarge"
 >
 </div>
 
+</div>
+
+
+<!-- =====================================================
+     털 색
+===================================================== -->
 
 <div class="avatarColorBox">
 
@@ -3083,8 +3218,11 @@ class="avatarColorCode"
 #C89B61
 </div>
 
-<div class="fieldHelp" style="margin:2px 0 0">
-변경 1회 · 100퍼
+<div
+class="fieldHelp"
+style="margin:2px 0 0"
+>
+아바타의 기본 털 색입니다.
 </div>
 
 </div>
@@ -3100,125 +3238,23 @@ onclick="saveAvatarColor()"
 
 </div>
 
-<div class="avatarColorBox">
 
-<div class="avatarColorRow">
+<!-- =====================================================
+     장착 파츠
+     순서:
+     머리장식 → 얼굴표정 → 귀 → 옷 → 털 → 몸체 → 꼬리
+===================================================== -->
 
-<input
-id="headwearColorPicker"
-class="avatarColorPicker"
-type="color"
-value="#6B4EFF"
-oninput="previewHeadwearColor()"
->
-
-<div class="avatarColorText">
-
-<div class="smallLabel">
-머리장식 색
-</div>
-
-<div
-id="headwearColorCode"
-class="avatarColorCode"
->
-#6B4EFF
-</div>
-
-<div
-class="fieldHelp"
-style="margin:2px 0 0"
->
-색 변경 가능 장식만 적용 · 1회 1,000퍼
-</div>
-
-</div>
-
-</div>
-
-<button
-class="secondary"
-onclick="saveHeadwearColor()"
->
-이 색으로 변경 · 1,000퍼
-</button>
-
-</div>
-  
 <div class="avatarSlots">
 
-<div class="avatarSlot">
 
-<div class="smallLabel">
-귀
-</div>
-
-<div
-id="avatarEarName"
-class="avatarSlotName"
->
-귀 없음
-</div>
-
-<button
-class="secondary"
-onclick="resetAvatarPart('ears')"
->
-떼기
-</button>
-
-</div>
-
+<!-- 머리장식 -->
 
 <div class="avatarSlot">
 
-<div class="smallLabel">
-눈
-</div>
+<div class="avatarSlotHeader">
 
-<div
-id="avatarEyeName"
-class="avatarSlotName"
->
-기본 점눈
-</div>
-
-<button
-class="secondary"
-onclick="resetAvatarPart('eyes')"
->
-기본
-</button>
-
-</div>
-
-
-<div class="avatarSlot">
-
-<div class="smallLabel">
-코
-</div>
-
-<div
-id="avatarNoseName"
-class="avatarSlotName"
->
-코 없음
-</div>
-
-<button
-class="secondary"
-onclick="resetAvatarPart('nose')"
->
-떼기
-</button>
-
-</div>
-
-
-<div class="avatarSlot">
-
-<div class="smallLabel">
+<div class="avatarSlotLabel">
 머리장식
 </div>
 
@@ -3226,45 +3262,192 @@ onclick="resetAvatarPart('nose')"
 id="avatarHeadwearName"
 class="avatarSlotName"
 >
-장식 없음
+없음
 </div>
 
-<button
-class="secondary"
-onclick="resetAvatarPart('headwear')"
->
-벗기
-</button>
-
-</div>
-
-
-<div class="avatarSlot">
-
-<div class="smallLabel">
-특수 털
 </div>
 
 <div
-id="avatarFurPatternName"
+id="avatarHeadwearItems"
+class="avatarSlotItems"
+>
+</div>
+
+</div>
+
+
+<!-- 얼굴표정 -->
+
+<div class="avatarSlot">
+
+<div class="avatarSlotHeader">
+
+<div class="avatarSlotLabel">
+얼굴표정
+</div>
+
+<div
+id="avatarFaceName"
+class="avatarSlotName"
+>
+기본 표정
+</div>
+
+</div>
+
+<div
+id="avatarFaceItems"
+class="avatarSlotItems"
+>
+</div>
+
+</div>
+
+
+<!-- 귀 -->
+
+<div class="avatarSlot">
+
+<div class="avatarSlotHeader">
+
+<div class="avatarSlotLabel">
+귀
+</div>
+
+<div
+id="avatarEarName"
+class="avatarSlotName"
+>
+기본 귀
+</div>
+
+</div>
+
+<div
+id="avatarEarItems"
+class="avatarSlotItems"
+>
+</div>
+
+</div>
+
+
+<!-- 옷 -->
+
+<div class="avatarSlot">
+
+<div class="avatarSlotHeader">
+
+<div class="avatarSlotLabel">
+옷
+</div>
+
+<div
+id="avatarClothesName"
+class="avatarSlotName"
+>
+누더기 옷
+</div>
+
+</div>
+
+<div
+id="avatarClothesItems"
+class="avatarSlotItems"
+>
+</div>
+
+</div>
+
+
+<!-- 털 -->
+
+<div class="avatarSlot">
+
+<div class="avatarSlotHeader">
+
+<div class="avatarSlotLabel">
+털
+</div>
+
+<div
+id="avatarFurName"
 class="avatarSlotName"
 >
 기본 털
 </div>
 
-<button
-class="secondary"
-onclick="resetAvatarPart('fur_pattern')"
+</div>
+
+<div
+id="avatarFurItems"
+class="avatarSlotItems"
 >
-기본
-</button>
+</div>
 
+</div>
+
+
+<!-- 몸체 -->
+
+<div class="avatarSlot">
+
+<div class="avatarSlotHeader">
+
+<div class="avatarSlotLabel">
+몸체
+</div>
+
+<div
+id="avatarBodyName"
+class="avatarSlotName"
+>
+기본 몸체
+</div>
+
+</div>
+
+<div
+id="avatarBodyItems"
+class="avatarSlotItems"
+>
+</div>
+
+</div>
+
+
+<!-- 꼬리 -->
+
+<div class="avatarSlot">
+
+<div class="avatarSlotHeader">
+
+<div class="avatarSlotLabel">
+꼬리
+</div>
+
+<div
+id="avatarTailName"
+class="avatarSlotName"
+>
+없음
+</div>
+
+</div>
+
+<div
+id="avatarTailItems"
+class="avatarSlotItems"
+>
 </div>
 
 </div>
 
 
 </div>
+
+</div>
+
 
 <button
 class="primary"
@@ -3276,11 +3459,10 @@ onclick="showShop()"
 <div
 id="avatarMessage"
 class="message"
-></div>
-
+>
 </div>
 
-
+</div>
 <!-- =====================================================
      상점
 ===================================================== -->
@@ -5067,257 +5249,154 @@ await enterLobby();
 }
 
 
+
 /* ==========================================================
-   픽셀 털복숭이
-   베이스 실루엣은 고정
+   새 아바타 렌더러
 ========================================================== */
 
 function avatarSvg(
-color,
-ears,
-eyes,
-nose,
-headwear = "headwear_none",
-headwearColor = "#6B4EFF",
-furPattern = "fur_none"
+avatar = {}
 ){
 
 const fur =
 normalizeColor(
-color
+avatar.avatar_color ??
+"#C89B61"
 );
 
 
-const ear =
-String(
-ears ??
-"ears_none"
-);
+/*
+장착 아이템
+
+레이어 순서는 고정한다.
+
+뒤쪽
+꼬리
+몸체
+털
+옷
+귀
+얼굴표정
+머리장식
+앞쪽
+*/
+
+const headwear =
+avatar.avatar_headwear ??
+"headwear_none";
+
+const face =
+avatar.avatar_face ??
+"face_default";
+
+const ears =
+avatar.avatar_ears ??
+"ears_default";
+
+const clothes =
+avatar.avatar_clothes ??
+"clothes_rags";
+
+const furPart =
+avatar.avatar_fur ??
+"fur_default";
+
+const body =
+avatar.avatar_body ??
+"body_default";
+
+const tail =
+avatar.avatar_tail ??
+"tail_none";
 
 
-const eye =
-String(
-eyes ??
-"eyes_dot"
-);
-
-
-const noseType =
-String(
-nose ??
-"nose_none"
-);
-
-const hat =
-String(
-headwear ??
-"headwear_none"
-);
-
-
-const hatColor =
-normalizeColor(
-headwearColor
-);
-
-
-const pattern =
-String(
-furPattern ??
-"fur_none"
-);
-
-
-let earHtml =
+let tailHtml =
 "";
 
-
-let eyeHtml =
+let bodyHtml =
 "";
 
-
-let noseHtml =
+let furHtml =
 "";
 
-
-let furPatternHtml =
+let clothesHtml =
 "";
 
+let earsHtml =
+"";
+
+let faceHtml =
+"";
 
 let headwearHtml =
 "";
 
-/* 귀 */
+
+/* ==========================================================
+   꼬리
+========================================================== */
 
 if(
-ear ===
-"ears_round"
+tail ===
+"tail_none"
 ){
 
-earHtml = `
-
-<rect x="5" y="6" width="7" height="8" fill="${fur}"/>
-<rect x="20" y="6" width="7" height="8" fill="${fur}"/>
-
-<rect x="7" y="8" width="3" height="4" fill="#8F5F5F"/>
-<rect x="22" y="8" width="3" height="4" fill="#8F5F5F"/>
-
-`;
+tailHtml =
+"";
 
 }
 
 
-if(
-ear ===
-"ears_pointy"
-){
+/*
+여우 꼬리는 다음 단계에서
+네가 만든 실제 도트 코드로 넣는다.
+*/
 
-earHtml = `
 
-<rect x="6" y="5" width="4" height="4" fill="${fur}"/>
-<rect x="8" y="3" width="4" height="8" fill="${fur}"/>
-
-<rect x="22" y="5" width="4" height="4" fill="${fur}"/>
-<rect x="20" y="3" width="4" height="8" fill="${fur}"/>
-
-<rect x="9" y="5" width="2" height="4" fill="#8F5F5F"/>
-<rect x="21" y="5" width="2" height="4" fill="#8F5F5F"/>
-
-`;
-
-}
-
+/* ==========================================================
+   몸체
+========================================================== */
 
 if(
-ear ===
-"ears_long"
+body ===
+"body_default"
 ){
 
-earHtml = `
+bodyHtml = `
 
-<rect x="5" y="2" width="6" height="12" fill="${fur}"/>
-<rect x="21" y="2" width="6" height="12" fill="${fur}"/>
+<!-- 머리 -->
 
-<rect x="7" y="4" width="2" height="7" fill="#8F5F5F"/>
-<rect x="23" y="4" width="2" height="7" fill="#8F5F5F"/>
+<rect x="12" y="4" width="8" height="1" fill="${fur}"/>
 
-`;
+<rect x="10" y="5" width="12" height="1" fill="${fur}"/>
 
-}
+<rect x="9" y="6" width="14" height="7" fill="${fur}"/>
 
-
-/* 눈 */
-
-if(
-eye ===
-"eyes_dot"
-){
-
-eyeHtml = `
-
-<rect x="11" y="15" width="2" height="2" fill="#191919"/>
-<rect x="19" y="15" width="2" height="2" fill="#191919"/>
-
-`;
-
-}
+<rect x="10" y="13" width="12" height="2" fill="${fur}"/>
 
 
-if(
-eye ===
-"eyes_round"
-){
+<!-- 목 -->
 
-eyeHtml = `
-
-<rect x="10" y="14" width="4" height="4" fill="#191919"/>
-<rect x="18" y="14" width="4" height="4" fill="#191919"/>
-
-<rect x="11" y="14" width="1" height="1" fill="#FFFFFF"/>
-<rect x="19" y="14" width="1" height="1" fill="#FFFFFF"/>
-
-`;
-
-}
+<rect x="14" y="15" width="4" height="2" fill="${fur}"/>
 
 
-/* 초롱초롱 */
+<!-- 몸 -->
 
-if(
-eye ===
-"eyes_sparkle"
-){
-
-eyeHtml = `
-
-<rect x="9" y="13" width="5" height="6" fill="#171717"/>
-<rect x="18" y="13" width="5" height="6" fill="#171717"/>
-
-<rect x="10" y="14" width="2" height="2" fill="#FFFFFF"/>
-<rect x="19" y="14" width="2" height="2" fill="#FFFFFF"/>
-
-<rect x="12" y="17" width="1" height="1" fill="#FFFFFF"/>
-<rect x="21" y="17" width="1" height="1" fill="#FFFFFF"/>
-
-`;
-
-}
+<rect x="11" y="17" width="10" height="8" fill="${fur}"/>
 
 
-/* 지루 */
+<!-- 팔 -->
 
-if(
-eye ===
-"eyes_bored"
-){
+<rect x="8" y="18" width="3" height="8" fill="${fur}"/>
 
-eyeHtml = `
-
-<rect x="10" y="15" width="5" height="2" fill="#191919"/>
-<rect x="17" y="15" width="5" height="2" fill="#191919"/>
-
-<rect x="11" y="17" width="3" height="1" fill="#191919"/>
-<rect x="18" y="17" width="3" height="1" fill="#191919"/>
-
-`;
-
-}
+<rect x="21" y="18" width="3" height="8" fill="${fur}"/>
 
 
-/* 화남 */
+<!-- 다리 -->
 
-if(
-eye ===
-"eyes_angry"
-){
+<rect x="12" y="25" width="3" height="6" fill="${fur}"/>
 
-eyeHtml = `
-
-<rect x="9" y="13" width="2" height="1" fill="#191919"/>
-<rect x="11" y="14" width="3" height="1" fill="#191919"/>
-
-<rect x="21" y="13" width="2" height="1" fill="#191919"/>
-<rect x="18" y="14" width="3" height="1" fill="#191919"/>
-
-<rect x="11" y="16" width="2" height="2" fill="#191919"/>
-<rect x="19" y="16" width="2" height="2" fill="#191919"/>
-
-`;
-
-}
-
-
-/* 부리 */
-
-if(
-noseType ===
-"nose_beak"
-){
-
-noseHtml = `
-
-<rect x="14" y="19" width="4" height="2" fill="#E3A52B"/>
-<rect x="15" y="21" width="2" height="2" fill="#BC721C"/>
+<rect x="17" y="25" width="3" height="6" fill="${fur}"/>
 
 `;
 
@@ -5325,75 +5404,84 @@ noseHtml = `
 
 
 /* ==========================================================
-   특수 털
+   털
 ========================================================== */
 
 if(
-pattern ===
-"fur_patches"
+furPart ===
+"fur_default"
 ){
 
-furPatternHtml = `
+furHtml =
+"";
 
-<rect x="7" y="12" width="5" height="4" fill="rgba(255,255,255,.24)"/>
-<rect x="20" y="18" width="6" height="4" fill="rgba(0,0,0,.13)"/>
-<rect x="9" y="23" width="5" height="3" fill="rgba(255,255,255,.18)"/>
+}
+
+
+/* ==========================================================
+   옷
+========================================================== */
+
+/*
+맨몸은 기본 상태로 사용할 수 없음.
+
+아무 옷 정보가 없더라도
+누더기 옷을 기본으로 표시한다.
+*/
+
+if(
+clothes ===
+"clothes_rags"
+){
+
+clothesHtml = `
+
+<rect x="11" y="17" width="10" height="2" fill="#6E604F"/>
+
+<rect x="10" y="19" width="11" height="2" fill="#776958"/>
+
+<rect x="11" y="21" width="10" height="2" fill="#695B4A"/>
+
+<rect x="12" y="23" width="8" height="2" fill="#756653"/>
+
+<rect x="10" y="20" width="2" height="2" fill="#554A3E"/>
+
+<rect x="19" y="22" width="2" height="2" fill="#514638"/>
 
 `;
 
 }
 
 
+/* ==========================================================
+   귀
+========================================================== */
+
 if(
-pattern ===
-"fur_tiger"
+ears ===
+"ears_default"
 ){
 
-furPatternHtml = `
-
-<rect x="8" y="11" width="2" height="5" fill="rgba(25,20,15,.48)"/>
-<rect x="13" y="10" width="2" height="4" fill="rgba(25,20,15,.48)"/>
-<rect x="22" y="11" width="2" height="5" fill="rgba(25,20,15,.48)"/>
-
-<rect x="6" y="20" width="4" height="2" fill="rgba(25,20,15,.42)"/>
-<rect x="22" y="20" width="4" height="2" fill="rgba(25,20,15,.42)"/>
-
-`;
+earsHtml =
+"";
 
 }
 
 
-if(
-pattern ===
-"fur_gradient"
-){
-
-furPatternHtml = `
-
-<rect x="4" y="19" width="24" height="3" fill="rgba(191,105,210,.16)"/>
-<rect x="6" y="22" width="20" height="4" fill="rgba(121,104,220,.28)"/>
-<rect x="9" y="26" width="14" height="2" fill="rgba(90,78,196,.38)"/>
-
-`;
-
-}
-
+/* ==========================================================
+   얼굴표정
+========================================================== */
 
 if(
-pattern ===
-"fur_galaxy"
+face ===
+"face_default"
 ){
 
-furPatternHtml = `
+faceHtml = `
 
-<rect x="4" y="12" width="24" height="10" fill="rgba(38,31,81,.42)"/>
-<rect x="6" y="22" width="20" height="4" fill="rgba(46,35,99,.48)"/>
+<rect x="13" y="9" width="2" height="2" fill="#111111"/>
 
-<rect x="9" y="14" width="1" height="1" fill="#FFFFFF"/>
-<rect x="22" y="16" width="1" height="1" fill="#FFFFFF"/>
-<rect x="16" y="20" width="1" height="1" fill="#D8C9FF"/>
-<rect x="11" y="24" width="1" height="1" fill="#FFFFFF"/>
-<rect x="24" y="21" width="1" height="1" fill="#BFD9FF"/>
+<rect x="17" y="9" width="2" height="2" fill="#111111"/>
 
 `;
 
@@ -5405,153 +5493,39 @@ furPatternHtml = `
 ========================================================== */
 
 if(
-hat ===
-"headwear_ribbon"
+headwear ===
+"headwear_none"
 ){
 
-headwearHtml = `
-
-<rect x="21" y="6" width="4" height="4" fill="${hatColor}"/>
-<rect x="25" y="4" width="4" height="5" fill="${hatColor}"/>
-<rect x="25" y="9" width="4" height="5" fill="${hatColor}"/>
-<rect x="24" y="7" width="3" height="3" fill="#F1D8FF"/>
-
-`;
+headwearHtml =
+"";
 
 }
 
 
-if(
-hat ===
-"headwear_cap"
-){
-
-headwearHtml = `
-
-<rect x="8" y="4" width="16" height="6" fill="${hatColor}"/>
-<rect x="7" y="9" width="18" height="3" fill="${hatColor}"/>
-<rect x="20" y="11" width="8" height="2" fill="${hatColor}"/>
-
-`;
-
-}
-
-
-if(
-hat ===
-"headwear_beanie"
-){
-
-headwearHtml = `
-
-<rect x="8" y="3" width="16" height="7" fill="${hatColor}"/>
-<rect x="6" y="9" width="20" height="4" fill="${hatColor}"/>
-<rect x="15" y="1" width="3" height="3" fill="${hatColor}"/>
-
-`;
-
-}
-
-
-if(
-hat ===
-"headwear_flower_crown"
-){
-
-headwearHtml = `
-
-<rect x="8" y="8" width="16" height="2" fill="#5E8B4A"/>
-
-<rect x="9" y="6" width="3" height="3" fill="#F1C4D3"/>
-<rect x="14" y="5" width="3" height="3" fill="#FFF0A5"/>
-<rect x="19" y="6" width="3" height="3" fill="#D7C6FF"/>
-
-`;
-
-}
-
-
-if(
-hat ===
-"headwear_wizard"
-){
-
-headwearHtml = `
-
-<rect x="14" y="0" width="5" height="2" fill="${hatColor}"/>
-<rect x="12" y="2" width="8" height="3" fill="${hatColor}"/>
-<rect x="10" y="5" width="12" height="4" fill="${hatColor}"/>
-<rect x="5" y="10" width="22" height="3" fill="${hatColor}"/>
-
-<rect x="13" y="6" width="2" height="2" fill="#EEDC72"/>
-
-`;
-
-}
-
-
-if(
-hat ===
-"headwear_crown"
-){
-
-headwearHtml = `
-
-<rect x="10" y="5" width="12" height="6" fill="#E6B62E"/>
-
-<rect x="10" y="2" width="3" height="5" fill="#E6B62E"/>
-<rect x="15" y="1" width="3" height="6" fill="#F2CB43"/>
-<rect x="20" y="2" width="3" height="5" fill="#E6B62E"/>
-
-<rect x="12" y="7" width="2" height="2" fill="#D84E4E"/>
-<rect x="16" y="7" width="2" height="2" fill="#4E78D8"/>
-<rect x="20" y="7" width="2" height="2" fill="#5AB866"/>
-
-`;
-
-}
-
-/*
-베이스 털복숭이
-이 부분은 이후에도 수정하지 않음.
-*/
+/* ==========================================================
+   최종 조립
+========================================================== */
 
 return `
 
 <svg
 viewBox="0 0 32 32"
 xmlns="http://www.w3.org/2000/svg"
+shape-rendering="crispEdges"
 >
 
-${earHtml}
+${tailHtml}
 
-<rect x="9" y="7" width="14" height="2" fill="${fur}"/>
+${bodyHtml}
 
-<rect x="6" y="9" width="20" height="3" fill="${fur}"/>
+${furHtml}
 
-<rect x="4" y="12" width="24" height="10" fill="${fur}"/>
+${clothesHtml}
 
-<rect x="6" y="22" width="20" height="4" fill="${fur}"/>
+${earsHtml}
 
-<rect x="9" y="26" width="14" height="2" fill="${fur}"/>
-
-<rect x="3" y="15" width="2" height="5" fill="${fur}"/>
-
-<rect x="27" y="15" width="2" height="5" fill="${fur}"/>
-
-<rect x="8" y="10" width="2" height="2" fill="rgba(255,255,255,.13)"/>
-
-<rect x="22" y="12" width="2" height="2" fill="rgba(0,0,0,.08)"/>
-
-${furPatternHtml}
-
-${eyeHtml}
-
-${noseHtml}
-
-<rect x="12" y="28" width="3" height="2" fill="${fur}"/>
-
-<rect x="17" y="28" width="3" height="2" fill="${fur}"/>
+${faceHtml}
 
 ${headwearHtml}
 
@@ -5561,6 +5535,10 @@ ${headwearHtml}
 
 }
 
+
+/* ==========================================================
+   플레이어 아바타
+========================================================== */
 
 function playerAvatar(
 player,
@@ -5572,28 +5550,7 @@ return `
 <div class="pixelAvatar${large ? " pixelAvatarLarge" : ""}">
 
 ${avatarSvg(
-
-player?.avatar_color ??
-"#C89B61",
-
-player?.avatar_ears ??
-"ears_none",
-
-player?.avatar_eyes ??
-"eyes_dot",
-
-player?.avatar_nose ??
-"nose_none",
-
-player?.avatar_headwear ??
-"headwear_none",
-
-player?.avatar_headwear_color ??
-"#6B4EFF",
-
-player?.avatar_fur_pattern ??
-"fur_none"
-
+player ?? {}
 )}
 
 </div>
@@ -5601,7 +5558,6 @@ player?.avatar_fur_pattern ??
 `;
 
 }
-
 /* ==========================================================
    아바타 이름
 ========================================================== */
