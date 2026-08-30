@@ -3448,6 +3448,15 @@ class="avatarSlotItems"
 
 </div>
 
+<div class="sectionLine"></div>
+
+<h3>보유 아이템</h3>
+
+<div
+id="avatarOwnedItems"
+>
+</div>
+
 
 <button
 class="primary"
@@ -5660,7 +5669,7 @@ data,
 error
 } =
 await db.rpc(
-"get_my_avatar_v2"
+"get_my_avatar_v3"
 );
 
 
@@ -5715,6 +5724,8 @@ return;
 
 
 renderAvatar();
+
+renderAvatarOwnedItems();
 
 
 byId(
@@ -5856,6 +5867,147 @@ myAvatar.avatar_tail ??
 "tail_none"
 );
 
+
+renderAvatarOwnedItems();
+
+}
+
+/* ==========================================================
+   보유 아바타 아이템
+========================================================== */
+
+async function renderAvatarOwnedItems(){
+
+const box =
+byId(
+"avatarOwnedItems"
+);
+
+
+if(!box){
+
+return;
+
+}
+
+
+box.innerHTML =
+'<div class="emptyText">보유 아이템 불러오는 중...</div>';
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"get_my_avatar_owned_items"
+);
+
+
+if(error){
+
+box.innerHTML =
+`<div class="emptyText">${escapeHtml(error.message)}</div>`;
+
+return;
+
+}
+
+
+const items =
+data ??
+[];
+
+
+if(items.length === 0){
+
+box.innerHTML =
+'<div class="emptyText">보유한 아바타 아이템이 없습니다.</div>';
+
+return;
+
+}
+
+
+box.innerHTML =
+"";
+
+
+items.forEach(
+item => {
+
+const div =
+document.createElement(
+"div"
+);
+
+
+div.className =
+"avatarOwnedItem";
+
+
+div.innerHTML = `
+
+<div class="avatarOwnedItemName">
+${escapeHtml(item.name)}
+</div>
+
+<div class="avatarOwnedItemCategory">
+${escapeHtml(item.category_name ?? item.category ?? "")}
+</div>
+
+`;
+
+
+const button =
+document.createElement(
+"button"
+);
+
+
+button.className =
+item.equipped
+?
+"secondary"
+:
+"primary";
+
+
+button.textContent =
+item.equipped
+?
+"장착 중"
+:
+"장착";
+
+
+button.disabled =
+Boolean(
+item.equipped
+);
+
+
+button.onclick =
+async () => {
+
+await equipOwnedAvatarItem(
+item.item_key
+);
+
+};
+
+
+div.appendChild(
+button
+);
+
+
+box.appendChild(
+div
+);
+
+});
+
 }
 
 /* ==========================================================
@@ -5891,6 +6043,153 @@ previewAvatar
 
 }
 
+
+/* ==========================================================
+   아바타 보유 아이템 슬롯 렌더
+========================================================== */
+
+function renderAvatarOwnedItems(){
+
+if(!myAvatar){
+
+return;
+
+}
+
+
+const slotConfigs = [
+
+{
+containerId:"avatarHeadwearItems",
+category:"headwear",
+currentKey:myAvatar.avatar_headwear
+},
+
+{
+containerId:"avatarFaceItems",
+category:"face",
+currentKey:myAvatar.avatar_face
+},
+
+{
+containerId:"avatarEarItems",
+category:"ears",
+currentKey:myAvatar.avatar_ears
+},
+
+{
+containerId:"avatarClothesItems",
+category:"clothes",
+currentKey:myAvatar.avatar_clothes
+},
+
+{
+containerId:"avatarFurItems",
+category:"fur",
+currentKey:myAvatar.avatar_fur
+},
+
+{
+containerId:"avatarBodyItems",
+category:"body",
+currentKey:myAvatar.avatar_body
+},
+
+{
+containerId:"avatarTailItems",
+category:"tail",
+currentKey:myAvatar.avatar_tail
+}
+
+];
+
+
+slotConfigs.forEach(
+config => {
+
+const box =
+byId(
+config.containerId
+);
+
+
+if(!box){
+
+return;
+
+}
+
+
+box.innerHTML =
+"";
+
+
+const owned =
+shopItems.filter(
+item =>
+item.category ===
+config.category &&
+item.owned
+);
+
+
+if(owned.length === 0){
+
+box.innerHTML =
+'<div class="fieldHelp" style="margin:6px 0 0">보유 아이템 없음</div>';
+
+return;
+
+}
+
+
+owned.forEach(
+item => {
+
+const button =
+document.createElement(
+"button"
+);
+
+
+button.textContent =
+item.item_key === config.currentKey
+?
+`${item.name} · 착용 중`
+:
+item.name;
+
+
+if(
+item.item_key ===
+config.currentKey
+){
+
+button.classList.add(
+"selected"
+);
+
+}
+
+
+button.onclick =
+() => equipAvatarItem(
+item.item_key
+);
+
+
+box.appendChild(
+button
+);
+
+}
+);
+
+}
+);
+
+}
+  
 /* ==========================================================
    아바타 색상
 ========================================================== */
@@ -5955,7 +6254,7 @@ const {
 error
 } =
 await db.rpc(
-"change_avatar_color_v2",
+"change_avatar_color_v3",
 {
 
 p_color:
@@ -6007,7 +6306,7 @@ const {
 error
 } =
 await db.rpc(
-"reset_avatar_part_v2",
+"reset_avatar_part_v3",
 {
 
 p_category:
@@ -6038,9 +6337,66 @@ renderAvatar();
 
 }
 
-
 /* ==========================================================
-   상점
+   보유 아바타 아이템 장착
+========================================================== */
+
+async function equipOwnedAvatarItem(
+itemKey
+){
+
+if(!itemKey){
+
+return;
+
+}
+
+
+const {
+error
+} =
+await db.rpc(
+"equip_avatar_item_v2",
+{
+
+p_item_key:
+itemKey
+
+}
+);
+
+
+if(error){
+
+byId(
+"avatarMessage"
+)
+.textContent =
+error.message;
+
+return;
+
+}
+
+
+await refreshProfile();
+
+await loadMyAvatar();
+
+renderAvatar();
+
+
+byId(
+"avatarMessage"
+)
+.textContent =
+`${avatarItemName(itemKey)}을(를) 장착했습니다.`;
+
+}
+  
+/* ==========================================================
+   상점 V3
+   판매 단위 = 테마
 ========================================================== */
 
 async function showShop(){
@@ -6064,6 +6420,10 @@ await loadShop();
 }
 
 
+/* ==========================================================
+   테마 상점 불러오기
+========================================================== */
+
 async function loadShop(){
 
 const {
@@ -6071,7 +6431,7 @@ data,
 error
 } =
 await db.rpc(
-"get_avatar_shop_v2"
+"get_avatar_theme_shop_v3"
 );
 
 
@@ -6098,6 +6458,10 @@ renderShop();
 }
 
 
+/* ==========================================================
+   테마 상점 렌더
+========================================================== */
+
 function renderShop(){
 
 byId(
@@ -6119,242 +6483,137 @@ box.innerHTML =
 "";
 
 
-const categories = [
+if(
+shopItems.length === 0
+){
 
-{
-key:"ears",
-name:"귀"
-},
-
-{
-key:"eyes",
-name:"눈"
-},
-
-{
-key:"nose",
-name:"코"
-},
-
-{
-key:"headwear",
-name:"머리장식"
-},
-
-{
-key:"fur_pattern",
-name:"특수 털"
-}
-
-];
-
-categories.forEach(
-category => {
-
-const items =
-shopItems.filter(
-x =>
-x.category ===
-category.key
-);
-
-
-if(items.length === 0){
+box.innerHTML =
+'<div class="emptyText">현재 판매 중인 테마가 없습니다.</div>';
 
 return;
 
 }
 
 
-box.insertAdjacentHTML(
-"beforeend",
+shopItems.forEach(
+theme => {
 
-`<div class="shopCategory">${category.name}</div>`
-
+const owned =
+Boolean(
+theme.is_owned
 );
 
 
-items.forEach(
-item => {
-
-const preview = {
-
-avatar_color:
-currentProfile.avatar_color,
-
-avatar_ears:
-currentProfile.avatar_ears,
-
-avatar_eyes:
-currentProfile.avatar_eyes,
-
-avatar_nose:
-currentProfile.avatar_nose,
-
-avatar_headwear:
-currentProfile.avatar_headwear ??
-"headwear_none",
-
-avatar_headwear_color:
-currentProfile.avatar_headwear_color ??
-"#6B4EFF",
-
-avatar_fur_pattern:
-currentProfile.avatar_fur_pattern ??
-"fur_none"
-
-};
+const div =
+document.createElement(
+"div"
+);
 
 
-if(
-item.category ===
-"ears"
-){
-
-preview.avatar_ears =
-item.item_key;
-
-}
+div.className =
+"shopItem";
 
 
-if(
-item.category ===
-"eyes"
-){
-
-preview.avatar_eyes =
-item.item_key;
-
-}
+div.style.display =
+"block";
 
 
-if(
-item.category ===
-"nose"
-){
-
-preview.avatar_nose =
-item.item_key;
-
-}
-
-if(
-item.category ===
-"headwear"
-){
-
-preview.avatar_headwear =
-item.item_key;
-
-}
-
-
-if(
-item.category ===
-"fur_pattern"
-){
-
-preview.avatar_fur_pattern =
-item.item_key;
-
-}
-
-let action = "";
-
-
-if(item.equipped){
-
-action =
-'<span class="equippedTag">장착 중</span>';
-
-}else if(item.owned){
-
-action = `
-
-<button
-class="secondary shopAction"
-onclick="equipAvatarItem('${item.item_key}')"
->
-장착
-</button>
-
-`;
-
-}else{
-
-action = `
-
-<button
-class="primary shopAction"
-onclick="buyAvatarItem('${item.item_key}')"
->
-구매
-</button>
-
-`;
-
-}
-
-
-box.insertAdjacentHTML(
-"beforeend",
-
-`
-
-<div class="shopItem">
-
-<div class="shopPreview">
-
-${playerAvatar(preview)}
-
-</div>
+div.innerHTML = `
 
 <div class="shopInfo">
 
 <div class="shopName">
-${escapeHtml(item.name)}
+${escapeHtml(theme.theme_name)}
 </div>
 
 <div class="shopDescription">
-${escapeHtml(item.description)}
+${escapeHtml(theme.description)}
 </div>
 
 <div class="shopPrice">
-${formatPer(item.price_per)}
+${formatPer(theme.price_per)}
+</div>
+
+<div class="fieldHelp" style="margin:6px 0 0">
+포함 아이템 ${formatNumber(theme.item_count)}개
 </div>
 
 </div>
 
-${action}
+<div
+style="
+display:grid;
+grid-template-columns:${owned ? "1fr 1fr" : "1fr"};
+gap:6px;
+margin-top:10px;
+"
+>
 
-</div>
-
+${
+owned
+?
 `
 
+<button
+class="secondary"
+onclick="showThemeItems('${escapeHtml(theme.theme_key)}')"
+>
+구성품 보기
+</button>
+
+<button
+class="primary"
+onclick="equipAvatarTheme('${escapeHtml(theme.theme_key)}')"
+>
+전체 착용
+</button>
+
+`
+:
+`
+
+<button
+class="primary"
+onclick="buyAvatarTheme('${escapeHtml(theme.theme_key)}')"
+>
+테마 구매 · ${formatPer(theme.price_per)}
+</button>
+
+`
+}
+
+</div>
+
+`;
+
+
+box.appendChild(
+div
 );
 
 }
 );
 
 }
-);
-
-}
 
 
-async function buyAvatarItem(
-itemKey
+/* ==========================================================
+   테마 구매
+========================================================== */
+
+async function buyAvatarTheme(
+themeKey
 ){
 
-const item =
+const theme =
 shopItems.find(
 x =>
-x.item_key ===
-itemKey
+x.theme_key ===
+themeKey
 );
 
 
-if(!item){
+if(!theme){
 
 return;
 
@@ -6363,7 +6622,9 @@ return;
 
 if(
 !confirm(
-`${item.name}을(를) ${formatPer(item.price_per)}에 구매하시겠습니까?`
+`${theme.theme_name} 테마를 ${formatPer(theme.price_per)}에 구매하시겠습니까?
+
+구매하면 테마에 포함된 모든 파츠를 소유하게 됩니다.`
 )
 ){
 
@@ -6376,11 +6637,11 @@ const {
 error
 } =
 await db.rpc(
-"purchase_avatar_item_v2",
+"purchase_avatar_theme_v3",
 {
 
-p_item_key:
-itemKey
+p_theme_key:
+themeKey
 
 }
 );
@@ -6408,24 +6669,36 @@ byId(
 "shopMessage"
 )
 .textContent =
-`${item.name} 구매 완료`;
+`${theme.theme_name} 테마를 구매했습니다.`;
 
 }
 
 
-async function equipAvatarItem(
-itemKey
+/* ==========================================================
+   테마 전체 착용
+========================================================== */
+
+async function equipAvatarTheme(
+themeKey
 ){
+
+const theme =
+shopItems.find(
+x =>
+x.theme_key ===
+themeKey
+);
+
 
 const {
 error
 } =
 await db.rpc(
-"equip_avatar_item_v2",
+"equip_avatar_theme_v3",
 {
 
-p_item_key:
-itemKey
+p_theme_key:
+themeKey
 
 }
 );
@@ -6446,11 +6719,248 @@ return;
 
 await refreshProfile();
 
-await loadShop();
+await loadMyAvatar();
+
+
+byId(
+"shopMessage"
+)
+.textContent =
+theme
+?
+`${theme.theme_name} 테마의 기본 구성을 착용했습니다.`
+:
+"테마를 착용했습니다.";
 
 }
 
 
+/* ==========================================================
+   테마 구성품 보기
+========================================================== */
+
+async function showThemeItems(
+themeKey
+){
+
+const theme =
+shopItems.find(
+x =>
+x.theme_key ===
+themeKey
+);
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"get_avatar_theme_items_v3",
+{
+
+p_theme_key:
+themeKey
+
+}
+);
+
+
+if(error){
+
+showModal(
+"테마 구성품 오류",
+error.message
+);
+
+return;
+
+}
+
+
+const items =
+data ??
+[];
+
+
+if(
+items.length === 0
+){
+
+showModal(
+theme?.theme_name ?? "테마",
+"이 테마에는 표시할 아이템이 없습니다."
+);
+
+return;
+
+}
+
+
+const categoryNames = {
+
+headwear:
+"머리장식",
+
+face:
+"얼굴표정",
+
+ears:
+"귀",
+
+clothes:
+"옷",
+
+fur:
+"털",
+
+body:
+"몸체",
+
+tail:
+"꼬리"
+
+};
+
+
+const html =
+items
+.map(
+item => {
+
+const mainText =
+item.is_theme_main
+?
+" · 전체착용 기본"
+:
+"";
+
+
+const equippedText =
+item.equipped
+?
+" · 장착 중"
+:
+"";
+
+
+return `
+
+<div class="drawerSection">
+
+<b>
+${escapeHtml(item.name)}
+</b>
+
+${escapeHtml(
+categoryNames[item.category] ??
+item.category
+)}
+${mainText}
+${equippedText}
+
+<br><br>
+
+${escapeHtml(item.description)}
+
+${
+item.owned
+?
+`
+
+<button
+class="secondary"
+onclick="equipAvatarItemV3('${escapeHtml(item.item_key)}','${escapeHtml(themeKey)}')"
+>
+이 파츠 장착
+</button>
+
+`
+:
+`
+<div class="fieldHelp" style="margin-top:8px">
+미보유
+</div>
+`
+}
+
+</div>
+
+`;
+
+}
+)
+.join("");
+
+
+openDrawer(
+theme?.theme_name ??
+"테마 구성품",
+
+html
+
+);
+
+}
+
+
+/* ==========================================================
+   개별 파츠 장착
+========================================================== */
+
+async function equipAvatarItemV3(
+itemKey,
+themeKey
+){
+
+const {
+error
+} =
+await db.rpc(
+"equip_avatar_item_v3",
+{
+
+p_item_key:
+itemKey
+
+}
+);
+
+
+if(error){
+
+showModal(
+"장착 오류",
+error.message
+);
+
+return;
+
+}
+
+
+await refreshProfile();
+
+await loadMyAvatar();
+
+
+byId(
+"shopMessage"
+)
+.textContent =
+"파츠를 장착했습니다.";
+
+
+/*
+드로어를 다시 읽어서
+'장착 중' 표시도 즉시 갱신
+*/
+
+await showThemeItems(
+themeKey
+);
+
+}
 /* ==========================================================
    대기실 좌석
 ========================================================== */
