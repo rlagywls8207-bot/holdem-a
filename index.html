@@ -5568,76 +5568,75 @@ key
 
 const names = {
 
-
-  
-ears_none:
-"귀 없음",
-
-ears_round:
-"동그란 귀",
-
-ears_pointy:
-"뾰족 귀",
-
-ears_long:
-"긴 귀",
-
-eyes_dot:
-"기본 점눈",
-
-eyes_round:
-"동그란 눈",
-
-eyes_sparkle:
-"초롱초롱 눈",
-
-eyes_bored:
-"지루한 눈",
-
-eyes_angry:
-"화난 눈",
-
-nose_none:
-"코 없음",
-
-nose_beak:
-"부리",
+/* =========================
+   머리장식
+========================= */
 
 headwear_none:
 "장식 없음",
 
-headwear_ribbon:
-"리본",
 
-headwear_cap:
-"캡모자",
+/* =========================
+   얼굴표정
+========================= */
 
-headwear_beanie:
-"비니",
+face_default:
+"기본 표정",
 
-headwear_flower_crown:
-"화관",
+face_fox:
+"여우눈",
 
-headwear_wizard:
-"마법사 모자",
 
-headwear_crown:
-"왕관",
+/* =========================
+   귀
+========================= */
 
-fur_none:
+ears_default:
+"기본 귀",
+
+ears_fox_patched:
+"얼룩 여우귀",
+
+ears_fox_plain:
+"여우귀",
+
+
+/* =========================
+   옷
+========================= */
+
+clothes_rags:
+"누더기 옷",
+
+
+/* =========================
+   털
+========================= */
+
+fur_default:
 "기본 털",
 
-fur_patches:
-"얼룩 털",
+fur_fox:
+"여우 털무늬",
 
-fur_tiger:
-"호랑이 털",
 
-fur_gradient:
-"그라데이션 털",
+/* =========================
+   몸체
+========================= */
 
-fur_galaxy:
-"별빛 털",
+body_default:
+"기본 몸체",
+
+
+/* =========================
+   꼬리
+========================= */
+
+tail_none:
+"꼬리 없음",
+
+tail_fox:
+"여우 꼬리"
 
 };
 
@@ -5649,7 +5648,6 @@ key
 "-";
 
 }
-
 
 /* ==========================================================
    내 아바타
@@ -5744,12 +5742,6 @@ myAvatar.avatar_color
 );
 
 
-const headwearColor =
-normalizeColor(
-myAvatar.avatar_headwear_color
-);
-
-
 byId(
 "avatarNickname"
 )
@@ -5762,23 +5754,20 @@ byId(
 )
 .innerHTML =
 avatarSvg(
+{
 
-color,
+...myAvatar,
 
-myAvatar.avatar_ears,
+avatar_color:
+color
 
-myAvatar.avatar_eyes,
-
-myAvatar.avatar_nose,
-
-myAvatar.avatar_headwear,
-
-headwearColor,
-
-myAvatar.avatar_fur_pattern
-
+}
 );
 
+
+/* ==========================================================
+   털 색
+========================================================== */
 
 byId(
 "avatarColorPicker"
@@ -5794,67 +5783,86 @@ byId(
 color;
 
 
-byId(
-"avatarEarName"
-)
-.textContent =
-avatarItemName(
-myAvatar.avatar_ears
-);
-
-
-byId(
-"avatarEyeName"
-)
-.textContent =
-avatarItemName(
-myAvatar.avatar_eyes
-);
-
-
-byId(
-"avatarNoseName"
-)
-.textContent =
-avatarItemName(
-myAvatar.avatar_nose
-);
-
+/* ==========================================================
+   장착 파츠 이름
+========================================================== */
 
 byId(
 "avatarHeadwearName"
 )
 .textContent =
 avatarItemName(
-myAvatar.avatar_headwear
+myAvatar.avatar_headwear ??
+"headwear_none"
 );
 
 
 byId(
-"avatarFurPatternName"
+"avatarFaceName"
 )
 .textContent =
 avatarItemName(
-myAvatar.avatar_fur_pattern
+myAvatar.avatar_face ??
+"face_default"
 );
 
 
 byId(
-"headwearColorPicker"
+"avatarEarName"
 )
-.value =
-headwearColor;
+.textContent =
+avatarItemName(
+myAvatar.avatar_ears ??
+"ears_default"
+);
 
 
 byId(
-"headwearColorCode"
+"avatarClothesName"
 )
 .textContent =
-headwearColor;
+avatarItemName(
+myAvatar.avatar_clothes ??
+"clothes_rags"
+);
+
+
+byId(
+"avatarFurName"
+)
+.textContent =
+avatarItemName(
+myAvatar.avatar_fur ??
+"fur_default"
+);
+
+
+byId(
+"avatarBodyName"
+)
+.textContent =
+avatarItemName(
+myAvatar.avatar_body ??
+"body_default"
+);
+
+
+byId(
+"avatarTailName"
+)
+.textContent =
+avatarItemName(
+myAvatar.avatar_tail ??
+"tail_none"
+);
 
 }
 
-function previewHeadwearColor(){
+/* ==========================================================
+   아바타 색상
+========================================================== */
+
+function previewAvatarColor(){
 
 if(!myAvatar){
 
@@ -5866,44 +5874,40 @@ return;
 const color =
 normalizeColor(
 byId(
-"headwearColorPicker"
+"avatarColorPicker"
 )
 .value
 );
 
 
 byId(
-"headwearColorCode"
+"avatarColorCode"
 )
 .textContent =
 color;
 
 
-byId(
-"avatarLarge"
-)
-.innerHTML =
-avatarSvg(
+/*
+현재 장착 상태는 그대로 두고
+털 색만 미리 변경한다.
+*/
 
-myAvatar.avatar_color,
-
-myAvatar.avatar_ears,
-
-myAvatar.avatar_eyes,
-
-myAvatar.avatar_nose,
-
-myAvatar.avatar_headwear,
-
-color,
-
-myAvatar.avatar_fur_pattern
-
-);
+renderAvatarPreview({
+avatar_color:
+color
+});
 
 }
 
+
 async function saveAvatarColor(){
+
+if(!myAvatar){
+
+return;
+
+}
+
 
 const color =
 normalizeColor(
@@ -5957,120 +5961,7 @@ byId(
 "털 색을 변경했습니다.";
 
 }
-
-/* ==========================================================
-   머리장식 색
-========================================================== */
-
-function previewAvatarColor(){
-
-if(!myAvatar){
-
-return;
-
-}
-
-
-const color =
-normalizeColor(
-byId(
-"avatarColorPicker"
-)
-.value
-);
-
-
-byId(
-"avatarColorCode"
-)
-.textContent =
-color;
-
-
-byId(
-"avatarLarge"
-)
-.innerHTML =
-avatarSvg(
-
-color,
-
-myAvatar.avatar_ears,
-
-myAvatar.avatar_eyes,
-
-myAvatar.avatar_nose,
-
-myAvatar.avatar_headwear,
-
-myAvatar.avatar_headwear_color,
-
-myAvatar.avatar_fur_pattern
-
-);
-
-}
-
-
-async function saveHeadwearColor(){
-
-if(!myAvatar){
-
-return;
-
-}
-
-
-const color =
-normalizeColor(
-byId(
-"headwearColorPicker"
-)
-.value
-);
-
-
-const {
-error
-} =
-await db.rpc(
-"change_avatar_headwear_color_v2",
-{
-
-p_color:
-color
-
-}
-);
-
-
-if(error){
-
-byId(
-"avatarMessage"
-)
-.textContent =
-error.message;
-
-return;
-
-}
-
-
-await refreshProfile();
-
-await loadMyAvatar();
-
-renderAvatar();
-
-
-byId(
-"avatarMessage"
-)
-.textContent =
-"머리장식 색을 변경했습니다.";
-
-}
+  
 /* ==========================================================
    기본 파츠
 ========================================================== */
