@@ -7696,6 +7696,7 @@ currentHand.hand_number
 const newStreet =
 currentHand.street;
 
+
 const isNewHand =
 previousHandNumber === null ||
 previousHandNumber !==
@@ -7707,15 +7708,6 @@ const isStreetChanged =
 previousStreet !==
 newStreet;
 
-
-/*
-중요:
-비동기 작업에 들어가기 전에
-이번 상태를 먼저 점유한다.
-
-그래야 동시에 실행된 다른 refreshGame()이
-같은 스트리트 변경을 다시 알리지 않는다.
-*/
 
 if(isNewHand){
 
@@ -7739,19 +7731,7 @@ communityResult,
 holeResult
 ] =
 await Promise.all([
-
-const isNewHand =
-previousHandNumber === null ||
-previousHandNumber !==
-newHandNumber;
-
-
-const isStreetChanged =
-!isNewHand &&
-previousStreet !==
-newStreet;
-
-
+  
 /*
 중요:
 아래의 await 작업으로 넘어가기 전에
