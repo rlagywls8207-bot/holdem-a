@@ -3457,6 +3457,14 @@ id="avatarOwnedItems"
 >
 </div>
 
+<div class="sectionLine"></div>
+
+<h3>내 파츠</h3>
+
+<div
+id="avatarInventory"
+>
+</div>
 
 <button
 class="primary"
@@ -5749,7 +5757,7 @@ return;
 
 const color =
 normalizeColor(
-myAvatar.avatar_color
+myAvatar.fur_color
 );
 
 
@@ -5803,7 +5811,7 @@ byId(
 )
 .textContent =
 avatarItemName(
-myAvatar.avatar_headwear ??
+myAvatar.headwear_item_key ??
 "headwear_none"
 );
 
@@ -5813,7 +5821,7 @@ byId(
 )
 .textContent =
 avatarItemName(
-myAvatar.avatar_face ??
+myAvatar.face_item_key ??
 "face_default"
 );
 
@@ -5823,7 +5831,7 @@ byId(
 )
 .textContent =
 avatarItemName(
-myAvatar.avatar_ears ??
+myAvatar.ears_item_key ??
 "ears_default"
 );
 
@@ -5833,7 +5841,7 @@ byId(
 )
 .textContent =
 avatarItemName(
-myAvatar.avatar_clothes ??
+myAvatar.clothes_item_key ??
 "clothes_rags"
 );
 
@@ -5843,7 +5851,7 @@ byId(
 )
 .textContent =
 avatarItemName(
-myAvatar.avatar_fur ??
+myAvatar.fur_item_key ??
 "fur_default"
 );
 
@@ -5853,7 +5861,7 @@ byId(
 )
 .textContent =
 avatarItemName(
-myAvatar.avatar_body ??
+myAvatar.body_item_key ??
 "body_default"
 );
 
@@ -5863,15 +5871,300 @@ byId(
 )
 .textContent =
 avatarItemName(
-myAvatar.avatar_tail ??
+myAvatar.tail_item_key ??
 "tail_none"
 );
-
+loadAvatarInventory();
 
 renderAvatarOwnedItems();
 
 }
 
+/* ==========================================================
+   내 아바타 인벤토리 V3
+========================================================== */
+
+async function loadAvatarInventory(){
+
+const box =
+byId(
+"avatarInventory"
+);
+
+
+if(!box){
+
+return;
+
+}
+
+
+box.innerHTML =
+'<div class="emptyText">불러오는 중...</div>';
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"get_my_avatar_inventory_v3"
+);
+
+
+if(error){
+
+box.innerHTML =
+`<div class="emptyText">${escapeHtml(error.message)}</div>`;
+
+return;
+
+}
+
+
+renderAvatarInventory(
+data ?? []
+);
+
+}
+
+
+/* ==========================================================
+   내 파츠 렌더
+========================================================== */
+
+function renderAvatarInventory(
+items
+){
+
+const box =
+byId(
+"avatarInventory"
+);
+
+
+if(!box){
+
+return;
+
+}
+
+
+if(
+items.length === 0
+){
+
+box.innerHTML =
+'<div class="emptyText">보유한 파츠가 없습니다.</div>';
+
+return;
+
+}
+
+
+const categoryNames = {
+
+headwear:
+"머리장식",
+
+face:
+"얼굴표정",
+
+ears:
+"귀",
+
+clothes:
+"옷",
+
+fur:
+"털",
+
+body:
+"몸체",
+
+tail:
+"꼬리"
+
+};
+
+
+const categoryOrder = [
+
+"headwear",
+"face",
+"ears",
+"clothes",
+"fur",
+"body",
+"tail"
+
+];
+
+
+let html =
+"";
+
+
+categoryOrder.forEach(
+category => {
+
+const categoryItems =
+items.filter(
+item =>
+item.category ===
+category
+);
+
+
+if(
+categoryItems.length === 0
+){
+
+return;
+
+}
+
+
+html += `
+
+<div class="shopCategory">
+
+${escapeHtml(
+categoryNames[category]
+)}
+
+</div>
+
+`;
+
+
+categoryItems.forEach(
+item => {
+
+html += `
+
+<div class="shopItem">
+
+<div class="shopInfo">
+
+<div class="shopName">
+
+${escapeHtml(item.name)}
+
+</div>
+
+<div class="shopDescription">
+
+${escapeHtml(item.description)}
+
+</div>
+
+<div class="shopPrice">
+
+${item.theme_key
+?
+`테마 · ${escapeHtml(item.theme_key)}`
+:
+"기본 아이템"
+}
+
+</div>
+
+</div>
+
+
+${
+item.equipped
+?
+`
+
+<span class="equippedTag">
+
+장착 중
+
+</span>
+
+`
+:
+`
+
+<button
+class="secondary shopAction"
+onclick="equipAvatarInventoryItem('${escapeHtml(item.item_key)}')"
+>
+
+장착
+
+</button>
+
+`
+}
+
+</div>
+
+`;
+
+}
+);
+
+}
+);
+
+
+box.innerHTML =
+html;
+
+}
+
+
+/* ==========================================================
+   내 파츠에서 장착
+========================================================== */
+
+async function equipAvatarInventoryItem(
+itemKey
+){
+
+const {
+error
+} =
+await db.rpc(
+"equip_avatar_item_v3",
+{
+
+p_item_key:
+itemKey
+
+}
+);
+
+
+if(error){
+
+byId(
+"avatarMessage"
+)
+.textContent =
+error.message;
+
+return;
+
+}
+
+
+await loadMyAvatar();
+
+renderAvatar();
+
+
+byId(
+"avatarMessage"
+)
+.textContent =
+"파츠를 장착했습니다.";
+
+}
+  
 /* ==========================================================
    보유 아바타 아이템
 ========================================================== */
@@ -6062,43 +6355,43 @@ const slotConfigs = [
 {
 containerId:"avatarHeadwearItems",
 category:"headwear",
-currentKey:myAvatar.avatar_headwear
+currentKey:myAvatar.headwear_item_key
 },
 
 {
 containerId:"avatarFaceItems",
 category:"face",
-currentKey:myAvatar.avatar_face
+currentKey:myAvatar.face_item_key
 },
 
 {
 containerId:"avatarEarItems",
 category:"ears",
-currentKey:myAvatar.avatar_ears
+currentKey:myAvatar.ears_item_key
 },
 
 {
 containerId:"avatarClothesItems",
 category:"clothes",
-currentKey:myAvatar.avatar_clothes
+currentKey:myAvatar.clothes_item_key
 },
 
 {
 containerId:"avatarFurItems",
 category:"fur",
-currentKey:myAvatar.avatar_fur
+currentKey:myAvatar.fur_item_key
 },
 
 {
 containerId:"avatarBodyItems",
 category:"body",
-currentKey:myAvatar.avatar_body
+currentKey:myAvatar.body_item_key
 },
 
 {
 containerId:"avatarTailItems",
 category:"tail",
-currentKey:myAvatar.avatar_tail
+currentKey:myAvatar.tail_item_key
 }
 
 ];
