@@ -7740,6 +7740,50 @@ holeResult
 ] =
 await Promise.all([
 
+const isNewHand =
+previousHandNumber === null ||
+previousHandNumber !==
+newHandNumber;
+
+
+const isStreetChanged =
+!isNewHand &&
+previousStreet !==
+newStreet;
+
+
+/*
+중요:
+아래의 await 작업으로 넘어가기 전에
+현재 판/스트리트를 먼저 기록한다.
+
+refreshGame()이 동시에 두 번 실행되어도
+두 번째 실행은 이미 갱신된 값을 보게 된다.
+*/
+
+if(isNewHand){
+
+observedHandNumber =
+newHandNumber;
+
+observedStreet =
+newStreet;
+
+}else if(isStreetChanged){
+
+observedStreet =
+newStreet;
+
+}
+
+
+const [
+playerResult,
+communityResult,
+holeResult
+] =
+await Promise.all([
+
 db.rpc(
 "get_classic_table_players",
 {
