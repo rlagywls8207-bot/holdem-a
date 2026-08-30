@@ -7876,6 +7876,3005 @@ newStreet;
    판 종료
 ========================================================== */
 
+if(
+currentHand.street ===
+"finished"
+){
+
+await renderFinished();
+
+}
+
+}
+
+
+/* ==========================================================
+   스트리트
+========================================================== */
+
+function streetName(
+street
+){
+
+const names = {
+
+preflop:
+"프리플랍",
+
+flop:
+"플랍",
+
+turn:
+"턴",
+
+river:
+"리버",
+
+showdown:
+"쇼다운",
+
+finished:
+"종료"
+
+};
+
+
+return names[street]
+??
+street;
+
+}
+
+  /* ==========================================================
+   스트리트 순서
+========================================================== */
+
+const HOLDEM_STREET_ORDER = [
+
+"preflop",
+"flop",
+"turn",
+"river",
+"showdown"
+
+];
+
+
+/* ==========================================================
+   상단 진행표
+========================================================== */
+
+function renderStreetProgress(){
+
+if(!currentHand){
+
+return;
+
+}
+
+
+let street =
+currentHand.street;
+
+
+/*
+finished는 쇼다운까지 완료된 것으로 표시
+*/
+
+if(
+street ===
+"finished"
+){
+
+street =
+"showdown";
+
+}
+
+
+const currentIndex =
+HOLDEM_STREET_ORDER.indexOf(
+street
+);
+
+
+const steps = [
+
+{
+street:"preflop",
+id:"streetStepPreflop",
+arrow:null
+},
+
+{
+street:"flop",
+id:"streetStepFlop",
+arrow:"streetArrowFlop"
+},
+
+{
+street:"turn",
+id:"streetStepTurn",
+arrow:"streetArrowTurn"
+},
+
+{
+street:"river",
+id:"streetStepRiver",
+arrow:"streetArrowRiver"
+},
+
+{
+street:"showdown",
+id:"streetStepShowdown",
+arrow:"streetArrowShowdown"
+}
+
+];
+
+
+steps.forEach(
+(
+item,
+index
+) => {
+
+const element =
+byId(
+item.id
+);
+
+
+element.classList.remove(
+"done",
+"current"
+);
+
+
+if(index < currentIndex){
+
+element.classList.add(
+"done"
+);
+
+}
+
+
+if(index === currentIndex){
+
+element.classList.add(
+"current"
+);
+
+}
+
+
+if(item.arrow){
+
+byId(
+item.arrow
+)
+.classList.toggle(
+"done",
+index <= currentIndex
+);
+
+}
+
+}
+);
+
+}
+
+
+/* ==========================================================
+   게임 안내 팝업 큐
+========================================================== */
+
+function showGameNotice(
+title,
+text,
+type = "street",
+duration = 2200
+){
+
+gameNoticeQueue.push({
+
+title,
+text,
+type,
+duration
+
+});
+
+
+runGameNoticeQueue();
+
+}
+
+
+async function runGameNoticeQueue(){
+
+if(gameNoticeRunning){
+
+return;
+
+}
+
+
+gameNoticeRunning =
+true;
+
+
+while(
+gameNoticeQueue.length > 0
+){
+
+const notice =
+gameNoticeQueue.shift();
+
+
+const box =
+byId(
+"gameNotice"
+);
+
+
+byId(
+"gameNoticeTitle"
+)
+.textContent =
+notice.title;
+
+
+byId(
+"gameNoticeText"
+)
+.textContent =
+notice.text;
+
+
+box.className =
+`gameNotice ${notice.type}`;
+
+
+await new Promise(
+resolve =>
+setTimeout(
+resolve,
+notice.duration
+)
+);
+
+
+box.classList.add(
+"hidden"
+);
+
+
+await new Promise(
+resolve =>
+setTimeout(
+resolve,
+180
+)
+);
+
+}
+
+
+gameNoticeRunning =
+false;
+
+}
+/* ==========================================================
+   내 D / SB / BB 역할 안내
+========================================================== */
+
+function announceMyHandRole(){
+
+if(
+!currentHand ||
+!currentUser
+){
+
+return;
+
+}
+
+
+const handNumber =
+Number(
+currentHand.hand_number
+);
+
+
+if(
+announcedRoleHandNumber ===
+handNumber
+){
+
+return;
+
+}
+
+
+const me =
+currentHandPlayers.find(
+player =>
+player.profile_id ===
+currentUser.id
+);
+
+
+if(!me){
+
+return;
+
+}
+
+
+announcedRoleHandNumber =
+handNumber;
+
+
+const roles =
+[];
+
+
+if(me.is_dealer){
+
+roles.push(
+"D"
+);
+
+}
+
+
+if(me.is_small_blind){
+
+roles.push(
+"SB"
+);
+
+}
+
+
+if(me.is_big_blind){
+
+roles.push(
+"BB"
+);
+
+}
+
+
+/*
+역할 없는 일반 플레이어는
+팝업을 띄우지 않음
+*/
+
+if(
+roles.length === 0
+){
+
+return;
+
+}
+
+
+/*
+2인 게임에서는 D와 SB가 동일할 수 있음
+*/
+
+if(
+me.is_dealer &&
+me.is_small_blind
+){
+
+showGameNotice(
+
+"이번 판은 D · SB입니다",
+
+`딜러 버튼과 스몰 블라인드입니다.
+
+SB ${formatChip(
+currentRoom.small_blind_chips
+)}이 자동으로 베팅되었습니다.
+
+이 강제 베팅과 별개로
+프리플랍에서 자신의 행동 차례가 옵니다.`,
+
+"role",
+3600
+
+);
+
+
+return;
+
+}
+
+
+if(me.is_big_blind){
+
+showGameNotice(
+
+"이번 판은 BB입니다",
+
+`빅 블라인드입니다.
+
+BB ${formatChip(
+currentRoom.big_blind_chips
+)}이 자동으로 베팅되었습니다.
+
+블라인드는 자동 베팅이며
+프리플랍 행동 차례가 오면 다시 행동합니다.`,
+
+"role",
+3600
+
+);
+
+
+return;
+
+}
+
+
+if(me.is_small_blind){
+
+showGameNotice(
+
+"이번 판은 SB입니다",
+
+`스몰 블라인드입니다.
+
+SB ${formatChip(
+currentRoom.small_blind_chips
+)}이 자동으로 베팅되었습니다.
+
+프리플랍 행동 차례를 기다려주세요.`,
+
+"role",
+3200
+
+);
+
+
+return;
+
+}
+
+
+if(me.is_dealer){
+
+showGameNotice(
+
+"이번 판은 D입니다",
+
+`이번 판의 딜러 버튼입니다.
+
+판이 끝날 때마다 딜러 버튼은
+다음 자리로 이동합니다.`,
+
+"role",
+2800
+
+);
+
+}
+
+}
+
+
+/* ==========================================================
+   실제 서버 스트리트 전환 안내
+========================================================== */
+
+function announceStreetChange(
+before,
+after
+){
+
+if(
+before === after
+){
+
+return;
+
+}
+
+
+/*
+서버에서 실제로 관측한
+1단계 전환만 안내한다.
+*/
+
+if(
+before === "preflop" &&
+after === "flop"
+){
+
+showGameNotice(
+
+"프리플랍 종료",
+
+`프리플랍 베팅이 종료되었습니다.
+
+플랍 카드 3장이 공개됩니다.`,
+
+"street",
+2700
+
+);
+
+
+return;
+
+}
+
+
+if(
+before === "flop" &&
+after === "turn"
+){
+
+showGameNotice(
+
+"플랍 종료",
+
+`플랍 베팅이 종료되었습니다.
+
+턴 카드 1장이 공개됩니다.`,
+
+"street",
+2700
+
+);
+
+
+return;
+
+}
+
+
+if(
+before === "turn" &&
+after === "river"
+){
+
+showGameNotice(
+
+"턴 종료",
+
+`턴 베팅이 종료되었습니다.
+
+리버 카드 1장이 공개됩니다.`,
+
+"street",
+2700
+
+);
+
+
+return;
+
+}
+
+
+if(
+before === "river" &&
+after === "showdown"
+){
+
+showGameNotice(
+
+"리버 종료",
+
+`리버 베팅이 종료되었습니다.
+
+남아 있는 플레이어의 패를 비교합니다.`,
+
+"street",
+2900
+
+);
+
+}
+
+}
+
+/* ==========================================================
+   행동 이벤트 읽기
+========================================================== */
+
+async function refreshActionEvents(){
+
+if(
+!currentRoom ||
+!currentHand
+){
+
+return;
+
+}
+
+
+const handNumber =
+Number(
+currentHand.hand_number
+);
+
+
+/*
+새 판이면 과거 행동 알림을 재생하지 않음
+*/
+
+if(
+observedActionHandNumber !==
+handNumber
+){
+
+observedActionHandNumber =
+handNumber;
+
+
+const {
+data
+} =
+await db.rpc(
+"get_classic_action_events",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_after_id:
+0
+
+}
+);
+
+
+const sameHand =
+(data ?? [])
+.filter(
+event =>
+Number(
+event.hand_number
+) ===
+handNumber
+);
+
+
+lastActionEventId =
+sameHand.length
+?
+Math.max(
+...sameHand.map(
+event =>
+Number(
+event.event_id
+)
+)
+)
+:
+0;
+
+
+return;
+
+}
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"get_classic_action_events",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_after_id:
+lastActionEventId
+
+}
+);
+
+
+if(error){
+
+console.error(
+"action events:",
+error
+);
+
+return;
+
+}
+
+
+const events =
+(data ?? [])
+.filter(
+event =>
+Number(
+event.hand_number
+) ===
+handNumber
+);
+
+
+for(
+const event of events
+){
+
+lastActionEventId =
+Math.max(
+lastActionEventId,
+Number(
+event.event_id
+)
+);
+
+
+announcePlayerAction(
+event
+);
+
+}
+
+}
+
+
+/* ==========================================================
+   행동 알림 문구
+========================================================== */
+
+function announcePlayerAction(
+event
+){
+
+const name =
+event.profile_id ===
+currentUser.id
+?
+"내가"
+:
+`${event.nickname}님이`;
+
+
+if(
+event.action_type ===
+"fold"
+){
+
+showGameNotice(
+
+"폴드",
+
+`${name} 폴드했습니다.`,
+
+"fold",
+1500
+
+);
+
+
+return;
+
+}
+
+
+if(
+event.action_type ===
+"check"
+){
+
+showGameNotice(
+
+"체크",
+
+`${name} 체크했습니다.`,
+
+"action",
+1400
+
+);
+
+
+return;
+
+}
+
+
+if(
+event.action_type ===
+"call"
+){
+
+showGameNotice(
+
+"콜",
+
+`${name} ${formatChip(
+event.amount
+)}을 추가로 내고 콜했습니다.`,
+
+"action",
+1700
+
+);
+
+
+return;
+
+}
+
+
+if(
+event.action_type ===
+"raise"
+){
+
+const target =
+num(
+event.raise_to
+);
+
+
+showGameNotice(
+
+"레이즈",
+
+`${name} ${formatChip(
+event.amount
+)}을 추가로 내고
+총 ${formatChip(
+target
+)}까지 올렸습니다.`,
+
+"action",
+1900
+
+);
+
+}
+
+}
+
+/* ==========================================================
+   내 턴 알림
+========================================================== */
+
+function detectMyTurn(){
+
+if(
+!currentHand ||
+!currentUser
+){
+
+return;
+
+}
+
+
+const actorSeat =
+currentHand.current_actor_seat_no === null
+?
+null
+:
+Number(
+currentHand.current_actor_seat_no
+);
+
+
+if(
+actorSeat ===
+observedActorSeat
+){
+
+return;
+
+}
+
+
+observedActorSeat =
+actorSeat;
+
+
+if(actorSeat === null){
+
+return;
+
+}
+
+
+const me =
+currentHandPlayers.find(
+player =>
+player.profile_id ===
+currentUser.id
+);
+
+
+if(!me){
+
+return;
+
+}
+
+
+if(
+Number(
+me.seat_no
+) !==
+actorSeat
+){
+
+return;
+
+}
+
+
+if(
+me.folded ||
+me.all_in
+){
+
+return;
+
+}
+
+
+showGameNotice(
+
+"내 차례입니다",
+
+`행동을 선택해주세요.
+
+폴드 · 체크 · 콜 · 베팅/레이즈`,
+
+"turn",
+2200
+
+);
+
+}
+
+/* ==========================================================
+   게임 렌더
+========================================================== */
+
+function renderGame(){
+
+if(!currentHand){
+
+return;
+
+}
+
+
+byId(
+"gameTopPot"
+)
+.textContent =
+formatChip(
+currentHand.pot
+);
+
+
+renderStreetProgress();
+
+renderCommunity();
+
+renderPot();
+
+renderGameSeats();
+
+renderMyCards();
+
+
+/*
+보유 칩 더미는
+내 차례 여부와 관계없이 항상 표시한다.
+*/
+
+renderPlayerChipPile();
+
+
+renderActionArea();
+
+}
+
+/* ==========================================================
+   공용 카드
+========================================================== */
+
+function renderCommunity(){
+
+let html =
+"";
+
+
+for(
+let position = 1;
+position <= 5;
+position++
+){
+
+const card =
+currentCommunityCards.find(
+x =>
+Number(
+x.card_position
+) ===
+position
+);
+
+
+html +=
+card
+?
+cardHtml(
+card
+)
+:
+'<div class="cardPlaceholder"></div>';
+
+}
+
+
+byId(
+"communityCards"
+)
+.innerHTML =
+html;
+
+}
+
+
+/* ==========================================================
+   팟 시각화
+========================================================== */
+
+function renderPot(){
+
+const pot =
+Math.max(
+0,
+int(
+currentHand.pot
+)
+);
+
+
+const visible =
+Math.min(
+pot,
+40
+);
+
+
+let html =
+"";
+
+
+for(
+let i = 0;
+i < visible;
+i++
+){
+
+html +=
+'<div class="potCoin"></div>';
+
+}
+
+
+byId(
+"potCoins"
+)
+.innerHTML =
+html;
+
+
+byId(
+"potText"
+)
+.textContent =
+formatChip(
+pot
+);
+
+}
+
+
+/* ==========================================================
+   게임 좌석
+========================================================== */
+
+function renderGameSeats(){
+
+const box =
+byId(
+"gameSeats"
+);
+
+
+let html =
+"";
+
+
+for(
+let seatNo = 1;
+seatNo <= 8;
+seatNo++
+){
+
+const player =
+currentHandPlayers.find(
+x =>
+Number(
+x.seat_no
+) ===
+seatNo
+);
+
+
+if(!player){
+
+continue;
+
+}
+
+
+let classes =
+`gameSeat gameSeat${seatNo}`;
+
+
+if(
+Number(
+currentHand.current_actor_seat_no
+) ===
+seatNo
+){
+
+classes +=
+" currentActor";
+
+}
+
+
+if(player.folded){
+
+classes +=
+" folded";
+
+}
+
+
+let roles =
+"";
+
+
+if(player.is_dealer){
+
+roles +=
+'<span class="role">D</span>';
+
+}
+
+
+if(player.is_small_blind){
+
+roles +=
+'<span class="role sb">SB</span>';
+
+}
+
+
+if(player.is_big_blind){
+
+roles +=
+'<span class="role bb">BB</span>';
+
+}
+
+
+let info =
+formatChip(
+player.chips
+);
+
+
+if(player.folded){
+
+info =
+"FOLD";
+
+}else if(player.all_in){
+
+info +=
+" · ALL IN";
+
+}
+
+
+html += `
+
+<div class="${classes}">
+
+${playerAvatar(player)}
+
+<div class="roleLine">
+${roles}
+</div>
+
+<div class="seatName">
+${escapeHtml(player.nickname)}
+${player.profile_id === currentUser.id ? " · 나" : ""}
+</div>
+
+<div class="seatSub">
+${escapeHtml(info)}
+</div>
+
+</div>
+
+`;
+
+}
+
+
+box.innerHTML =
+html;
+
+}
+
+
+/* ==========================================================
+   내 카드
+========================================================== */
+
+function renderMyCards(){
+
+const box =
+byId(
+"myTableCards"
+);
+
+
+if(
+myCardsVisible &&
+currentHoleCards.length > 0
+){
+
+box.innerHTML =
+currentHoleCards
+.slice()
+.sort(
+(a,b) =>
+Number(a.card_position) -
+Number(b.card_position)
+)
+.map(
+card =>
+cardHtml(
+card
+)
+)
+.join("");
+
+
+byId(
+"peekLabel"
+)
+.textContent =
+"눌러서 덮기";
+
+}else{
+
+box.innerHTML =
+cardBackHtml() +
+cardBackHtml();
+
+
+byId(
+"peekLabel"
+)
+.textContent =
+"카드를 눌러 확인";
+
+}
+
+}
+
+
+function toggleMyCards(){
+
+myCardsVisible =
+!myCardsVisible;
+
+
+renderMyCards();
+
+}
+
+
+/* ==========================================================
+   행동 영역
+========================================================== */
+
+function renderActionArea(){
+
+const panel =
+byId(
+"actionPanel"
+);
+
+
+const waiting =
+byId(
+"waitStrip"
+);
+
+
+if(
+currentHand.street ===
+"finished"
+){
+
+panel.classList.add(
+"hidden"
+);
+
+
+waiting.classList.add(
+"hidden"
+);
+
+
+byId(
+"finishedSection"
+)
+.classList.remove(
+"hidden"
+);
+
+
+return;
+
+}
+
+
+byId(
+"finishedSection"
+)
+.classList.add(
+"hidden"
+);
+
+
+if(!myActionOptions){
+
+panel.classList.add(
+"hidden"
+);
+
+
+waiting.classList.remove(
+"hidden"
+);
+
+
+waiting.textContent =
+"게임 상태를 기다리고 있습니다.";
+
+
+if(!betAnimationRunning){
+
+renderBetTray(
+0
+);
+
+}
+
+return;
+
+}
+
+
+const o =
+myActionOptions;
+
+
+if(!o.is_my_turn){
+
+panel.classList.add(
+"hidden"
+);
+
+
+waiting.classList.remove(
+"hidden"
+);
+
+
+const actor =
+currentHandPlayers.find(
+x =>
+Number(
+x.seat_no
+) ===
+Number(
+currentHand.current_actor_seat_no
+)
+);
+
+
+waiting.textContent =
+actor
+?
+`${actor.nickname}님의 행동을 기다리는 중`
+:
+"다른 플레이어의 행동을 기다리는 중";
+
+
+if(!betAnimationRunning){
+
+renderBetTray(
+0
+);
+
+}
+
+return;
+
+}
+
+
+waiting.classList.add(
+"hidden"
+);
+
+
+panel.classList.remove(
+"hidden"
+);
+
+
+byId(
+"uiCurrentBet"
+)
+.textContent =
+formatChip(
+o.current_bet
+);
+
+
+byId(
+"uiMyBet"
+)
+.textContent =
+formatChip(
+o.my_round_bet
+);
+
+
+byId(
+"uiCall"
+)
+.textContent =
+formatChip(
+o.call_amount
+);
+
+
+/* 버튼 */
+
+byId(
+"foldButton"
+)
+.disabled =
+!o.can_fold;
+
+
+byId(
+"checkButton"
+)
+.disabled =
+!o.can_check;
+
+
+byId(
+"callButton"
+)
+.disabled =
+!o.can_call;
+
+
+byId(
+"raiseButton"
+)
+.disabled =
+!o.can_raise;
+
+
+byId(
+"callSub"
+)
+.textContent =
+num(
+o.call_amount
+) > 0
+?
+`+${formatNumber(o.call_amount)}`
+:
+"";
+
+
+/* 베팅인지 레이즈인지 */
+
+const isBet =
+num(
+o.current_bet
+) ===
+0;
+
+
+byId(
+"raiseLabel"
+)
+.textContent =
+isBet
+?
+"베팅"
+:
+"레이즈";
+
+
+const input =
+byId(
+"betInput"
+);
+
+
+const min =
+num(
+o.min_raise_to
+);
+
+
+const max =
+num(
+o.max_raise_to
+);
+
+
+input.min =
+min;
+
+input.max =
+max;
+
+
+if(
+document.activeElement !==
+input
+){
+
+const value =
+num(
+input.value
+);
+
+
+if(
+!o.can_raise ||
+value < min ||
+value > max
+){
+
+input.value =
+o.can_raise
+?
+min
+:
+max;
+
+}
+
+}
+
+
+updateBetPreview();
+
+}
+
+
+/* ==========================================================
+   보유 칩 더미 설정
+========================================================== */
+
+function getPlayerChipPilePreset(
+chips
+){
+
+const amount =
+Math.max(
+0,
+int(
+chips
+)
+);
+
+
+if(amount === 0){
+
+return [];
+
+}
+
+
+if(amount <= 10){
+
+return [
+2
+];
+
+}
+
+
+if(amount <= 25){
+
+return [
+3,
+2
+];
+
+}
+
+
+if(amount <= 50){
+
+return [
+4,
+3,
+2
+];
+
+}
+
+
+if(amount <= 100){
+
+return [
+5,
+4,
+3
+];
+
+}
+
+
+if(amount <= 250){
+
+return [
+6,
+5,
+4,
+3
+];
+
+}
+
+
+if(amount <= 500){
+
+return [
+7,
+6,
+5,
+4
+];
+
+}
+
+
+if(amount <= 1000){
+
+return [
+8,
+7,
+6,
+5,
+4
+];
+
+}
+
+
+if(amount <= 2500){
+
+return [
+9,
+8,
+7,
+6,
+5
+];
+
+}
+
+
+return [
+10,
+9,
+8,
+7,
+6,
+5
+];
+
+}
+
+
+/* ==========================================================
+   보유 칩 더미 렌더
+========================================================== */
+
+function renderPlayerChipPile(){
+
+let myChips =
+0;
+
+
+if(myActionOptions){
+
+myChips =
+Math.max(
+0,
+int(
+myActionOptions.my_chips
+)
+);
+
+}else{
+
+const me =
+currentHandPlayers.find(
+player =>
+player.profile_id ===
+currentUser.id
+);
+
+
+myChips =
+Math.max(
+0,
+int(
+me?.chips
+)
+);
+
+}
+
+
+byId(
+"playerChipCount"
+)
+.textContent =
+formatChip(
+myChips
+);
+
+
+const box =
+byId(
+"playerChipPile"
+);
+
+
+box.innerHTML =
+"";
+
+
+if(myChips === 0){
+
+box.innerHTML = `
+
+<div class="playerChipEmpty">
+칩 없음
+</div>
+
+`;
+
+return;
+
+}
+
+
+const preset =
+getPlayerChipPilePreset(
+myChips
+);
+
+
+preset.forEach(
+(
+stackHeight,
+stackIndex
+) => {
+
+const stack =
+document.createElement(
+"div"
+);
+
+
+stack.className =
+"pileStack";
+
+
+for(
+let chipIndex = 0;
+chipIndex < stackHeight;
+chipIndex++
+){
+
+const chip =
+document.createElement(
+"div"
+);
+
+
+const tone =
+(
+(
+stackIndex +
+chipIndex
+) %
+5
+) + 1;
+
+
+chip.className =
+`pileChip pileTone${tone}`;
+
+
+chip.style.setProperty(
+"--pile-index",
+chipIndex
+);
+
+
+stack.appendChild(
+chip
+);
+
+}
+
+
+box.appendChild(
+stack
+);
+
+}
+);
+
+}
+
+
+/* ==========================================================
+   BET 금액 칩 단위 분해
+========================================================== */
+
+function makeBetChipComposition(
+amount
+){
+
+let remaining =
+Math.max(
+0,
+int(
+amount
+)
+);
+
+
+const denominations = [
+
+100,
+25,
+10,
+5,
+1
+
+];
+
+
+const result =
+[];
+
+
+denominations.forEach(
+value => {
+
+const count =
+Math.floor(
+remaining /
+value
+);
+
+
+if(count > 0){
+
+result.push({
+
+value,
+count
+
+});
+
+
+remaining -=
+count *
+value;
+
+}
+
+}
+);
+
+
+return result;
+
+}
+
+
+/* ==========================================================
+   BET 트레이 렌더
+========================================================== */
+
+function renderBetTray(
+amount
+){
+
+if(betAnimationRunning){
+
+return;
+
+}
+
+
+const value =
+Math.max(
+0,
+int(
+amount
+)
+);
+
+
+byId(
+"betTrayAmount"
+)
+.textContent =
+formatChip(
+value
+);
+
+
+const box =
+byId(
+"betTrayStacks"
+);
+
+
+box.innerHTML =
+"";
+
+
+if(value === 0){
+
+box.innerHTML = `
+
+<div class="betTrayEmpty">
+베팅할 칩을 올려주세요
+</div>
+
+`;
+
+return;
+
+}
+
+
+const composition =
+makeBetChipComposition(
+value
+);
+
+
+composition.forEach(
+item => {
+
+const stack =
+document.createElement(
+"div"
+);
+
+
+stack.className =
+"betStack";
+
+
+for(
+let chipIndex = 0;
+chipIndex < item.count;
+chipIndex++
+){
+
+const chip =
+document.createElement(
+"div"
+);
+
+
+chip.className =
+`betChip d${item.value}`;
+
+
+chip.style.setProperty(
+"--chip-index",
+chipIndex
+);
+
+
+stack.appendChild(
+chip
+);
+
+}
+
+
+const label =
+document.createElement(
+"div"
+);
+
+
+label.className =
+"betChipValue";
+
+
+label.textContent =
+item.value;
+
+
+stack.appendChild(
+label
+);
+
+
+box.appendChild(
+stack
+);
+
+}
+);
+
+}
+
+
+/* ==========================================================
+   BET → 테이블 이동 애니메이션
+========================================================== */
+
+function animateBetToTable(){
+
+return new Promise(
+resolve => {
+
+const tray =
+byId(
+"betTray"
+);
+
+
+const stacks =
+byId(
+"betTrayStacks"
+);
+
+
+if(
+!tray ||
+!stacks ||
+stacks.children.length === 0
+){
+
+resolve();
+
+return;
+
+}
+
+
+betAnimationRunning =
+true;
+
+
+tray.classList.remove(
+"betSending"
+);
+
+
+void tray.offsetWidth;
+
+
+tray.classList.add(
+"betSending"
+);
+
+
+setTimeout(
+() => {
+
+tray.classList.remove(
+"betSending"
+);
+
+
+betAnimationRunning =
+false;
+
+
+renderBetTray(
+0
+);
+
+
+resolve();
+
+},
+430
+);
+
+}
+);
+
+}
+/* ==========================================================
+   베팅 조절
+========================================================== */
+
+function changeBet(
+delta
+){
+
+if(
+!myActionOptions ||
+!myActionOptions.can_raise
+){
+
+return;
+
+}
+
+
+const input =
+byId(
+"betInput"
+);
+
+
+let value =
+int(
+input.value
+);
+
+
+value +=
+delta;
+
+
+const min =
+int(
+myActionOptions.min_raise_to
+);
+
+
+const max =
+int(
+myActionOptions.max_raise_to
+);
+
+
+value =
+Math.max(
+
+min,
+
+Math.min(
+value,
+max
+)
+
+);
+
+
+input.value =
+value;
+
+
+updateBetPreview();
+
+}
+
+
+function onBetInput(){
+
+updateBetPreview();
+
+}
+
+
+function updateBetPreview(){
+
+if(!myActionOptions){
+
+return;
+
+}
+
+
+const o =
+myActionOptions;
+
+
+const input =
+byId(
+"betInput"
+);
+
+
+const target =
+int(
+input.value
+);
+
+
+const min =
+int(
+o.min_raise_to
+);
+
+
+const max =
+int(
+o.max_raise_to
+);
+
+
+if(!o.can_raise){
+
+byId(
+"betMeta"
+)
+.textContent =
+"현재 베팅을 올릴 수 없습니다.";
+
+
+renderBetTray(
+0
+);
+
+
+return;
+
+}
+
+
+if(
+target < min ||
+target > max
+){
+
+byId(
+"betMeta"
+)
+.textContent =
+`가능 범위 ${formatChip(min)} ~ ${formatChip(max)}`;
+
+
+renderBetTray(
+0
+);
+
+
+return;
+
+}
+
+
+/*
+target = 이번 라운드의 총 베팅액.
+실제로 손에서 새로 빠져나가는 양만 코인을 들어 올림.
+*/
+
+const additional =
+Math.max(
+
+0,
+
+target -
+int(
+o.my_round_bet
+)
+
+);
+
+
+const isBet =
+num(
+o.current_bet
+) ===
+0;
+
+
+byId(
+"betMeta"
+)
+.textContent =
+isBet
+?
+`지금 ${formatChip(additional)}을 앞으로 냅니다 · 총 베팅 ${formatChip(target)}`
+:
+`지금 ${formatChip(additional)}을 더 냅니다 · 레이즈 후 ${formatChip(target)}`;
+
+
+renderBetTray(
+additional
+);
+
+
+byId(
+"allInButton"
+)
+.textContent =
+`올인 · ${formatNumber(max)}`;
+
+}
+
+
+/* ==========================================================
+   올인
+========================================================== */
+
+function setAllIn(){
+
+if(
+!myActionOptions ||
+!myActionOptions.can_raise
+){
+
+return;
+
+}
+
+
+byId(
+"betInput"
+)
+.value =
+int(
+myActionOptions.max_raise_to
+);
+
+
+updateBetPreview();
+
+}
+
+
+/* ==========================================================
+   폴드 / 체크 / 콜
+========================================================== */
+
+async function doAction(
+action
+){
+
+if(!myActionOptions){
+
+return;
+
+}
+
+
+/*
+콜 버튼을 눌렀을 당시
+실제로 추가로 내야 하는 칩 수를 미리 저장한다.
+
+RPC가 실행되고 나면
+상태가 바뀔 수 있으므로 먼저 저장해야 한다.
+*/
+
+const callAmount =
+action === "call"
+?
+Math.max(
+0,
+int(
+myActionOptions.call_amount
+)
+)
+:
+0;
+
+
+disableActions(
+true
+);
+
+
+const {
+error
+} =
+await db.rpc(
+"holdem_action",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_action:
+action,
+
+p_raise_to:
+null
+
+}
+);
+
+
+if(error){
+
+disableActions(
+false
+);
+
+
+showModal(
+"행동 오류",
+error.message
+);
+
+
+return;
+
+}
+
+
+/*
+콜이 서버에서 정상 처리된 뒤에만
+BET 트레이 애니메이션을 실행한다.
+
+체크와 폴드는 칩 이동이 없으므로
+애니메이션을 실행하지 않는다.
+*/
+
+if(
+action === "call" &&
+callAmount > 0
+){
+
+renderBetTray(
+callAmount
+);
+
+
+await animateBetToTable();
+
+}
+
+
+await refreshGame();
+
+
+disableActions(
+false
+);
+
+}
+
+/* ==========================================================
+   베팅 / 레이즈
+   BET 트레이 → 테이블 이동 애니메이션
+========================================================== */
+
+async function doRaise(){
+
+if(
+!myActionOptions ||
+!myActionOptions.can_raise ||
+betAnimationRunning
+){
+
+return;
+
+}
+
+
+const target =
+int(
+byId(
+"betInput"
+)
+.value
+);
+
+
+const additional =
+Math.max(
+
+0,
+
+target -
+int(
+myActionOptions.my_round_bet
+)
+
+);
+
+
+/*
+BET 트레이에 실제로 앞으로 낼 칩을
+마지막으로 확실히 표시
+*/
+
+renderBetTray(
+additional
+);
+
+
+disableActions(
+true
+);
+
+
+const {
+error
+} =
+await db.rpc(
+"holdem_action",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_action:
+"raise",
+
+p_raise_to:
+target
+
+}
+);
+
+
+if(error){
+
+disableActions(
+false
+);
+
+
+showModal(
+"베팅 오류",
+error.message
+);
+
+
+return;
+
+}
+
+
+/*
+서버에서 베팅 성공 후에만
+칩이 테이블 쪽으로 사라지는 연출
+*/
+
+betAnimationRunning =
+true;
+
+
+const tray =
+byId(
+"betTray"
+);
+
+
+tray.classList.add(
+"betSending"
+);
+
+
+await new Promise(
+resolve =>
+setTimeout(
+resolve,
+430
+)
+);
+
+
+tray.classList.remove(
+"betSending"
+);
+
+
+/*
+애니메이션이 끝나면
+BET 트레이를 비운다.
+*/
+
+renderBetTray(
+0
+);
+
+
+betAnimationRunning =
+false;
+
+
+disableActions(
+false
+);
+
+
+await refreshGame();
+
+}
+
+
+function disableActions(
+disabled
+){
+
+[
+"foldButton",
+"checkButton",
+"callButton",
+"raiseButton",
+"allInButton"
+]
+.forEach(
+id => {
+
+byId(
+id
+)
+.disabled =
+disabled;
+
+}
+);
+
+}
+
+
+/* ==========================================================
+   사이드 드로어
+========================================================== */
+
+function openDrawer(
+title,
+html
+){
+
+byId(
+"drawerTitle"
+)
+.textContent =
+title;
+
+
+byId(
+"drawerContent"
+)
+.innerHTML =
+html;
+
+
+byId(
+"drawerBackdrop"
+)
+.classList.remove(
+"hidden"
+);
+
+
+byId(
+"drawer"
+)
+.classList.remove(
+"hidden"
+);
+
+}
+
+
+function closeDrawer(){
+
+const backdrop =
+byId(
+"drawerBackdrop"
+);
+
+
+const drawer =
+byId(
+"drawer"
+);
+
+
+if(backdrop){
+
+backdrop.classList.add(
+"hidden"
+);
+
+}
+
+
+if(drawer){
+
+drawer.classList.add(
+"hidden"
+);
+
+}
+
+}
+
+
+/* ==========================================================
+   게임 중 룰북
+========================================================== */
+
+function openRuleDrawer(){
+
+openDrawer(
+"룰북",
+
+`
+
+<div class="drawerSection">
+
+<b>진행</b>
+
+프리플랍 →
+플랍 3장 →
+턴 1장 →
+리버 1장 →
+쇼다운
+
+</div>
+
+
+<div class="drawerSection">
+
+<b>체크</b>
+
+추가로 맞춰야 할 칩이 없을 때
+칩을 내지 않고 차례를 넘깁니다.
+
+</div>
+
+
+<div class="drawerSection">
+
+<b>콜</b>
+
+현재 베팅까지 필요한 만큼 칩을 냅니다.
+
+</div>
+
+
+<div class="drawerSection">
+
+<b>베팅 / 레이즈</b>
+
+아직 베팅이 없다면 베팅,
+이미 베팅이 있다면 더 높은 금액으로 레이즈합니다.
+
+</div>
+
+
+<div class="drawerSection">
+
+<b>폴드</b>
+
+이번 판을 포기합니다.
+이미 낸 칩은 팟에 남습니다.
+
+</div>
+
+
+<div class="drawerSection">
+
+<b>HOLDEM A 베팅 상한</b>
+
+사이드 팟을 사용하지 않습니다.
+
+현재 판에 남아 있는 플레이어 중
+가장 적은 총 가용 칩을 기준으로
+최대 총 베팅이 결정됩니다.
+
+누군가 폴드하면 상한이 다시 계산될 수 있습니다.
+
+</div>
+
+
+<div class="drawerSection">
+
+<b>족보</b>
+
+로열 플러시<br>
+스트레이트 플러시<br>
+포카드<br>
+풀하우스<br>
+플러시<br>
+스트레이트<br>
+트리플<br>
+투페어<br>
+원페어<br>
+하이카드
+
+</div>
+
+`
+
+);
+
+}
+
+
+/* ==========================================================
+   힌트
+========================================================== */
+
+async function openHintDrawer(){
+
+if(!currentRoom){
+
+return;
+
+}
+
+
+openDrawer(
+"힌트",
+'<div class="drawerSection">확인 중...</div>'
+);
+
+
+const {
+data,
+error
+} =
+await db.rpc(
+"get_my_holdem_hint",
+{
+
+p_room_id:
+currentRoom.room_id
+
+}
+);
+
+
+if(error){
+
+byId(
+"drawerContent"
+)
+.innerHTML =
+`<div class="drawerSection">${escapeHtml(error.message)}</div>`;
+
+return;
+
+}
+
+
+const hint =
+data?.[0];
+
+
+if(!hint){
+
+byId(
+"drawerContent"
+)
+.innerHTML = `
+
+<div class="drawerSection">
+
+현재 표시할 힌트가 없습니다.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+if(!hint.enough_cards){
+
+byId(
+"drawerContent"
+)
+.innerHTML = `
+
+<div class="drawerSection">
+
+아직 5장짜리 완성 족보를 만들 수 있을 만큼
+카드가 공개되지 않았습니다.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+byId(
+"drawerContent"
+)
+.innerHTML = `
+
+<div class="drawerSection">
+
+<b>현재 완성된 족보</b>
+
+<div style="font-size:22px;font-weight:900;margin-top:8px">
+
+${escapeHtml(hint.hand_name)}
+
+</div>
+
+</div>
+
+
+<div class="drawerSection">
+
+승률, 상대 패 추정,
+앞으로 필요한 카드,
+추천 행동이나 추천 베팅 금액은 표시하지 않습니다.
+
+</div>
+
+`;
+
+}
+
+
+/* ==========================================================
+   판 종료
+========================================================== */
+
 async function renderFinished(){
 
 byId(
@@ -7932,11 +10931,6 @@ names ||
 "승자 확인";
 
 
-/* ==========================================================
-   모두 폴드해서 끝난 판
-   홀카드 공개 없음
-========================================================== */
-
 if(
 currentHand.result_reason ===
 "everyone_folded"
@@ -7961,17 +10955,11 @@ return;
 }
 
 
-/* ==========================================================
-   쇼다운
-========================================================== */
-
 byId(
 "finishedReason"
 )
 .textContent =
 "쇼다운으로 승자가 결정되었습니다.";
-
-
 const {
 data:showdownCards,
 error:showdownCardError
@@ -7987,42 +10975,11 @@ currentRoom.room_id
 );
 
 
-if(showdownCardError){
-
-console.error(
-"showdown cards:",
-showdownCardError
-);
-
-
-byId(
-"finishedResults"
-)
-.innerHTML =
-"";
-
-
-return;
-
-}
-
-
 if(
-!showdownCards ||
-showdownCards.length === 0
+!showdownCardError &&
+showdownCards &&
+showdownCards.length > 0
 ){
-
-byId(
-"finishedResults"
-)
-.innerHTML =
-"";
-
-
-return;
-
-}
-
 
 byId(
 "finishedResults"
@@ -8119,7 +11076,13 @@ row.chips_won
 
 }
 
-  
+/*
+상세 결과 RPC가 있는 경우만 카드까지 표시.
+없어도 승자 표시는 정상 유지.
+*/
+
+
+
 /* ==========================================================
    다음 판
 ========================================================== */
@@ -9080,4 +12043,3 @@ start();
 </body>
 
 </html>
-
