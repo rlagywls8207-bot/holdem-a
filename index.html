@@ -1997,7 +1997,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.14.9
+v0.14.9.1
 </div>
 
 <div class="subtitle">
@@ -3741,7 +3741,7 @@ style="white-space:pre-line;line-height:1.5"
 <script>
 
 const APP_VERSION =
-"v0.14.9";
+"v0.14.9.1";
 
 
 const SUPABASE_URL =
@@ -6020,7 +6020,233 @@ const FOX_EARS_MARKED_RUNS = [
 ];
 
 
+/* ==========================================================
+   최종 아바타 SVG V3
+========================================================== */
 
+function avatarSvg(
+avatar = {}
+){
+
+const fur =
+normalizeColor(
+avatar.fur_color ??
+avatar.avatar_color ??
+"#C89B61"
+);
+
+
+const face =
+avatar.face_item_key ??
+avatar.avatar_face ??
+avatar.avatar_eyes ??
+"face_basic";
+
+
+const ears =
+avatar.ears_item_key ??
+avatar.avatar_ears ??
+null;
+
+
+const clothes =
+avatar.clothes_item_key ??
+avatar.avatar_clothes ??
+"clothes_rags";
+
+
+const furPart =
+avatar.fur_item_key ??
+avatar.avatar_fur ??
+avatar.avatar_fur_pattern ??
+null;
+
+
+const tail =
+avatar.tail_item_key ??
+avatar.avatar_tail ??
+null;
+
+
+/* ==========================================================
+   꼬리
+========================================================== */
+
+let tailHtml =
+"";
+
+
+if(
+tail ===
+"fox_tail"
+){
+
+tailHtml =
+pixelRunsToSvg(
+FOX_TAIL_RUNS,
+fur
+);
+
+}
+
+
+/* ==========================================================
+   기본 몸체
+========================================================== */
+
+const bodyHtml =
+pixelRunsToSvg(
+BASE_AVATAR_RUNS,
+fur
+);
+
+
+/* ==========================================================
+   털 무늬
+========================================================== */
+
+let furHtml =
+"";
+
+
+if(
+furPart ===
+"fox_fur"
+){
+
+furHtml =
+pixelRunsToSvg(
+FOX_FUR_RUNS,
+fur
+);
+
+}
+
+
+/* ==========================================================
+   옷
+========================================================== */
+
+let clothesHtml =
+"";
+
+
+if(
+clothes ===
+"clothes_rags"
+){
+
+clothesHtml = `
+
+<g transform="scale(4)">
+
+<rect x="11" y="17" width="10" height="2" fill="#6E604F"/>
+
+<rect x="10" y="19" width="11" height="2" fill="#776958"/>
+
+<rect x="11" y="21" width="10" height="2" fill="#695B4A"/>
+
+<rect x="12" y="23" width="8" height="2" fill="#756653"/>
+
+<rect x="10" y="20" width="2" height="2" fill="#554A3E"/>
+
+<rect x="19" y="22" width="2" height="2" fill="#514638"/>
+
+</g>
+
+`;
+
+}
+
+
+/* ==========================================================
+   귀
+========================================================== */
+
+let earsHtml =
+"";
+
+
+if(
+ears ===
+"fox_ears_plain"
+){
+
+earsHtml =
+pixelRunsToSvg(
+FOX_EARS_PLAIN_RUNS,
+fur
+);
+
+}
+
+
+if(
+ears ===
+"fox_ears_marked"
+){
+
+earsHtml =
+pixelRunsToSvg(
+FOX_EARS_MARKED_RUNS,
+fur
+);
+
+}
+
+
+/* ==========================================================
+   얼굴
+========================================================== */
+
+let faceHtml =
+"";
+
+
+if(
+face ===
+"fox_face"
+){
+
+faceHtml =
+pixelRunsToSvg(
+FOX_FACE_RUNS,
+fur
+);
+
+}
+
+
+/* ==========================================================
+   최종 조립
+========================================================== */
+
+return `
+
+<svg
+viewBox="0 0 128 128"
+xmlns="http://www.w3.org/2000/svg"
+shape-rendering="crispEdges"
+>
+
+${tailHtml}
+
+${bodyHtml}
+
+${furHtml}
+
+${clothesHtml}
+
+${earsHtml}
+
+${faceHtml}
+
+</svg>
+
+`;
+
+}
+  
   
 /* ==========================================================
    플레이어 아바타
@@ -6870,7 +7096,7 @@ const {
 error
 } =
 await db.rpc(
-"change_avatar_color_v3",
+"change_avatar_fur_color_v3",
 {
 
 p_color:
@@ -6922,7 +7148,7 @@ const {
 error
 } =
 await db.rpc(
-"reset_avatar_part_v3",
+"reset_avatar_slot_v3",
 {
 
 p_category:
@@ -6972,7 +7198,7 @@ const {
 error
 } =
 await db.rpc(
-"equip_avatar_item_v2",
+"equip_avatar_item_v3",
 {
 
 p_item_key:
