@@ -3783,6 +3783,8 @@ let myAvatar = null;
 
 let shopItems = [];
 
+let avatarInventoryItems = [];
+
 let selectedRecipient = null;
 
 let myCardsVisible = false;
@@ -5275,19 +5277,79 @@ function avatarSvg(
 avatar = {}
 ){
 
+/* ==========================================================
+   V3 아바타 값 읽기
+========================================================== */
+
 const fur =
 normalizeColor(
+
+avatar.fur_color ??
+
 avatar.avatar_color ??
+
 "#C89B61"
+
 );
 
 
 /*
-장착 아이템
+V3 DB 필드명을 최우선으로 사용한다.
 
-레이어 순서는 고정한다.
+뒤의 avatar_* 값은
+대기실 / 게임 RPC가 아직 구버전 값을 반환할 경우를 위한
+임시 호환 처리다.
+*/
 
-뒤쪽
+const headwear =
+avatar.headwear_item_key ??
+avatar.avatar_headwear ??
+null;
+
+
+const face =
+avatar.face_item_key ??
+avatar.avatar_face ??
+avatar.avatar_eyes ??
+"face_basic";
+
+
+const ears =
+avatar.ears_item_key ??
+avatar.avatar_ears ??
+null;
+
+
+const clothes =
+avatar.clothes_item_key ??
+avatar.avatar_clothes ??
+"clothes_rags";
+
+
+const furPart =
+avatar.fur_item_key ??
+avatar.avatar_fur ??
+avatar.avatar_fur_pattern ??
+null;
+
+
+const body =
+avatar.body_item_key ??
+avatar.avatar_body ??
+"body_basic";
+
+
+const tail =
+avatar.tail_item_key ??
+avatar.avatar_tail ??
+null;
+
+
+/*
+렌더 순서
+
+뒤
+↓
 꼬리
 몸체
 털
@@ -5295,55 +5357,33 @@ avatar.avatar_color ??
 귀
 얼굴표정
 머리장식
-앞쪽
+↓
+앞
 */
-
-const headwear =
-avatar.avatar_headwear ??
-"headwear_none";
-
-const face =
-avatar.avatar_face ??
-"face_default";
-
-const ears =
-avatar.avatar_ears ??
-"ears_default";
-
-const clothes =
-avatar.avatar_clothes ??
-"clothes_rags";
-
-const furPart =
-avatar.avatar_fur ??
-"fur_default";
-
-const body =
-avatar.avatar_body ??
-"body_default";
-
-const tail =
-avatar.avatar_tail ??
-"tail_none";
-
 
 let tailHtml =
 "";
 
+
 let bodyHtml =
 "";
+
 
 let furHtml =
 "";
 
+
 let clothesHtml =
 "";
+
 
 let earsHtml =
 "";
 
+
 let faceHtml =
 "";
+
 
 let headwearHtml =
 "";
@@ -5355,19 +5395,18 @@ let headwearHtml =
 
 if(
 tail ===
-"tail_none"
+"fox_tail"
 ){
+
+/*
+여우 꼬리 실제 도트 코드는
+여우 꼬리 SVG를 넣는 단계에서 여기에 들어간다.
+*/
 
 tailHtml =
 "";
 
 }
-
-
-/*
-여우 꼬리는 다음 단계에서
-네가 만든 실제 도트 코드로 넣는다.
-*/
 
 
 /* ==========================================================
@@ -5376,8 +5415,59 @@ tailHtml =
 
 if(
 body ===
-"body_default"
+"body_basic"
 ){
+
+bodyHtml = `
+
+<!-- 머리 -->
+
+<rect x="12" y="4" width="8" height="1" fill="${fur}"/>
+
+<rect x="10" y="5" width="12" height="1" fill="${fur}"/>
+
+<rect x="9" y="6" width="14" height="7" fill="${fur}"/>
+
+<rect x="10" y="13" width="12" height="2" fill="${fur}"/>
+
+
+<!-- 목 -->
+
+<rect x="14" y="15" width="4" height="2" fill="${fur}"/>
+
+
+<!-- 몸 -->
+
+<rect x="11" y="17" width="10" height="8" fill="${fur}"/>
+
+
+<!-- 팔 -->
+
+<rect x="8" y="18" width="3" height="8" fill="${fur}"/>
+
+<rect x="21" y="18" width="3" height="8" fill="${fur}"/>
+
+
+<!-- 다리 -->
+
+<rect x="12" y="25" width="3" height="6" fill="${fur}"/>
+
+<rect x="17" y="25" width="3" height="6" fill="${fur}"/>
+
+`;
+
+}
+
+
+if(
+body ===
+"fox_body"
+){
+
+/*
+여우발 실제 SVG를 넣기 전까지
+기본 사람형 몸체는 유지한다.
+*/
 
 bodyHtml = `
 
@@ -5426,8 +5516,12 @@ bodyHtml = `
 
 if(
 furPart ===
-"fur_default"
+"fox_fur"
 ){
+
+/*
+여우 털무늬 실제 SVG가 들어갈 자리.
+*/
 
 furHtml =
 "";
@@ -5438,13 +5532,6 @@ furHtml =
 /* ==========================================================
    옷
 ========================================================== */
-
-/*
-맨몸은 기본 상태로 사용할 수 없음.
-
-아무 옷 정보가 없더라도
-누더기 옷을 기본으로 표시한다.
-*/
 
 if(
 clothes ===
@@ -5474,10 +5561,37 @@ clothesHtml = `
    귀
 ========================================================== */
 
+/*
+여기서 SQL의 실제 키를 사용한다.
+
+fox_ears_marked
+fox_ears_plain
+*/
+
+
 if(
 ears ===
-"ears_default"
+"fox_ears_marked"
 ){
+
+/*
+얼룩 여우귀 실제 SVG를 넣을 자리.
+*/
+
+earsHtml =
+"";
+
+}
+
+
+if(
+ears ===
+"fox_ears_plain"
+){
+
+/*
+얼룩 없는 여우귀 실제 SVG를 넣을 자리.
+*/
 
 earsHtml =
 "";
@@ -5491,7 +5605,7 @@ earsHtml =
 
 if(
 face ===
-"face_default"
+"face_basic"
 ){
 
 faceHtml = `
@@ -5505,19 +5619,36 @@ faceHtml = `
 }
 
 
+/*
+여우눈
+
+사용자가 만든 128 × 128 도트 좌표를
+32 × 32 아바타에 억지로 축소하지 않는다.
+
+실제 여우 파츠 SVG 통합 단계에서
+같은 기준 좌표계로 맞춰 넣는다.
+*/
+
+if(
+face ===
+"fox_face"
+){
+
+faceHtml =
+"";
+
+}
+
+
 /* ==========================================================
    머리장식
 ========================================================== */
 
-if(
-headwear ===
-"headwear_none"
-){
+/*
+현재 V3 SQL에는 기본 머리장식 아이템이 없다.
 
-headwearHtml =
-"";
-
-}
+null이면 아무것도 그리지 않는다.
+*/
 
 
 /* ==========================================================
@@ -5552,7 +5683,6 @@ ${headwearHtml}
 
 }
 
-
 /* ==========================================================
    플레이어 아바타
 ========================================================== */
@@ -5585,75 +5715,52 @@ key
 
 const names = {
 
-/* =========================
-   머리장식
-========================= */
+/* 기본 */
+
+body_basic:
+"기본 몸체",
+
+face_basic:
+"기본 표정",
+
+clothes_rags:
+"누더기",
+
+
+/* 여우 테마 */
+
+fox_ears_marked:
+"여우귀 · 얼룩",
+
+fox_ears_plain:
+"여우귀",
+
+fox_face:
+"여우눈",
+
+fox_fur:
+"여우 털",
+
+fox_body:
+"여우발",
+
+fox_tail:
+"여우 꼬리",
+
+
+/* 비어 있는 슬롯 표시용 */
 
 headwear_none:
 "장식 없음",
 
+ears_none:
+"귀 없음",
 
-/* =========================
-   얼굴표정
-========================= */
-
-face_default:
-"기본 표정",
-
-face_fox:
-"여우눈",
-
-
-/* =========================
-   귀
-========================= */
-
-ears_default:
-"기본 귀",
-
-ears_fox_patched:
-"얼룩 여우귀",
-
-ears_fox_plain:
-"여우귀",
-
-
-/* =========================
-   옷
-========================= */
-
-clothes_rags:
-"누더기 옷",
-
-
-/* =========================
-   털
-========================= */
-
-fur_default:
+fur_none:
 "기본 털",
 
-fur_fox:
-"여우 털무늬",
-
-
-/* =========================
-   몸체
-========================= */
-
-body_default:
-"기본 몸체",
-
-
-/* =========================
-   꼬리
-========================= */
-
 tail_none:
-"꼬리 없음",
-
-tail_fox:
-"여우 꼬리"
+"꼬리 없음"
 
 };
 
@@ -5712,6 +5819,10 @@ return true;
 }
 
 
+/* ==========================================================
+   내 아바타 화면 열기
+========================================================== */
+
 async function showAvatar(){
 
 hideAllScreens();
@@ -5733,7 +5844,8 @@ return;
 
 renderAvatar();
 
-renderAvatarOwnedItems();
+
+await loadAvatarInventory();
 
 
 byId(
@@ -5745,6 +5857,10 @@ byId(
 
 }
 
+
+/* ==========================================================
+   내 아바타 렌더
+========================================================== */
 
 function renderAvatar(){
 
@@ -5761,12 +5877,20 @@ myAvatar.fur_color
 );
 
 
+/* ==========================================================
+   닉네임
+========================================================== */
+
 byId(
 "avatarNickname"
 )
 .textContent =
 myAvatar.nickname;
 
+
+/* ==========================================================
+   아바타 그림
+========================================================== */
 
 byId(
 "avatarLarge"
@@ -5777,13 +5901,105 @@ avatarSvg(
 
 ...myAvatar,
 
-avatar_color:
+fur_color:
 color
 
 }
 );
 
 
+/* ==========================================================
+   털 색
+========================================================== */
+
+byId(
+"avatarColorPicker"
+)
+.value =
+color;
+
+
+byId(
+"avatarColorCode"
+)
+.textContent =
+color;
+
+
+/* ==========================================================
+   현재 장착 파츠 이름
+========================================================== */
+
+byId(
+"avatarHeadwearName"
+)
+.textContent =
+avatarItemName(
+myAvatar.headwear_item_key ??
+"headwear_none"
+);
+
+
+byId(
+"avatarFaceName"
+)
+.textContent =
+avatarItemName(
+myAvatar.face_item_key ??
+"face_basic"
+);
+
+
+byId(
+"avatarEarName"
+)
+.textContent =
+avatarItemName(
+myAvatar.ears_item_key ??
+"ears_none"
+);
+
+
+byId(
+"avatarClothesName"
+)
+.textContent =
+avatarItemName(
+myAvatar.clothes_item_key ??
+"clothes_rags"
+);
+
+
+byId(
+"avatarFurName"
+)
+.textContent =
+avatarItemName(
+myAvatar.fur_item_key ??
+"fur_none"
+);
+
+
+byId(
+"avatarBodyName"
+)
+.textContent =
+avatarItemName(
+myAvatar.body_item_key ??
+"body_basic"
+);
+
+
+byId(
+"avatarTailName"
+)
+.textContent =
+avatarItemName(
+myAvatar.tail_item_key ??
+"tail_none"
+);
+
+}
 /* ==========================================================
    털 색
 ========================================================== */
@@ -5822,7 +6038,7 @@ byId(
 .textContent =
 avatarItemName(
 myAvatar.face_item_key ??
-"face_default"
+"face_basic"
 );
 
 
@@ -5832,7 +6048,7 @@ byId(
 .textContent =
 avatarItemName(
 myAvatar.ears_item_key ??
-"ears_default"
+"ears_none"
 );
 
 
@@ -5852,7 +6068,7 @@ byId(
 .textContent =
 avatarItemName(
 myAvatar.fur_item_key ??
-"fur_default"
+"fur_none"
 );
 
 
@@ -5862,7 +6078,7 @@ byId(
 .textContent =
 avatarItemName(
 myAvatar.body_item_key ??
-"body_default"
+"body_basic"
 );
 
 
@@ -5874,9 +6090,6 @@ avatarItemName(
 myAvatar.tail_item_key ??
 "tail_none"
 );
-loadAvatarInventory();
-
-renderAvatarOwnedItems();
 
 }
 
@@ -5885,23 +6098,6 @@ renderAvatarOwnedItems();
 ========================================================== */
 
 async function loadAvatarInventory(){
-
-const box =
-byId(
-"avatarInventory"
-);
-
-
-if(!box){
-
-return;
-
-}
-
-
-box.innerHTML =
-'<div class="emptyText">불러오는 중...</div>';
-
 
 const {
 data,
@@ -5914,20 +6110,28 @@ await db.rpc(
 
 if(error){
 
-box.innerHTML =
-`<div class="emptyText">${escapeHtml(error.message)}</div>`;
+byId(
+"avatarMessage"
+)
+.textContent =
+error.message;
 
-return;
-
-}
-
-
-renderAvatarInventory(
-data ?? []
-);
+return false;
 
 }
 
+
+avatarInventoryItems =
+data ??
+[];
+
+
+renderAvatarOwnedItems();
+
+
+return true;
+
+}
 
 /* ==========================================================
    내 파츠 렌더
@@ -6165,143 +6369,6 @@ byId(
 
 }
   
-/* ==========================================================
-   보유 아바타 아이템
-========================================================== */
-
-async function renderAvatarOwnedItems(){
-
-const box =
-byId(
-"avatarOwnedItems"
-);
-
-
-if(!box){
-
-return;
-
-}
-
-
-box.innerHTML =
-'<div class="emptyText">보유 아이템 불러오는 중...</div>';
-
-
-const {
-data,
-error
-} =
-await db.rpc(
-"get_my_avatar_owned_items"
-);
-
-
-if(error){
-
-box.innerHTML =
-`<div class="emptyText">${escapeHtml(error.message)}</div>`;
-
-return;
-
-}
-
-
-const items =
-data ??
-[];
-
-
-if(items.length === 0){
-
-box.innerHTML =
-'<div class="emptyText">보유한 아바타 아이템이 없습니다.</div>';
-
-return;
-
-}
-
-
-box.innerHTML =
-"";
-
-
-items.forEach(
-item => {
-
-const div =
-document.createElement(
-"div"
-);
-
-
-div.className =
-"avatarOwnedItem";
-
-
-div.innerHTML = `
-
-<div class="avatarOwnedItemName">
-${escapeHtml(item.name)}
-</div>
-
-<div class="avatarOwnedItemCategory">
-${escapeHtml(item.category_name ?? item.category ?? "")}
-</div>
-
-`;
-
-
-const button =
-document.createElement(
-"button"
-);
-
-
-button.className =
-item.equipped
-?
-"secondary"
-:
-"primary";
-
-
-button.textContent =
-item.equipped
-?
-"장착 중"
-:
-"장착";
-
-
-button.disabled =
-Boolean(
-item.equipped
-);
-
-
-button.onclick =
-async () => {
-
-await equipOwnedAvatarItem(
-item.item_key
-);
-
-};
-
-
-div.appendChild(
-button
-);
-
-
-box.appendChild(
-div
-);
-
-});
-
-}
 
 /* ==========================================================
    아바타 미리보기
@@ -6338,7 +6405,7 @@ previewAvatar
 
 
 /* ==========================================================
-   아바타 보유 아이템 슬롯 렌더
+   아바타 보유 아이템 슬롯 렌더 V3
 ========================================================== */
 
 function renderAvatarOwnedItems(){
@@ -6418,15 +6485,16 @@ box.innerHTML =
 
 
 const owned =
-shopItems.filter(
+avatarInventoryItems.filter(
 item =>
 item.category ===
-config.category &&
-item.owned
+config.category
 );
 
 
-if(owned.length === 0){
+if(
+owned.length === 0
+){
 
 box.innerHTML =
 '<div class="fieldHelp" style="margin:6px 0 0">보유 아이템 없음</div>';
@@ -6445,30 +6513,39 @@ document.createElement(
 );
 
 
+const equipped =
+item.item_key ===
+config.currentKey;
+
+
 button.textContent =
-item.item_key === config.currentKey
+equipped
 ?
 `${item.name} · 착용 중`
 :
 item.name;
 
 
-if(
-item.item_key ===
-config.currentKey
-){
+button.className =
+equipped
+?
+"secondary selected"
+:
+"secondary";
 
-button.classList.add(
-"selected"
-);
 
-}
+button.disabled =
+equipped;
 
 
 button.onclick =
-() => equipAvatarItem(
+async () => {
+
+await equipAvatarInventoryItem(
 item.item_key
 );
+
+};
 
 
 box.appendChild(
@@ -6481,8 +6558,7 @@ button
 }
 );
 
-}
-  
+}  
 /* ==========================================================
    아바타 색상
 ========================================================== */
@@ -6518,7 +6594,7 @@ color;
 */
 
 renderAvatarPreview({
-avatar_color:
+fur_color:
 color
 });
 
