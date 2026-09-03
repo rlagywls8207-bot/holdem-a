@@ -8163,27 +8163,6 @@ return;
 }
 
 
-/*
-방장이 아닌 경우:
-기존처럼 빈자리를 누르면 바로 본인이 앉는다.
-*/
-
-if(!currentRoom.is_host){
-
-chooseSeat(
-seatNo
-);
-
-return;
-
-}
-
-
-/*
-방장은
-본인이 앉을지 / 봇을 추가할지 선택
-*/
-
 byId(
 "modalTitle"
 )
@@ -8191,14 +8170,11 @@ byId(
 `${seatNo}번 자리`;
 
 
-byId(
-"modalText"
-)
-.innerHTML = `
+let html = `
 
 <div style="margin-bottom:12px">
 
-이 자리에 무엇을 앉히겠습니까?
+이 자리를 선택했습니다.
 
 </div>
 
@@ -8206,17 +8182,33 @@ byId(
 class="primary"
 onclick="closeModal();chooseSeat(${seatNo})"
 >
-내가 앉기
+이 자리에 앉기
 </button>
+
+`;
+
+
+if(currentRoom.is_host){
+
+html += `
 
 <button
 class="secondary"
 onclick="openBotSeatMenu(${seatNo})"
 >
-봇 추가
+봇 추가하기
 </button>
 
 `;
+
+}
+
+
+byId(
+"modalText"
+)
+.innerHTML =
+html;
 
 
 byId(
@@ -9501,6 +9493,7 @@ newStreet;
 
 const [
 playerResult,
+botResult,
 communityResult,
 holeResult
 ] =
@@ -9508,6 +9501,14 @@ await Promise.all([
 
 db.rpc(
 "get_classic_table_players",
+{
+p_room_id:
+currentRoom.room_id
+}
+),
+
+db.rpc(
+"get_classic_table_bots",
 {
 p_room_id:
 currentRoom.room_id
@@ -9532,15 +9533,71 @@ currentRoom.room_id
 
 ]);
 
+if(
+!playerResult.error &&
+!botResult.error
+){
 
-if(!playerResult.error){
+const humanPlayers =
+(playerResult.data ?? [])
+.map(
+player => ({
 
-currentHandPlayers =
-playerResult.data ??
-[];
+...player,
+
+is_bot:
+false
+
+})
+);
+
+
+const botPlayers =
+(botResult.data ?? [])
+.map(
+bot => ({
+
+...bot,
+
+profile_id:
+null,
+
+is_bot:
+true
+
+})
+);
+
+
+currentHandPlayers = [
+
+...humanPlayers,
+...botPlayers
+
+];
+
+}else{
+
+if(playerResult.error){
+
+console.error(
+"get_classic_table_players:",
+playerResult.error
+);
 
 }
 
+
+if(botResult.error){
+
+console.error(
+"get_classic_table_bots:",
+botResult.error
+);
+
+}
+
+}
 
 if(!communityResult.error){
 
@@ -9622,6 +9679,8 @@ await refreshActionEvents();
 
 detectMyTurn();
 
+runBotTurn();
+
 
 
 /* ==========================================================
@@ -9691,6 +9750,517 @@ finished:
 return names[street]
 ??
 street;
+
+}
+
+/* ==========================================================
+   봇 자동 행동
+========================================================== */
+
+async function runBotTurn(){
+
+/*
+봇은 현재 방장의 브라우저에서만 실행한다.
+
+다른 참가자들도 게임 상태를 읽지만
+실제 봇 행동 RPC는 실행하지 않는다.
+*/
+
+if(
+!currentRoom ||
+!currentRoom.is_host ||
+!currentHand
+){
+
+return;
+
+}
+
+
+/*
+이미 다른 봇 행동을 처리 중이면 중복 실행 금지
+*/
+
+if(botRunnerBusy){
+
+return;
+
+}
+
+
+/*
+실제 행동 가능한 스트리트에서만 실행
+*/
+
+if(
+![
+"preflop",
+"flop",
+"turn",
+"river"
+]
+.includes(
+currentHand.street
+)
+){
+
+return;
+
+}
+
+
+const actorSeat =
+currentHand.current_actor_seat_no === null
+?
+null
+:
+Number(
+currentHand.current_actor_seat_no
+);
+
+
+if(actorSeat === null){
+
+return;
+
+}
+
+
+/*
+현재 행동 좌석의 참가자 확인
+*/
+
+const bot =
+currentHandPlayers.find(
+player =>
+Number(
+player.seat_no
+) ===
+actorSeat &&
+player.is_bot ===
+true
+);
+
+
+if(!bot){
+
+return;
+
+}
+
+
+if(
+!bot.bot_instance_id ||
+bot.folded ||
+bot.all_in
+){
+
+return;
+
+}
+
+
+if(
+!window.HoldemBotEngine
+){
+
+console.error(
+"HoldemBotEngine을 찾을 수 없습니다."
+);
+
+return;
+
+}
+
+
+botRunnerBusy =
+true;
+
+
+try{
+
+/* ========================================================
+   서버에서 이 봇의 행동 가능 상태 조회
+======================================================== */
+
+const {
+data:optionData,
+error:optionError
+} =
+await db.rpc(
+"get_bot_classic_action_options",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_bot_instance_id:
+bot.bot_instance_id
+
+}
+);
+
+
+if(optionError){
+
+console.error(
+"get_bot_classic_action_options:",
+optionError
+);
+
+return;
+
+}
+
+
+const options =
+optionData?.[0];
+
+
+if(
+!options ||
+!options.is_my_turn
+){
+
+return;
+
+}
+
+
+/* ========================================================
+   중복 행동 방지 키
+
+   같은 봇이 같은 스트리트에서
+   상대 레이즈 때문에 다시 행동해야 하는 경우에는
+   current_bet / round_bet이 달라지므로 새 행동으로 인정.
+======================================================== */
+
+const actionKey = [
+
+currentHand.hand_number,
+currentHand.street,
+bot.bot_instance_id,
+options.current_bet,
+options.my_round_bet,
+options.my_total_bet
+
+].join(
+":"
+);
+
+
+if(
+lastBotActionKey ===
+actionKey
+){
+
+return;
+
+}
+
+
+lastBotActionKey =
+actionKey;
+
+
+/* ========================================================
+   봇 자신의 홀카드 조회
+======================================================== */
+
+const {
+data:holeCards,
+error:holeError
+} =
+await db.rpc(
+"get_bot_holdem_cards_ui",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_bot_instance_id:
+bot.bot_instance_id
+
+}
+);
+
+
+if(holeError){
+
+console.error(
+"get_bot_holdem_cards_ui:",
+holeError
+);
+
+
+lastBotActionKey =
+null;
+
+
+return;
+
+}
+
+
+if(
+!holeCards ||
+holeCards.length < 2
+){
+
+console.error(
+"봇 홀카드가 없습니다:",
+bot.bot_instance_id
+);
+
+
+lastBotActionKey =
+null;
+
+
+return;
+
+}
+
+
+/* ========================================================
+   AI 판단
+
+   봇에게 제공되는 정보:
+   - 자기 홀카드
+   - 공개된 공용카드
+   - 공개된 참가자 상태
+   - 현재 행동 가능 범위
+   - 현재 팟
+
+   다른 사람의 홀카드는 전달하지 않는다.
+======================================================== */
+
+const decision =
+window.HoldemBotEngine.decide({
+
+profile:
+bot.strategy_key,
+
+street:
+currentHand.street,
+
+holeCards:
+holeCards,
+
+communityCards:
+currentCommunityCards,
+
+options:
+options,
+
+pot:
+currentHand.pot,
+
+players:
+currentHandPlayers,
+
+botId:
+bot.bot_instance_id
+
+});
+
+
+if(
+!decision ||
+!decision.action
+){
+
+console.error(
+"봇이 행동을 결정하지 못했습니다:",
+bot
+);
+
+
+lastBotActionKey =
+null;
+
+
+return;
+
+}
+
+
+/* ========================================================
+   생각 시간
+======================================================== */
+
+const delay =
+Math.max(
+250,
+Number(
+decision.delayMs
+) || 800
+);
+
+
+await new Promise(
+resolve =>
+setTimeout(
+resolve,
+delay
+)
+);
+
+
+/* ========================================================
+   생각하는 동안 판/방이 바뀌었는지 확인
+======================================================== */
+
+if(
+!currentRoom ||
+!currentHand ||
+currentHand.street ===
+"finished"
+){
+
+return;
+
+}
+
+
+/*
+행동 직전 서버에서 턴을 다시 검사한다.
+
+다른 탭이나 재접속 때문에 이미 턴이 넘어갔다면
+여기서 행동하지 않는다.
+*/
+
+const {
+data:verifyData,
+error:verifyError
+} =
+await db.rpc(
+"get_bot_classic_action_options",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_bot_instance_id:
+bot.bot_instance_id
+
+}
+);
+
+
+if(verifyError){
+
+console.error(
+"봇 행동 재확인:",
+verifyError
+);
+
+
+lastBotActionKey =
+null;
+
+
+return;
+
+}
+
+
+const verified =
+verifyData?.[0];
+
+
+if(
+!verified ||
+!verified.is_my_turn
+){
+
+return;
+
+}
+
+
+/* ========================================================
+   서버에 실제 행동 요청
+======================================================== */
+
+const raiseTo =
+decision.action ===
+"raise"
+?
+decision.raiseTo
+:
+null;
+
+
+const {
+error:actionError
+} =
+await db.rpc(
+"bot_holdem_action",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_bot_instance_id:
+bot.bot_instance_id,
+
+p_action:
+decision.action,
+
+p_raise_to:
+raiseTo
+
+}
+);
+
+
+if(actionError){
+
+console.error(
+"bot_holdem_action:",
+actionError
+);
+
+
+/*
+실패한 행동은 다음 갱신에서 재시도할 수 있게 함
+*/
+
+lastBotActionKey =
+null;
+
+
+return;
+
+}
+
+
+/*
+성공 후 최신 상태 즉시 반영
+*/
+
+await refreshGame();
+
+}
+catch(error){
+
+console.error(
+"runBotTurn:",
+error
+);
+
+
+lastBotActionKey =
+null;
+
+}
+finally{
+
+botRunnerBusy =
+false;
+
+}
 
 }
 
