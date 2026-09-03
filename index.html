@@ -9991,18 +9991,31 @@ return;
 }
 
 
+for(
+let seconds = 5;
+seconds >= 0;
+seconds--
+){
+
+showBotThinkingNotice(
+bot.nickname,
+seconds
+);
+
+
+if(seconds > 0){
+
 await new Promise(
 resolve =>
 setTimeout(
 resolve,
-Math.max(
-250,
-Number(
-decision.delayMs
-) || 800
-)
+1000
 )
 );
+
+}
+
+}
 
 
 const {
@@ -10093,6 +10106,13 @@ return;
 
 }
 
+byId(
+"gameNotice"
+)
+.classList.add(
+"hidden"
+);
+
 
 await refreshGame();
 
@@ -10158,6 +10178,36 @@ street;
 /* ==========================================================
    봇 자동 행동
 ========================================================== */
+
+function showBotThinkingNotice(
+botName,
+seconds
+){
+
+const box =
+byId(
+"gameNotice"
+);
+
+
+byId(
+"gameNoticeTitle"
+)
+.textContent =
+`${botName} 고민중`;
+
+
+byId(
+"gameNoticeText"
+)
+.textContent =
+`(${seconds})`;
+
+
+box.className =
+"gameNotice turn";
+
+}
 
 async function runBotTurn(){
 
