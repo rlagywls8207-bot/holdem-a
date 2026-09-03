@@ -1251,7 +1251,7 @@ const HoldemBotEngine = (() => {
             botId &&
             (
               player.profile_id === botId ||
-              player.bot_id === botId
+              player.bot_instance_id === botId
             )
           ) {
 
