@@ -9715,7 +9715,409 @@ await renderFinished();
 
 }
 
+/* ==========================================================
+   봇 자동 행동
+========================================================== */
 
+async function runBotTurn(){
+
+if(
+!currentRoom ||
+!currentRoom.is_host ||
+!currentHand
+){
+
+return;
+
+}
+
+
+if(botRunnerBusy){
+
+return;
+
+}
+
+
+if(
+![
+"preflop",
+"flop",
+"turn",
+"river"
+]
+.includes(
+currentHand.street
+)
+){
+
+return;
+
+}
+
+
+const actorSeat =
+currentHand.current_actor_seat_no === null
+?
+null
+:
+Number(
+currentHand.current_actor_seat_no
+);
+
+
+if(actorSeat === null){
+
+return;
+
+}
+
+
+const bot =
+currentHandPlayers.find(
+player =>
+Number(
+player.seat_no
+) ===
+actorSeat &&
+player.is_bot ===
+true
+);
+
+
+if(!bot){
+
+return;
+
+}
+
+
+if(
+!bot.bot_instance_id ||
+bot.folded ||
+bot.all_in
+){
+
+return;
+
+}
+
+
+if(!window.HoldemBotEngine){
+
+console.error(
+"HoldemBotEngine을 찾을 수 없습니다."
+);
+
+return;
+
+}
+
+
+botRunnerBusy =
+true;
+
+
+try{
+
+const {
+data:optionData,
+error:optionError
+} =
+await db.rpc(
+"get_bot_classic_action_options",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_bot_instance_id:
+bot.bot_instance_id
+
+}
+);
+
+
+if(optionError){
+
+console.error(
+"get_bot_classic_action_options:",
+optionError
+);
+
+return;
+
+}
+
+
+const options =
+optionData?.[0];
+
+
+if(
+!options ||
+!options.is_my_turn
+){
+
+return;
+
+}
+
+
+const actionKey = [
+
+currentHand.hand_number,
+currentHand.street,
+bot.bot_instance_id,
+options.current_bet,
+options.my_round_bet,
+options.my_total_bet
+
+].join(
+":"
+);
+
+
+if(
+lastBotActionKey ===
+actionKey
+){
+
+return;
+
+}
+
+
+lastBotActionKey =
+actionKey;
+
+
+const {
+data:holeCards,
+error:holeError
+} =
+await db.rpc(
+"get_bot_holdem_cards_ui",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_bot_instance_id:
+bot.bot_instance_id
+
+}
+);
+
+
+if(holeError){
+
+console.error(
+"get_bot_holdem_cards_ui:",
+holeError
+);
+
+lastBotActionKey =
+null;
+
+return;
+
+}
+
+
+if(
+!holeCards ||
+holeCards.length < 2
+){
+
+console.error(
+"봇 홀카드가 없습니다:",
+bot.bot_instance_id
+);
+
+lastBotActionKey =
+null;
+
+return;
+
+}
+
+
+const decision =
+window.HoldemBotEngine.decide({
+
+profile:
+bot.strategy_key,
+
+street:
+currentHand.street,
+
+holeCards:
+holeCards,
+
+communityCards:
+currentCommunityCards,
+
+options:
+options,
+
+pot:
+currentHand.pot,
+
+players:
+currentHandPlayers,
+
+botId:
+bot.bot_instance_id
+
+});
+
+
+if(
+!decision ||
+!decision.action
+){
+
+console.error(
+"봇 행동 결정 실패:",
+bot
+);
+
+lastBotActionKey =
+null;
+
+return;
+
+}
+
+
+await new Promise(
+resolve =>
+setTimeout(
+resolve,
+Math.max(
+250,
+Number(
+decision.delayMs
+) || 800
+)
+)
+);
+
+
+const {
+data:verifyData,
+error:verifyError
+} =
+await db.rpc(
+"get_bot_classic_action_options",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_bot_instance_id:
+bot.bot_instance_id
+
+}
+);
+
+
+if(verifyError){
+
+console.error(
+"봇 턴 재확인 오류:",
+verifyError
+);
+
+lastBotActionKey =
+null;
+
+return;
+
+}
+
+
+const verified =
+verifyData?.[0];
+
+
+if(
+!verified ||
+!verified.is_my_turn
+){
+
+return;
+
+}
+
+
+const {
+error:actionError
+} =
+await db.rpc(
+"bot_holdem_action",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_bot_instance_id:
+bot.bot_instance_id,
+
+p_action:
+decision.action,
+
+p_raise_to:
+decision.action === "raise"
+?
+decision.raiseTo
+:
+null
+
+}
+);
+
+
+if(actionError){
+
+console.error(
+"bot_holdem_action:",
+actionError
+);
+
+lastBotActionKey =
+null;
+
+return;
+
+}
+
+
+await refreshGame();
+
+}
+catch(error){
+
+console.error(
+"runBotTurn:",
+error
+);
+
+lastBotActionKey =
+null;
+
+}
+finally{
+
+botRunnerBusy =
+false;
+
+}
+
+}
+
+  
 /* ==========================================================
    스트리트
 ========================================================== */
