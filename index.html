@@ -3770,6 +3770,12 @@ let currentLobbyPlayer = null;
 
 let currentRoomSeats = [];
 
+let currentRoomBots = [];
+
+let botRunnerBusy = false;
+
+let lastBotActionKey = null;
+
 let currentHand = null;
 
 let currentHandPlayers = [];
@@ -8038,11 +8044,13 @@ themeKey
 
 async function loadRoomSeats(){
 
-const {
-data,
-error
-} =
-await db.rpc(
+const [
+playerResult,
+botResult
+] =
+await Promise.all([
+
+db.rpc(
 "get_room_seats",
 {
 
@@ -8050,14 +8058,38 @@ p_room_id:
 currentRoom.room_id
 
 }
-);
+),
+
+db.rpc(
+"get_room_lobby_bots",
+{
+
+p_room_id:
+currentRoom.room_id
+
+}
+)
+
+]);
 
 
-if(error){
+if(playerResult.error){
 
 console.error(
 "get_room_seats:",
-error
+playerResult.error
+);
+
+return false;
+
+}
+
+
+if(botResult.error){
+
+console.error(
+"get_room_lobby_bots:",
+botResult.error
 );
 
 return false;
@@ -8066,14 +8098,18 @@ return false;
 
 
 currentRoomSeats =
-data ??
+playerResult.data ??
+[];
+
+
+currentRoomBots =
+botResult.data ??
 [];
 
 
 return true;
 
 }
-
 
 async function chooseSeat(
 seatNo
@@ -8106,6 +8142,204 @@ error.message
 return;
 
 }
+
+
+await refreshLobby();
+
+}
+
+/* ==========================================================
+   빈자리 선택 메뉴
+========================================================== */
+
+function openEmptySeatMenu(
+seatNo
+){
+
+if(!currentRoom){
+
+return;
+
+}
+
+
+/*
+방장이 아닌 경우:
+기존처럼 빈자리를 누르면 바로 본인이 앉는다.
+*/
+
+if(!currentRoom.is_host){
+
+chooseSeat(
+seatNo
+);
+
+return;
+
+}
+
+
+/*
+방장은
+본인이 앉을지 / 봇을 추가할지 선택
+*/
+
+byId(
+"modalTitle"
+)
+.textContent =
+`${seatNo}번 자리`;
+
+
+byId(
+"modalText"
+)
+.innerHTML = `
+
+<div style="margin-bottom:12px">
+
+이 자리에 무엇을 앉히겠습니까?
+
+</div>
+
+<button
+class="primary"
+onclick="closeModal();chooseSeat(${seatNo})"
+>
+내가 앉기
+</button>
+
+<button
+class="secondary"
+onclick="openBotSeatMenu(${seatNo})"
+>
+봇 추가
+</button>
+
+`;
+
+
+byId(
+"modalBackdrop"
+)
+.classList.remove(
+"hidden"
+);
+
+}
+
+
+/* ==========================================================
+   봇 선택 메뉴
+========================================================== */
+
+function openBotSeatMenu(
+seatNo
+){
+
+byId(
+"modalTitle"
+)
+.textContent =
+"봇 추가";
+
+
+byId(
+"modalText"
+)
+.innerHTML = `
+
+<div style="margin-bottom:12px">
+
+${seatNo}번 자리에 추가할 봇을 선택하세요.
+
+</div>
+
+<button
+class="primary"
+onclick="addBotToSeat(${seatNo},'honest')"
+>
+김용우
+</button>
+
+<button
+class="primary"
+onclick="addBotToSeat(${seatNo},'moth')"
+>
+김효진
+</button>
+
+<button
+class="primary"
+onclick="addBotToSeat(${seatNo},'master')"
+>
+박재선
+</button>
+
+<button
+class="secondary"
+onclick="openEmptySeatMenu(${seatNo})"
+>
+뒤로
+</button>
+
+`;
+
+}
+
+
+/* ==========================================================
+   실제 봇 추가
+========================================================== */
+
+async function addBotToSeat(
+seatNo,
+characterKey
+){
+
+if(
+!currentRoom ||
+!currentRoom.is_host
+){
+
+return;
+
+}
+
+
+const {
+error
+} =
+await db.rpc(
+"add_room_bot",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_character_key:
+characterKey,
+
+p_seat_no:
+seatNo
+
+}
+);
+
+
+if(error){
+
+showModal(
+"봇 추가 오류",
+error.message
+);
+
+return;
+
+}
+
+
+closeModal();
 
 
 await refreshLobby();
@@ -8149,7 +8383,24 @@ seatNo
 );
 
 
-if(!player){
+const bot =
+currentRoomBots.find(
+x =>
+Number(
+x.seat_no
+) ===
+seatNo
+);
+
+
+/* ========================================================
+   빈자리
+======================================================== */
+
+if(
+!player &&
+!bot
+){
 
 html += `
 
@@ -8157,7 +8408,7 @@ html += `
 
 <button
 class="emptySeat"
-onclick="chooseSeat(${seatNo})"
+onclick="openEmptySeatMenu(${seatNo})"
 >
 빈자리
 </button>
@@ -8174,6 +8425,12 @@ continue;
 
 }
 
+
+/* ========================================================
+   사람
+======================================================== */
+
+if(player){
 
 const me =
 player.profile_id ===
@@ -8205,6 +8462,37 @@ ${player.is_host ? " · 방장" : ""}
 
 `;
 
+continue;
+
+}
+
+
+/* ========================================================
+   봇
+======================================================== */
+
+html += `
+
+<div class="seat seat${seatNo}">
+
+${playerAvatar(bot)}
+
+<div class="seatName">
+${escapeHtml(bot.display_name)}
+</div>
+
+<div class="seatSub">
+
+${formatChip(bot.chips)}
+
+${bot.is_ready ? " · 준비" : ""}
+
+</div>
+
+</div>
+
+`;
+
 }
 
 
@@ -8212,7 +8500,6 @@ box.innerHTML =
 html;
 
 }
-
 
 /* ==========================================================
    대기실
@@ -8436,14 +8723,40 @@ seat.seat_no !== null
 );
 
 
-const allReady =
-(data?.length ?? 0) >= 2 &&
-everybodySeated &&
-data.every(
-x =>
-x.is_ready
+const everyBotSeated =
+currentRoomBots.every(
+bot =>
+bot.seat_no !== null
 );
 
+
+const humansReady =
+(data ?? [])
+.every(
+player =>
+player.is_ready
+);
+
+
+const botsReady =
+currentRoomBots.every(
+bot =>
+bot.is_ready
+);
+
+
+const participantCount =
+(data?.length ?? 0)
++
+currentRoomBots.length;
+
+
+const allReady =
+participantCount >= 2 &&
+everybodySeated &&
+everyBotSeated &&
+humansReady &&
+botsReady;
 
 const ready =
 byId(
