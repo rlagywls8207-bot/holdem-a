@@ -10128,23 +10128,31 @@ return;
    생각 시간
 ======================================================== */
 
-const delay =
-Math.max(
-250,
-Number(
-decision.delayMs
-) || 800
+for(
+let seconds = 5;
+seconds >= 0;
+seconds--
+){
+
+showBotThinkingNotice(
+bot.nickname,
+seconds
 );
 
+
+if(seconds > 0){
 
 await new Promise(
 resolve =>
 setTimeout(
 resolve,
-delay
+1000
 )
 );
 
+}
+
+}
 
 /* ========================================================
    생각하는 동안 판/방이 바뀌었는지 확인
@@ -10267,24 +10275,19 @@ raiseTo
 
 if(actionError){
 
-console.error(
-"bot_holdem_action:",
-actionError
-);
-
-
-/*
-실패한 행동은 다음 갱신에서 재시도할 수 있게 함
-*/
-
 lastBotActionKey =
 null;
+
+
+showModal(
+"봇 행동 오류",
+actionError.message
+);
 
 
 return;
 
 }
-
 
 /*
 성공 후 최신 상태 즉시 반영
