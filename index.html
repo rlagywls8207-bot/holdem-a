@@ -1997,7 +1997,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.15.0.2
+v0.15.0.3
 </div>
 
 <div class="subtitle">
@@ -3742,7 +3742,7 @@ style="white-space:pre-line;line-height:1.5"
 <script>
 
 const APP_VERSION =
-"v0.15.0.2";
+"v0.15.0.3";
 
 
 const SUPABASE_URL =
@@ -9804,6 +9804,12 @@ async function runBotTurn(){
 다른 참가자들도 게임 상태를 읽지만
 실제 봇 행동 RPC는 실행하지 않는다.
 */
+
+showModal(
+"봇 실행 확인",
+"runBotTurn() 진입"
+);
+  
 
 if(
 !currentRoom ||
