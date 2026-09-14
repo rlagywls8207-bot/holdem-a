@@ -9360,16 +9360,24 @@ byId(
 );
 
 
-byId(
-"sideTools"
+await new Promise(
+resolve =>
+setTimeout(
+resolve,
+700
 )
-.classList.remove(
+);
+
+
+byId(
+"gameNotice"
+)
+.classList.add(
 "hidden"
 );
 
 
 await refreshGame();
-
 
 gameTimer =
 setInterval(
@@ -10094,18 +10102,19 @@ null
 
 if(actionError){
 
-console.error(
-"bot_holdem_action:",
-actionError
-);
-
 lastBotActionKey =
 null;
+
+
+showModal(
+"봇 행동 오류",
+actionError.message
+);
+
 
 return;
 
 }
-
 byId(
 "gameNotice"
 )
@@ -10617,19 +10626,30 @@ return;
 }
 
 
-const verified =
-verifyData?.[0];
+byId(
+"gameNoticeTitle"
+)
+.textContent =
+`${bot.nickname} 결정`;
 
 
-if(
-!verified ||
-!verified.is_my_turn
-){
-
-return;
-
-}
-
+byId(
+"gameNoticeText"
+)
+.textContent =
+decision.action === "raise"
+?
+`레이즈 · ${formatChip(decision.raiseTo)}`
+:
+decision.action === "call"
+?
+"콜"
+:
+decision.action === "check"
+?
+"체크"
+:
+"폴드";
 
 /* ========================================================
    서버에 실제 행동 요청
