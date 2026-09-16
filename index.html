@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="ko">
+<html lang="ko">ㄹ
 
 <head>
 
@@ -1997,7 +1997,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.15.0.3
+v0.15.0.4
 </div>
 
 <div class="subtitle">
@@ -3742,7 +3742,7 @@ style="white-space:pre-line;line-height:1.5"
 <script>
 
 const APP_VERSION =
-"v0.15.0.3";
+"v0.15.0.4";
 
 
 const SUPABASE_URL =
@@ -9800,16 +9800,7 @@ async function runBotTurn(){
 
 /*
 봇은 현재 방장의 브라우저에서만 실행한다.
-
-다른 참가자들도 게임 상태를 읽지만
-실제 봇 행동 RPC는 실행하지 않는다.
 */
-
-showModal(
-"봇 실행 확인",
-"runBotTurn() 진입"
-);
-  
 
 if(
 !currentRoom ||
@@ -9822,20 +9813,12 @@ return;
 }
 
 
-/*
-이미 다른 봇 행동을 처리 중이면 중복 실행 금지
-*/
-
 if(botRunnerBusy){
 
 return;
 
 }
 
-
-/*
-실제 행동 가능한 스트리트에서만 실행
-*/
 
 if(
 ![
@@ -9872,7 +9855,7 @@ return;
 
 
 /*
-현재 행동 좌석의 참가자 확인
+현재 행동 좌석의 봇 확인
 */
 
 const bot =
@@ -9909,7 +9892,8 @@ if(
 !window.HoldemBotEngine
 ){
 
-console.error(
+showModal(
+"봇 엔진 오류",
 "HoldemBotEngine을 찾을 수 없습니다."
 );
 
@@ -9925,7 +9909,7 @@ true;
 try{
 
 /* ========================================================
-   서버에서 이 봇의 행동 가능 상태 조회
+   1. 서버에서 봇 행동 가능 상태 조회
 ======================================================== */
 
 const {
@@ -9948,9 +9932,9 @@ bot.bot_instance_id
 
 if(optionError){
 
-console.error(
-"get_bot_classic_action_options:",
-optionError
+showModal(
+"봇 상태 조회 오류",
+optionError.message
 );
 
 return;
@@ -9962,10 +9946,19 @@ const options =
 optionData?.[0];
 
 
-if(
-!options ||
-!options.is_my_turn
-){
+if(!options){
+
+showModal(
+"봇 상태 조회 실패",
+"서버에서 봇 행동 정보를 받지 못했습니다."
+);
+
+return;
+
+}
+
+
+if(!options.is_my_turn){
 
 return;
 
@@ -9973,11 +9966,7 @@ return;
 
 
 /* ========================================================
-   중복 행동 방지 키
-
-   같은 봇이 같은 스트리트에서
-   상대 레이즈 때문에 다시 행동해야 하는 경우에는
-   current_bet / round_bet이 달라지므로 새 행동으로 인정.
+   2. 중복 행동 방지
 ======================================================== */
 
 const actionKey = [
@@ -10009,7 +9998,7 @@ actionKey;
 
 
 /* ========================================================
-   봇 자신의 홀카드 조회
+   3. 봇 홀카드 조회
 ======================================================== */
 
 const {
@@ -10032,14 +10021,14 @@ bot.bot_instance_id
 
 if(holeError){
 
-console.error(
-"get_bot_holdem_cards_ui:",
-holeError
-);
-
-
 lastBotActionKey =
 null;
+
+
+showModal(
+"봇 홀카드 조회 오류",
+holeError.message
+);
 
 
 return;
@@ -10052,14 +10041,20 @@ if(
 holeCards.length < 2
 ){
 
-console.error(
-"봇 홀카드가 없습니다:",
-bot.bot_instance_id
-);
-
-
 lastBotActionKey =
 null;
+
+
+showModal(
+"봇 홀카드 오류",
+`받은 카드 수: ${
+Array.isArray(holeCards)
+?
+holeCards.length
+:
+"배열 아님"
+}`
+);
 
 
 return;
@@ -10068,16 +10063,7 @@ return;
 
 
 /* ========================================================
-   AI 판단
-
-   봇에게 제공되는 정보:
-   - 자기 홀카드
-   - 공개된 공용카드
-   - 공개된 참가자 상태
-   - 현재 행동 가능 범위
-   - 현재 팟
-
-   다른 사람의 홀카드는 전달하지 않는다.
+   4. AI 판단
 ======================================================== */
 
 const decision =
@@ -10115,14 +10101,14 @@ if(
 !decision.action
 ){
 
-console.error(
-"봇이 행동을 결정하지 못했습니다:",
-bot
-);
-
-
 lastBotActionKey =
 null;
+
+
+showModal(
+"봇 판단 오류",
+"봇 엔진이 행동을 결정하지 못했습니다."
+);
 
 
 return;
@@ -10131,7 +10117,7 @@ return;
 
 
 /* ========================================================
-   생각 시간
+   5. 실제 5초 고민 표시
 ======================================================== */
 
 for(
@@ -10160,8 +10146,9 @@ resolve,
 
 }
 
+
 /* ========================================================
-   생각하는 동안 판/방이 바뀌었는지 확인
+   6. 5초 동안 판이 종료됐는지 확인
 ======================================================== */
 
 if(
@@ -10171,17 +10158,17 @@ currentHand.street ===
 "finished"
 ){
 
+lastBotActionKey =
+null;
+
 return;
 
 }
 
 
-/*
-행동 직전 서버에서 턴을 다시 검사한다.
-
-다른 탭이나 재접속 때문에 이미 턴이 넘어갔다면
-여기서 행동하지 않는다.
-*/
+/* ========================================================
+   7. 행동 직전 서버에서 턴 재확인
+======================================================== */
 
 const {
 data:verifyData,
@@ -10203,20 +10190,48 @@ bot.bot_instance_id
 
 if(verifyError){
 
-console.error(
-"봇 행동 재확인:",
-verifyError
-);
-
-
 lastBotActionKey =
 null;
+
+
+showModal(
+"봇 턴 재확인 오류",
+verifyError.message
+);
 
 
 return;
 
 }
 
+
+const verified =
+verifyData?.[0];
+
+
+if(
+!verified ||
+!verified.is_my_turn
+){
+
+lastBotActionKey =
+null;
+
+
+showModal(
+"봇 턴 확인 실패",
+"5초 후 다시 확인했을 때 서버가 이 봇의 차례가 아니라고 응답했습니다."
+);
+
+
+return;
+
+}
+
+
+/* ========================================================
+   8. 결정 내용 표시
+======================================================== */
 
 byId(
 "gameNoticeTitle"
@@ -10243,8 +10258,16 @@ decision.action === "check"
 :
 "폴드";
 
+
+byId(
+"gameNotice"
+)
+.className =
+"gameNotice turn";
+
+
 /* ========================================================
-   서버에 실제 행동 요청
+   9. 실제 행동 요청
 ======================================================== */
 
 const raiseTo =
@@ -10295,23 +10318,25 @@ return;
 
 }
 
-/*
-성공 후 최신 상태 즉시 반영
-*/
+
+/* ========================================================
+   10. 성공 후 최신 게임 상태 반영
+======================================================== */
 
 await refreshGame();
 
 }
 catch(error){
 
-console.error(
-"runBotTurn:",
-error
-);
-
-
 lastBotActionKey =
 null;
+
+
+showModal(
+"봇 실행 오류",
+error?.message ||
+String(error)
+);
 
 }
 finally{
@@ -10322,7 +10347,6 @@ false;
 }
 
 }
-
   /* ==========================================================
    스트리트 순서
 ========================================================== */
