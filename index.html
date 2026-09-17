@@ -543,6 +543,34 @@ button{
 }
 
 /* ==========================================================
+   대기실 칩 빠른 설정
+========================================================== */
+
+.exchangeActions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  margin-top:8px;
+}
+
+.exchangeActions button{
+  height:46px;
+  margin:0;
+  padding:4px 3px;
+  border-radius:10px;
+  font-size:12px;
+  line-height:1.15;
+}
+
+.exchangeActions button small{
+  display:block;
+  margin-top:3px;
+  font-size:9px;
+  font-weight:normal;
+  opacity:.65;
+}
+  
+/* ==========================================================
    대기실 테이블
 ========================================================== */
 
@@ -2569,12 +2597,33 @@ class="fieldHelp"
 >
 </div>
 
+<div class="exchangeActions">
+
 <button
 class="primary"
 onclick="exchangeChips()"
 >
-칩 수 적용
+칩수 적용
+<small>입력값 적용</small>
 </button>
+
+<button
+class="secondary"
+onclick="setMaxLobbyChips()"
+>
+최대칩
+<small>자동 조정</small>
+</button>
+
+<button
+class="secondary"
+onclick="resetLobbyChips()"
+>
+0 초기화
+<small>전부 반환</small>
+</button>
+
+</div>
 
 </div>
 
@@ -9807,7 +9856,175 @@ await refreshLobby();
 
 }
 
+async function setMaxLobbyChips(){
 
+if(
+!currentRoom ||
+!currentLobbyPlayer ||
+!currentProfile
+){
+
+return;
+
+}
+
+
+const current =
+num(
+currentLobbyPlayer.chips
+);
+
+
+const max =
+num(
+currentRoom.max_buyin_chips
+);
+
+
+let target =
+max;
+
+
+let perShortage =
+false;
+
+
+/* 최대칩보다 부족한 경우 */
+
+if(current < max){
+
+const chipValue =
+num(
+currentRoom.chip_value_per
+);
+
+
+const balancePer =
+num(
+currentProfile.balance_per
+);
+
+
+const neededChips =
+max -
+current;
+
+
+const affordableChips =
+Math.floor(
+balancePer /
+chipValue
+);
+
+
+if(affordableChips < neededChips){
+
+target =
+current +
+affordableChips;
+
+
+perShortage =
+true;
+
+}
+
+}
+
+
+const {
+error
+} =
+await db.rpc(
+"set_lobby_chips",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_target_chips:
+target
+
+}
+);
+
+
+if(error){
+
+showModal(
+"칩 준비 오류",
+error.message
+);
+
+return;
+
+}
+
+
+await refreshProfile();
+
+await refreshLobby();
+
+
+if(perShortage){
+
+showModal(
+"퍼 부족",
+"퍼가 부족합니다."
+);
+
+}
+
+}
+
+
+async function resetLobbyChips(){
+
+if(
+!currentRoom ||
+!currentLobbyPlayer
+){
+
+return;
+
+}
+
+
+const {
+error
+} =
+await db.rpc(
+"set_lobby_chips",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_target_chips:
+0
+
+}
+);
+
+
+if(error){
+
+showModal(
+"칩 준비 오류",
+error.message
+);
+
+return;
+
+}
+
+
+await refreshProfile();
+
+await refreshLobby();
+
+}
+  
 /* ==========================================================
    준비
 ========================================================== */
