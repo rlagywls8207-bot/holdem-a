@@ -2025,7 +2025,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.15.0.6
+v0.15.0.7
 </div>
 
 <div class="subtitle">
@@ -2783,7 +2783,16 @@ class="gameTableArea"
 <div class="gameTableCenter">
 
 <div
+id="playerActionStatus"
+class="playerActionStatus"
+>
+</div>
+
+<div
 id="communityCards"
+class="communityCards"
+>
+</div>
 class="communityCards"
 >
 </div>
@@ -3791,7 +3800,7 @@ style="white-space:pre-line;line-height:1.5"
 <script>
 
 const APP_VERSION =
-"v0.15.0.6";
+"v0.15.0.7";
 
 
 const SUPABASE_URL =
@@ -11226,6 +11235,330 @@ false;
 }
 
 }
+
+/* ==========================================================
+   v0.14.8 플레이어 실시간 행동 상태
+========================================================== */
+
+let playerActionStatusMap =
+new Map();
+
+
+let playerActionStatusHandNumber =
+null;
+
+
+let playerActionStatusStreet =
+null;
+
+function resetPlayerActionStatusIfNeeded(){
+
+if(!currentHand){
+
+return;
+
+}
+
+
+const handNumber =
+Number(
+currentHand.hand_number
+);
+
+
+const street =
+currentHand.street;
+
+
+if(
+playerActionStatusHandNumber !==
+handNumber ||
+playerActionStatusStreet !==
+street
+){
+
+playerActionStatusMap.clear();
+
+playerActionStatusHandNumber =
+handNumber;
+
+playerActionStatusStreet =
+street;
+
+}
+
+}
+
+
+function setPlayerActionStatus(
+event
+){
+
+if(!event){
+
+return;
+
+}
+
+
+const key =
+event.is_bot
+?
+`bot:${event.seat_no}`
+:
+event.profile_id
+?
+`player:${event.profile_id}`
+:
+`seat:${event.seat_no}`;
+
+
+let text =
+"";
+
+
+if(
+event.action_type ===
+"fold"
+){
+
+text =
+"폴드";
+
+}else if(
+event.action_type ===
+"check"
+){
+
+text =
+"체크";
+
+}else if(
+event.action_type ===
+"call"
+){
+
+text =
+`콜 +${formatChip(
+event.amount
+)}`;
+
+}else if(
+event.action_type ===
+"raise"
+){
+
+text =
+`레이즈 +${formatChip(
+event.amount
+)}`;
+
+}else if(
+event.action_type ===
+"all_in"
+){
+
+text =
+`올인 +${formatChip(
+event.amount
+)}`;
+
+}else{
+
+return;
+
+}
+
+
+playerActionStatusMap.set(
+key,
+{
+
+text,
+actionType:
+event.action_type
+
+}
+);
+
+
+renderPlayerActionStatus();
+
+}
+
+
+function renderPlayerActionStatus(){
+
+const box =
+byId(
+"playerActionStatus"
+);
+
+
+if(
+!box ||
+!currentHand
+){
+
+return;
+
+}
+
+
+resetPlayerActionStatusIfNeeded();
+
+
+const players =
+[...currentHandPlayers]
+.sort(
+(a,b) =>
+Number(a.seat_no) -
+Number(b.seat_no)
+);
+
+
+const playerCount =
+players.length;
+
+
+/*
+6명까지 한 줄.
+7명 이상이면 2줄.
+*/
+
+const columns =
+playerCount <= 6
+?
+Math.max(
+1,
+playerCount
+)
+:
+Math.ceil(
+playerCount / 2
+);
+
+
+box.style.setProperty(
+"--status-columns",
+columns
+);
+
+
+const actorSeat =
+currentHand.current_actor_seat_no === null
+?
+null
+:
+Number(
+currentHand.current_actor_seat_no
+);
+
+
+let html =
+"";
+
+
+players.forEach(
+player => {
+
+const key =
+player.is_bot
+?
+`bot:${player.seat_no}`
+:
+player.profile_id
+?
+`player:${player.profile_id}`
+:
+`seat:${player.seat_no}`;
+
+
+const saved =
+playerActionStatusMap.get(
+key
+);
+
+
+const isCurrent =
+actorSeat !== null &&
+Number(
+player.seat_no
+) ===
+actorSeat &&
+!player.folded &&
+!player.all_in;
+
+
+let actionText =
+saved?.text ??
+"";
+
+
+if(isCurrent){
+
+actionText =
+"● 행동중";
+
+}
+
+
+let classes =
+"playerActionStatusItem";
+
+
+if(isCurrent){
+
+classes +=
+" current";
+
+}
+
+
+if(player.folded){
+
+classes +=
+" folded";
+
+}
+
+
+html += `
+
+<div class="${classes}">
+
+<span class="statusName">
+${escapeHtml(
+player.nickname ??
+"플레이어"
+)}
+</span>
+
+${
+actionText
+?
+`
+<span class="statusAction">
+ · ${escapeHtml(actionText)}
+</span>
+`
+:
+""
+}
+
+</div>
+
+`;
+
+}
+);
+
+
+box.innerHTML =
+html;
+
+}
+  
   /* ==========================================================
    스트리트 순서
 ========================================================== */
@@ -11939,7 +12272,12 @@ event
 function announcePlayerAction(
 event
 ){
+resetPlayerActionStatusIfNeeded();
 
+
+setPlayerActionStatus(
+event
+);
 const name =
 event.profile_id ===
 currentUser.id
@@ -12171,6 +12509,10 @@ currentHand.pot
 
 renderStreetProgress();
 
+resetPlayerActionStatusIfNeeded();
+
+renderPlayerActionStatus();
+
 renderCommunity();
 
 renderPot();
@@ -12192,6 +12534,50 @@ renderActionArea();
 
 }
 
+/* ==========================================================
+   v0.14.8 플레이어 실시간 행동 상태
+========================================================== */
+
+.playerActionStatus{
+  display:grid;
+  grid-template-columns:repeat(var(--status-columns, 1), minmax(0,1fr));
+  align-items:center;
+  width:100%;
+  min-height:20px;
+  margin-bottom:7px;
+  column-gap:5px;
+  row-gap:3px;
+}
+
+.playerActionStatusItem{
+  min-width:0;
+  overflow:hidden;
+  color:#ddd;
+  text-align:center;
+  font-size:9px;
+  font-weight:700;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+
+.playerActionStatusItem .statusName{
+  color:#aaa;
+}
+
+.playerActionStatusItem .statusAction{
+  color:#fff;
+  font-weight:900;
+}
+
+.playerActionStatusItem.current .statusAction{
+  color:#fff;
+  text-shadow:0 0 6px rgba(255,255,255,.65);
+}
+
+.playerActionStatusItem.folded{
+  opacity:.45;
+}
+  
 /* ==========================================================
    공용 카드
 ========================================================== */
