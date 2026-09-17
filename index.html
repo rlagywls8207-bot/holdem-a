@@ -2025,7 +2025,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.15.0.7
+v0.15.0.6
 </div>
 
 <div class="subtitle">
@@ -3800,7 +3800,7 @@ style="white-space:pre-line;line-height:1.5"
 <script>
 
 const APP_VERSION =
-"v0.15.0.7";
+"v0.15.0.6";
 
 
 const SUPABASE_URL =
@@ -11259,22 +11259,15 @@ return;
 
 }
 
-
 const handNumber =
-Number(
-currentHand.hand_number
-);
-
+Number(currentHand.hand_number);
 
 const street =
 currentHand.street;
 
-
 if(
-playerActionStatusHandNumber !==
-handNumber ||
-playerActionStatusStreet !==
-street
+playerActionStatusHandNumber !== handNumber ||
+playerActionStatusStreet !== street
 ){
 
 playerActionStatusMap.clear();
@@ -11290,78 +11283,65 @@ street;
 }
 
 
+function getPlayerActionStatusKey(
+player
+){
+
+if(player.is_bot){
+
+return `seat:${Number(player.seat_no)}`;
+
+}
+
+if(player.profile_id){
+
+return `player:${player.profile_id}`;
+
+}
+
+return `seat:${Number(player.seat_no)}`;
+
+}
+
+
 function setPlayerActionStatus(
 event
 ){
 
-if(!event){
+if(
+!event ||
+!currentHand
+){
 
 return;
 
 }
 
-
-const key =
-event.is_bot
-?
-`bot:${event.seat_no}`
-:
-event.profile_id
-?
-`player:${event.profile_id}`
-:
-`seat:${event.seat_no}`;
+resetPlayerActionStatusIfNeeded();
 
 
 let text =
 "";
 
-
-if(
-event.action_type ===
-"fold"
-){
+if(event.action_type === "fold"){
 
 text =
 "폴드";
 
-}else if(
-event.action_type ===
-"check"
-){
+}else if(event.action_type === "check"){
 
 text =
 "체크";
 
-}else if(
-event.action_type ===
-"call"
-){
+}else if(event.action_type === "call"){
 
 text =
-`콜 +${formatChip(
-event.amount
-)}`;
+`콜 +${formatChip(event.amount)}`;
 
-}else if(
-event.action_type ===
-"raise"
-){
+}else if(event.action_type === "raise"){
 
 text =
-`레이즈 +${formatChip(
-event.amount
-)}`;
-
-}else if(
-event.action_type ===
-"all_in"
-){
-
-text =
-`올인 +${formatChip(
-event.amount
-)}`;
+`레이즈 +${formatChip(event.amount)}`;
 
 }else{
 
@@ -11370,15 +11350,38 @@ return;
 }
 
 
-playerActionStatusMap.set(
-key,
-{
+/*
+행동 이벤트의 seat_no를 기준으로
+현재 테이블 플레이어를 찾는다.
+*/
 
-text,
-actionType:
-event.action_type
+const seatNo =
+Number(event.seat_no);
+
+
+const player =
+currentHandPlayers.find(
+item =>
+Number(item.seat_no) === seatNo
+);
+
+
+if(!player){
+
+return;
 
 }
+
+
+const key =
+getPlayerActionStatusKey(
+player
+);
+
+
+playerActionStatusMap.set(
+key,
+text
 );
 
 
@@ -11417,31 +11420,29 @@ Number(b.seat_no)
 );
 
 
-const playerCount =
-players.length;
+if(players.length === 0){
 
+box.innerHTML =
+"";
 
-/*
-6명까지 한 줄.
-7명 이상이면 2줄.
-*/
+return;
+
+}
+
 
 const columns =
-playerCount <= 6
+players.length <= 6
 ?
-Math.max(
-1,
-playerCount
-)
+players.length
 :
 Math.ceil(
-playerCount / 2
+players.length / 2
 );
 
 
 box.style.setProperty(
 "--status-columns",
-columns
+Math.max(1,columns)
 );
 
 
@@ -11459,40 +11460,27 @@ let html =
 "";
 
 
-players.forEach(
-player => {
+for(
+const player of players
+){
 
 const key =
-player.is_bot
-?
-`bot:${player.seat_no}`
-:
-player.profile_id
-?
-`player:${player.profile_id}`
-:
-`seat:${player.seat_no}`;
+getPlayerActionStatusKey(
+player
+);
 
 
-const saved =
+let actionText =
 playerActionStatusMap.get(
 key
-);
+) || "";
 
 
 const isCurrent =
 actorSeat !== null &&
-Number(
-player.seat_no
-) ===
-actorSeat &&
+Number(player.seat_no) === actorSeat &&
 !player.folded &&
 !player.all_in;
-
-
-let actionText =
-saved?.text ??
-"";
 
 
 if(isCurrent){
@@ -11523,25 +11511,32 @@ classes +=
 }
 
 
+/*
+사람은 nickname,
+봇은 bot_name 등을 사용할 가능성까지 대응.
+*/
+
+const displayName =
+player.nickname ||
+player.bot_name ||
+player.name ||
+`좌석 ${player.seat_no}`;
+
+
 html += `
 
 <div class="${classes}">
 
-<span class="statusName">
-${escapeHtml(
-player.nickname ??
-"플레이어"
-)}
-</span>
+<span class="statusName">${escapeHtml(
+String(displayName)
+)}</span>
 
 ${
 actionText
 ?
-`
-<span class="statusAction">
- · ${escapeHtml(actionText)}
-</span>
-`
+`<span class="statusAction"> · ${escapeHtml(
+String(actionText)
+)}</span>`
 :
 ""
 }
@@ -11551,14 +11546,12 @@ actionText
 `;
 
 }
-);
 
 
 box.innerHTML =
 html;
 
-}
-  
+}  
   /* ==========================================================
    스트리트 순서
 ========================================================== */
