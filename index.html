@@ -6718,8 +6718,16 @@ function avatarSvg(
 avatar = {}
 ){
 
+const isBotAvatar =
+avatar.is_bot === true ||
+avatar.strategy_key === "honest" ||
+avatar.strategy_key === "moth" ||
+avatar.strategy_key === "master";
+
 const fur =
-normalizeColor(
+isBotAvatar
+? "#FFFFFF"
+: normalizeColor(
 avatar.fur_color ??
 avatar.avatar_color ??
 "#C89B61"
