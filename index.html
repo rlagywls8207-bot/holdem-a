@@ -11465,29 +11465,25 @@ Number(b.seat_no)
 );
 
 
-if(players.length === 0){
+const playerCount =
+players.length;
 
-box.innerHTML =
-"";
 
-return;
-
-}
-
+/*
+6명까지 한 줄.
+7명 이상이면 2줄.
+*/
 
 const columns =
-players.length <= 6
+playerCount <= 6
 ?
-players.length
+Math.max(
+1,
+playerCount
+)
 :
 Math.ceil(
-players.length / 2
-);
-
-
-box.style.setProperty(
-"--status-columns",
-Math.max(1,columns)
+playerCount / 2
 );
 
 
@@ -11505,27 +11501,40 @@ let html =
 "";
 
 
-for(
-const player of players
-){
+players.forEach(
+player => {
 
 const key =
-getPlayerActionStatusKey(
-player
-);
+player.is_bot
+?
+`bot:${player.seat_no}`
+:
+player.profile_id
+?
+`player:${player.profile_id}`
+:
+`seat:${player.seat_no}`;
 
 
-let actionText =
+const saved =
 playerActionStatusMap.get(
 key
-) || "";
+);
 
 
 const isCurrent =
 actorSeat !== null &&
-Number(player.seat_no) === actorSeat &&
+Number(
+player.seat_no
+) ===
+actorSeat &&
 !player.folded &&
 !player.all_in;
+
+
+let actionText =
+saved?.text ??
+"";
 
 
 if(isCurrent){
@@ -11556,32 +11565,25 @@ classes +=
 }
 
 
-/*
-사람은 nickname,
-봇은 bot_name 등을 사용할 가능성까지 대응.
-*/
-
-const displayName =
-player.nickname ||
-player.bot_name ||
-player.name ||
-`좌석 ${player.seat_no}`;
-
-
 html += `
 
 <div class="${classes}">
 
-<span class="statusName">${escapeHtml(
-String(displayName)
-)}</span>
+<span class="statusName">
+${escapeHtml(
+player.nickname ??
+"플레이어"
+)}
+</span>
 
 ${
 actionText
 ?
-`<span class="statusAction"> · ${escapeHtml(
-String(actionText)
-)}</span>`
+`
+<span class="statusAction">
+ · ${escapeHtml(actionText)}
+</span>
+`
 :
 ""
 }
@@ -11591,10 +11593,49 @@ String(actionText)
 `;
 
 }
+);
 
+
+/*
+실제 표시 내용이 달라졌을 때만 DOM 수정.
+1.4초 주기 refreshGame 때문에
+같은 상태표를 계속 갈아끼우는 현상을 방지한다.
+*/
+
+const previousColumns =
+box.style.getPropertyValue(
+"--status-columns"
+);
+
+
+const nextColumns =
+String(
+columns
+);
+
+
+if(
+previousColumns !==
+nextColumns
+){
+
+box.style.setProperty(
+"--status-columns",
+nextColumns
+);
+
+}
+
+
+if(
+box.innerHTML !==
+html
+){
 
 box.innerHTML =
 html;
+
+}
 
 }  
   /* ==========================================================
