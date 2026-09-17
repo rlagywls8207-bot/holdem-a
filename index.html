@@ -1997,7 +1997,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.15.0.4
+v0.15.0.5
 </div>
 
 <div class="subtitle">
@@ -3742,7 +3742,7 @@ style="white-space:pre-line;line-height:1.5"
 <script>
 
 const APP_VERSION =
-"v0.15.0.4";
+"v0.15.0.5";
 
 
 const SUPABASE_URL =
@@ -8636,7 +8636,7 @@ byId(
 
 let html = `
 
-<div style="margin-bottom:12px">
+<div style="margin:0 0 3px 0; line-height:1.25">
 
 이 자리를 선택했습니다.
 
@@ -8644,6 +8644,7 @@ let html = `
 
 <button
 class="primary"
+style="margin-top:3px"
 onclick="closeModal();chooseSeat(${seatNo})"
 >
 이 자리에 앉기
@@ -8658,6 +8659,7 @@ html += `
 
 <button
 class="secondary"
+style="margin-top:3px"
 onclick="openBotSeatMenu(${seatNo})"
 >
 봇 추가하기
@@ -8681,6 +8683,69 @@ byId(
 .classList.remove(
 "hidden"
 );
+
+}
+
+
+/* ==========================================================
+   봇 선택 메뉴
+========================================================== */
+
+function openBotSeatMenu(
+seatNo
+){
+
+byId(
+"modalTitle"
+)
+.textContent =
+"봇 추가";
+
+
+byId(
+"modalText"
+)
+.innerHTML = `
+
+<div style="margin:0 0 3px 0; line-height:1.25">
+
+${seatNo}번 자리에 추가할 봇을 선택하세요.
+
+</div>
+
+<button
+class="primary"
+style="margin-top:3px"
+onclick="addBotToSeat(${seatNo},'honest')"
+>
+김용우
+</button>
+
+<button
+class="primary"
+style="margin-top:3px"
+onclick="addBotToSeat(${seatNo},'moth')"
+>
+김효진
+</button>
+
+<button
+class="primary"
+style="margin-top:3px"
+onclick="addBotToSeat(${seatNo},'master')"
+>
+재선팍
+</button>
+
+<button
+class="secondary"
+style="margin-top:3px"
+onclick="openEmptySeatMenu(${seatNo})"
+>
+뒤로
+</button>
+
+`;
 
 }
 
@@ -8802,7 +8867,135 @@ await refreshLobby();
 
 }
 
+/* ==========================================================
+   봇 관리 메뉴
+========================================================== */
 
+function openBotManageMenu(
+botInstanceId,
+seatNo
+){
+
+if(
+!currentRoom ||
+!currentRoom.is_host
+){
+
+return;
+
+}
+
+
+const bot =
+currentRoomBots.find(
+x =>
+x.bot_instance_id ===
+botInstanceId
+);
+
+
+if(!bot){
+
+return;
+
+}
+
+
+byId(
+"modalTitle"
+)
+.textContent =
+escapeHtml(
+bot.display_name
+);
+
+
+byId(
+"modalText"
+)
+.innerHTML = `
+
+<div style="margin:0 0 3px 0; line-height:1.25">
+
+${seatNo}번 자리 · ${formatChip(bot.chips)}
+
+</div>
+
+<button
+class="danger"
+style="margin-top:3px"
+onclick="removeBotFromSeat('${botInstanceId}')"
+>
+봇 제거
+</button>
+
+`;
+
+
+byId(
+"modalBackdrop"
+)
+.classList.remove(
+"hidden"
+);
+
+}
+
+
+/* ==========================================================
+   봇 제거
+========================================================== */
+
+async function removeBotFromSeat(
+botInstanceId
+){
+
+if(
+!currentRoom ||
+!currentRoom.is_host
+){
+
+return;
+
+}
+
+
+const {
+error
+} =
+await db.rpc(
+"remove_room_bot",
+{
+
+p_room_id:
+currentRoom.room_id,
+
+p_bot_instance_id:
+botInstanceId
+
+}
+);
+
+
+if(error){
+
+showModal(
+"봇 제거 오류",
+error.message
+);
+
+return;
+
+}
+
+
+closeModal();
+
+
+await refreshLobby();
+
+}
+  
 /* ==========================================================
    대기실 테이블
 ========================================================== */
@@ -8929,7 +9122,13 @@ continue;
 
 html += `
 
-<div class="seat seat${seatNo}">
+<div
+class="seat seat${seatNo}"
+${currentRoom.is_host
+? `onclick="openBotManageMenu('${bot.bot_instance_id}',${seatNo})" style="cursor:pointer"`
+: ""
+}
+>
 
 ${playerAvatar(bot)}
 
@@ -8948,7 +9147,6 @@ ${bot.is_ready ? " · 준비" : ""}
 </div>
 
 `;
-
 }
 
 
@@ -13771,38 +13969,72 @@ byId(
 );
 
 
-const {
-data:winners,
-error
-} =
-await db.rpc(
+/*
+사람 승자 + 봇 승자를 함께 가져온다.
+*/
+
+const [
+humanWinnerResult,
+botWinnerResult
+] =
+await Promise.all([
+
+db.rpc(
 "get_last_classic_winners",
 {
-
 p_room_id:
 currentRoom.room_id
-
 }
-);
+),
+
+db.rpc(
+"get_last_classic_bot_winners",
+{
+p_room_id:
+currentRoom.room_id
+}
+)
+
+]);
 
 
-if(error){
+if(humanWinnerResult.error){
 
 console.error(
-"winner:",
-error
+"human winner:",
+humanWinnerResult.error
 );
 
-return;
+}
+
+
+if(botWinnerResult.error){
+
+console.error(
+"bot winner:",
+botWinnerResult.error
+);
 
 }
+
+
+const winners = [
+
+...(humanWinnerResult.data ?? []),
+
+...(botWinnerResult.data ?? [])
+
+];
 
 
 const names =
-(winners ?? [])
+winners
 .map(
 x =>
 x.nickname
+)
+.filter(
+Boolean
 )
 .join(
 ", "
@@ -13816,6 +14048,11 @@ byId(
 names ||
 "승자 확인";
 
+
+/*
+폴드 승리라면 기존 규칙 그대로
+누구의 홀카드도 공개하지 않는다.
+*/
 
 if(
 currentHand.result_reason ===
@@ -13846,24 +14083,84 @@ byId(
 )
 .textContent =
 "쇼다운으로 승자가 결정되었습니다.";
-const {
-data:showdownCards,
-error:showdownCardError
-} =
-await db.rpc(
+
+
+/*
+쇼다운까지 갔다면
+사람 + 봇의 공개 대상 홀카드를 함께 가져온다.
+*/
+
+const [
+humanShowdownResult,
+botShowdownResult
+] =
+await Promise.all([
+
+db.rpc(
 "get_last_classic_showdown_cards",
 {
-
 p_room_id:
 currentRoom.room_id
+}
+),
+
+db.rpc(
+"get_last_classic_showdown_bot_cards",
+{
+p_room_id:
+currentRoom.room_id
+}
+)
+
+]);
+
+
+if(humanShowdownResult.error){
+
+console.error(
+"human showdown:",
+humanShowdownResult.error
+);
 
 }
+
+
+if(botShowdownResult.error){
+
+console.error(
+"bot showdown:",
+botShowdownResult.error
+);
+
+}
+
+
+const showdownCards = [
+
+...(humanShowdownResult.data ?? []),
+
+...(botShowdownResult.data ?? [])
+
+];
+
+
+/*
+좌석 순서대로 표시.
+seat_no가 없는 예외 데이터는 뒤로 보낸다.
+*/
+
+showdownCards.sort(
+(a,b) =>
+num(
+a.seat_no ?? 999
+) -
+num(
+b.seat_no ?? 999
+)
 );
 
 
 if(
-!showdownCardError &&
-showdownCards &&
 showdownCards.length > 0
 ){
 
@@ -13960,15 +14257,17 @@ row.chips_won
 )
 .join("");
 
+}else{
+
+byId(
+"finishedResults"
+)
+.innerHTML =
+"";
+
 }
 
-/*
-상세 결과 RPC가 있는 경우만 카드까지 표시.
-없어도 승자 표시는 정상 유지.
-*/
-
 }
-
 /* ==========================================================
    다음 판
 ========================================================== */
