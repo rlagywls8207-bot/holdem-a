@@ -956,7 +956,55 @@ button{
   text-align:center;
 }
 
+/* ==========================================================
+   v0.14.8 플레이어 실시간 행동 상태
+========================================================== */
 
+.playerActionStatus{
+  display:grid;
+  grid-template-columns:repeat(
+    var(--status-columns,1),
+    minmax(0,1fr)
+  );
+  align-items:center;
+  width:100%;
+  min-height:20px;
+  margin-bottom:7px;
+  column-gap:5px;
+  row-gap:3px;
+}
+
+.playerActionStatusItem{
+  min-width:0;
+  overflow:hidden;
+  color:#ddd;
+  text-align:center;
+  font-size:9px;
+  font-weight:700;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+
+.playerActionStatusItem .statusName{
+  color:#aaa;
+}
+
+.playerActionStatusItem .statusAction{
+  color:#fff;
+  font-weight:900;
+}
+
+.playerActionStatusItem.current .statusAction{
+  color:#fff;
+  text-shadow:
+    0 0 6px rgba(255,255,255,.65);
+}
+
+.playerActionStatusItem.folded{
+  opacity:.45;
+}
+
+  
 /* ==========================================================
    공용 카드
 ========================================================== */
@@ -2790,9 +2838,6 @@ class="playerActionStatus"
 
 <div
 id="communityCards"
-class="communityCards"
->
-</div>
 class="communityCards"
 >
 </div>
@@ -12527,49 +12572,7 @@ renderActionArea();
 
 }
 
-/* ==========================================================
-   v0.14.8 플레이어 실시간 행동 상태
-========================================================== */
 
-.playerActionStatus{
-  display:grid;
-  grid-template-columns:repeat(var(--status-columns, 1), minmax(0,1fr));
-  align-items:center;
-  width:100%;
-  min-height:20px;
-  margin-bottom:7px;
-  column-gap:5px;
-  row-gap:3px;
-}
-
-.playerActionStatusItem{
-  min-width:0;
-  overflow:hidden;
-  color:#ddd;
-  text-align:center;
-  font-size:9px;
-  font-weight:700;
-  white-space:nowrap;
-  text-overflow:ellipsis;
-}
-
-.playerActionStatusItem .statusName{
-  color:#aaa;
-}
-
-.playerActionStatusItem .statusAction{
-  color:#fff;
-  font-weight:900;
-}
-
-.playerActionStatusItem.current .statusAction{
-  color:#fff;
-  text-shadow:0 0 6px rgba(255,255,255,.65);
-}
-
-.playerActionStatusItem.folded{
-  opacity:.45;
-}
   
 /* ==========================================================
    공용 카드
