@@ -1760,7 +1760,8 @@ const HoldemBotEngine = (() => {
 
       equity,
       options,
-      potOdds
+      potOdds,
+      street
 
     } =
     context;
@@ -1776,54 +1777,131 @@ const HoldemBotEngine = (() => {
       );
 
 
+    const chips =
+      Math.max(
+        1,
+        num(
+          o.my_chips
+        )
+      );
+
+
     const max =
       num(
         o.max_raise_to
       );
 
 
+    const callPressure =
+      call /
+      chips;
+
+
     /*
-      매 행동마다 기분이 바뀐다.
-      equity와 완전히 독립적이지는 않지만
-      강하게 연결하지 않는다.
+      BBB 불나방
+
+      기본 성향
+      - 폴드를 싫어함
+      - 콜을 쉽게 함
+      - 레이즈를 자주 함
+      - 약한 패로도 블러프 가능
+      - 하지만 근거 없는 올인은 드묾
+      - 플랍 이후에는 프리플랍보다 더 난폭해짐
     */
 
     const madness =
       Math.random();
 
 
-    const suddenCowardice =
-      chance(
-        0.10
-      );
-
-
-    if(
-      suddenCowardice &&
-      call > 0 &&
-      equity < 0.55 &&
-      o.can_fold
-    ) {
-
-      return {
-        action: "fold"
-      };
-
-    }
-
-
     /*
-      폭주 구간
+      ----------------------------------------------------------
+      프리플랍
+      ----------------------------------------------------------
+
+      equity 대략 분류
+
+      < 0.30  : 쓰레기
+      < 0.43  : 약함
+      < 0.58  : 보통
+      < 0.75  : 좋음
+      >= 0.75 : 최상급
+
+      올인은 패 강도와 어느 정도 연결한다.
     */
 
     if(
-      madness > 0.72 &&
-      o.can_raise
+      street === "preflop"
     ) {
 
+      let allInChance =
+        0.01;
+
+
       if(
-        madness > 0.92 &&
-        max > 0
+        equity >= 0.30
+      ) {
+
+        allInChance =
+          0.03;
+
+      }
+
+
+      if(
+        equity >= 0.43
+      ) {
+
+        allInChance =
+          0.07;
+
+      }
+
+
+      if(
+        equity >= 0.58
+      ) {
+
+        allInChance =
+          0.15;
+
+      }
+
+
+      if(
+        equity >= 0.75
+      ) {
+
+        allInChance =
+          0.30;
+
+      }
+
+
+      /*
+        남은 스택이 적으면
+        불나방답게 올인 범위가 넓어진다.
+
+        callPressure가 크다는 것은
+        현재 콜 금액이 자기 남은 칩에서
+        상당한 비중을 차지한다는 뜻이다.
+      */
+
+      if(
+        callPressure >= 0.45
+      ) {
+
+        allInChance +=
+          0.08;
+
+      }
+
+
+      if(
+        o.can_raise &&
+        max > 0 &&
+        chance(
+          allInChance
+        )
       ) {
 
         return {
@@ -1840,57 +1918,201 @@ const HoldemBotEngine = (() => {
       }
 
 
-      return {
+      /*
+        일반 레이즈.
 
-        action: "raise",
+        약한 패도 충분히 레이즈하지만
+        기존처럼 무조건적인 폭주 확률로
+        결정하지 않는다.
+      */
 
-        raiseTo:
-        chooseRaiseTarget({
-
-          options: o,
-
-          intensity:
-          randomBetween(
-            0.45,
-            0.92
-          ),
-
-          chaos: 0.55
-
-        })
-
-      };
-
-    }
-
-
-    /*
-      중간 구간
-      패가 안 좋아도 콜을 많이 한다.
-    */
-
-    if(
-      call > 0 &&
-      o.can_call
-    ) {
-
-      const willingness =
-        0.58 +
-        (
-          equity *
-          0.12
-        ) -
-        (
-          potOdds *
-          0.08
-        );
+      let raiseChance =
+        0.14;
 
 
       if(
+        equity >= 0.30
+      ) {
+
+        raiseChance =
+          0.27;
+
+      }
+
+
+      if(
+        equity >= 0.43
+      ) {
+
+        raiseChance =
+          0.38;
+
+      }
+
+
+      if(
+        equity >= 0.58
+      ) {
+
+        raiseChance =
+          0.55;
+
+      }
+
+
+      if(
+        equity >= 0.75
+      ) {
+
+        raiseChance =
+          0.55;
+
+      }
+
+
+      /*
+        BBB 특유의 변덕.
+
+        약한 패에서도 가끔
+        갑자기 공격적으로 변한다.
+      */
+
+      if(
+        madness > 0.88
+      ) {
+
+        raiseChance +=
+          0.12;
+
+      }
+
+
+      if(
+        o.can_raise &&
         chance(
-          willingness
+          raiseChance
         )
       ) {
+
+        return {
+
+          action: "raise",
+
+          raiseTo:
+          chooseRaiseTarget({
+
+            options: o,
+
+            intensity:
+            randomBetween(
+              0.18,
+              equity >= 0.58
+              ? 0.78
+              : 0.58
+            ),
+
+            chaos:
+            0.38
+
+          })
+
+        };
+
+      }
+
+
+      /*
+        콜 판단.
+
+        BBB는 약한 패도 싸게 볼 수 있으면
+        상당히 자주 따라간다.
+
+        다만 상대의 큰 베팅은
+        완전히 무시하지 않는다.
+      */
+
+      if(
+        call > 0 &&
+        o.can_call
+      ) {
+
+        let callChance =
+          0.50;
+
+
+        if(
+          equity < 0.30
+        ) {
+
+          callChance =
+            0.50;
+
+        } else if(
+          equity < 0.43
+        ) {
+
+          callChance =
+            0.58;
+
+        } else if(
+          equity < 0.58
+        ) {
+
+          callChance =
+            0.68;
+
+        } else {
+
+          callChance =
+            0.82;
+
+        }
+
+
+        /*
+          요구 금액이 커질수록
+          BBB도 조금은 겁을 먹는다.
+        */
+
+        callChance -=
+          callPressure *
+          0.45;
+
+
+        if(
+          chance(
+            callChance
+          )
+        ) {
+
+          return {
+            action: "call"
+          };
+
+        }
+
+
+        if(o.can_fold) {
+
+          return {
+            action: "fold"
+          };
+
+        }
+
+      }
+
+
+      if(o.can_check) {
+
+        return {
+          action: "check"
+        };
+
+      }
+
+
+      if(o.can_call) {
 
         return {
           action: "call"
@@ -1898,17 +2120,183 @@ const HoldemBotEngine = (() => {
 
       }
 
+
+      return {
+        action: "fold"
+      };
+
     }
 
 
     /*
-      체크 가능한데 괜히 베팅하는 경우
+      ----------------------------------------------------------
+      플랍 / 턴 / 리버
+      ----------------------------------------------------------
+
+      프리플랍보다 공격성을 높인다.
+
+      equity가 높으면 실제 강한 패 또는
+      강한 드로우일 가능성이 있으므로
+      큰 공격까지 허용한다.
+
+      낮은 equity에서도 블러프 레이즈는 가능하지만
+      무근거 올인은 매우 드물게 한다.
     */
+
+
+    let postflopAllInChance =
+      0.005;
+
+
+    if(
+      equity >= 0.35
+    ) {
+
+      postflopAllInChance =
+        0.025;
+
+    }
+
+
+    if(
+      equity >= 0.50
+    ) {
+
+      postflopAllInChance =
+        0.08;
+
+    }
+
+
+    if(
+      equity >= 0.65
+    ) {
+
+      postflopAllInChance =
+        0.18;
+
+    }
+
+
+    if(
+      equity >= 0.80
+    ) {
+
+      postflopAllInChance =
+        0.32;
+
+    }
+
+
+    /*
+      이미 큰 결정을 요구받는 상황에서는
+      평소보다 올인 쪽으로 조금 더 기운다.
+    */
+
+    if(
+      callPressure >= 0.45
+    ) {
+
+      postflopAllInChance +=
+        0.08;
+
+    }
+
+
+    if(
+      o.can_raise &&
+      max > 0 &&
+      chance(
+        postflopAllInChance
+      )
+    ) {
+
+      return {
+
+        action: "raise",
+
+        raiseTo:
+        int(
+          max
+        )
+
+      };
+
+    }
+
+
+    /*
+      플랍 이후 일반 공격성.
+
+      아무것도 없어도 블러프 가능.
+      승률이 조금만 생겨도 공격성이
+      빠르게 올라간다.
+    */
+
+    let aggressionChance =
+      0.12;
+
+
+    if(
+      equity >= 0.30
+    ) {
+
+      aggressionChance =
+        0.24;
+
+    }
+
+
+    if(
+      equity >= 0.45
+    ) {
+
+      aggressionChance =
+        0.40;
+
+    }
+
+
+    if(
+      equity >= 0.60
+    ) {
+
+      aggressionChance =
+        0.58;
+
+    }
+
+
+    if(
+      equity >= 0.75
+    ) {
+
+      aggressionChance =
+        0.72;
+
+    }
+
+
+    /*
+      가끔 패와 무관하게 욱해서
+      레이즈하는 불나방 성향.
+      단, 여기서는 자동 올인이 아니다.
+    */
+
+    if(
+      madness > 0.90
+    ) {
+
+      aggressionChance +=
+        0.12;
+
+    }
+
 
     if(
       o.can_raise &&
       chance(
-        0.44
+        aggressionChance
       )
     ) {
 
@@ -1923,11 +2311,106 @@ const HoldemBotEngine = (() => {
 
           intensity:
           randomBetween(
-            0.15,
-            0.80
+            equity >= 0.60
+            ? 0.38
+            : 0.18,
+
+            equity >= 0.60
+            ? 0.88
+            : 0.62
           ),
 
-          chaos: 0.70
+          chaos:
+          0.42
+
+        })
+
+      };
+
+    }
+
+
+    /*
+      BBB는 콜을 상당히 좋아한다.
+      그러나 큰 베팅에는 어느 정도 반응한다.
+    */
+
+    if(
+      call > 0 &&
+      o.can_call
+    ) {
+
+      let willingness =
+        0.54 +
+        (
+          equity *
+          0.34
+        );
+
+
+      willingness -=
+        callPressure *
+        0.38;
+
+
+      willingness -=
+        potOdds *
+        0.08;
+
+
+      if(
+        chance(
+          willingness
+        )
+      ) {
+
+        return {
+          action: "call"
+        };
+
+      }
+
+
+      if(o.can_fold) {
+
+        return {
+          action: "fold"
+        };
+
+      }
+
+    }
+
+
+    /*
+      체크할 수 있어도
+      가끔 괜히 한 번 더 찌른다.
+    */
+
+    if(
+      o.can_raise &&
+      chance(
+        0.12
+      )
+    ) {
+
+      return {
+
+        action: "raise",
+
+        raiseTo:
+        chooseRaiseTarget({
+
+          options: o,
+
+          intensity:
+          randomBetween(
+            0.16,
+            0.48
+          ),
+
+          chaos:
+          0.32
 
         })
 
@@ -1959,8 +2442,6 @@ const HoldemBotEngine = (() => {
     };
 
   }
-
-
   /* ==========================================================
      마스터 캐릭터
 
