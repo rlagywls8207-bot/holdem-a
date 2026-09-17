@@ -1997,7 +1997,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.15.0.5
+v0.15.0.4
 </div>
 
 <div class="subtitle">
@@ -3742,7 +3742,7 @@ style="white-space:pre-line;line-height:1.5"
 <script>
 
 const APP_VERSION =
-"v0.15.0.5";
+"v0.15.0.4";
 
 
 const SUPABASE_URL =
@@ -6894,6 +6894,18 @@ fur
 
 
 /* ==========================================================
+   봇 전용 고정 의상
+========================================================== */
+
+const botOverlayHtml =
+pixelRunsToSvg(
+botAvatarOverlayRuns(
+avatar
+),
+fur
+);
+  
+/* ==========================================================
    최종 조립
 ========================================================== */
 
@@ -6917,6 +6929,8 @@ ${clothesHtml}
 ${earsHtml}
 
 ${faceHtml}
+
+${botOverlayHtml}
 
 </svg>
 
