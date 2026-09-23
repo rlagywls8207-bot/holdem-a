@@ -8613,27 +8613,32 @@ async function loadRoomSeats(){
 
 const [
 playerResult,
-botResult
+botResult,
+assetResult
 ] =
 await Promise.all([
 
 db.rpc(
 "get_room_seats",
 {
-
 p_room_id:
 currentRoom.room_id
-
 }
 ),
 
 db.rpc(
 "get_room_lobby_bots",
 {
-
 p_room_id:
 currentRoom.room_id
+}
+),
 
+db.rpc(
+"get_room_lobby_assets",
+{
+p_room_id:
+currentRoom.room_id
 }
 )
 
@@ -8664,14 +8669,66 @@ return false;
 }
 
 
+if(assetResult.error){
+
+console.error(
+"get_room_lobby_assets:",
+assetResult.error
+);
+
+return false;
+
+}
+
+
+const assets =
+assetResult.data ?? [];
+
+
 currentRoomSeats =
-playerResult.data ??
-[];
+(playerResult.data ?? [])
+.map(player => {
+
+const asset =
+assets.find(
+item =>
+item.participant_kind === "human" &&
+item.participant_id === player.profile_id
+);
+
+return {
+
+...player,
+
+asset_chips:
+asset?.extra_chips ?? null
+
+};
+
+});
 
 
 currentRoomBots =
-botResult.data ??
-[];
+(botResult.data ?? [])
+.map(bot => {
+
+const asset =
+assets.find(
+item =>
+item.participant_kind === "bot" &&
+item.participant_id === bot.bot_instance_id
+);
+
+return {
+
+...bot,
+
+reserve_chips:
+asset?.extra_chips ?? null
+
+};
+
+});
 
 
 return true;
