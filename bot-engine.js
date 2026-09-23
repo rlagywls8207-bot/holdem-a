@@ -1322,7 +1322,6 @@ const HoldemBotEngine = (() => {
 
   }
 
-
   /* ==========================================================
      레이즈 금액
   ========================================================== */
@@ -1340,12 +1339,10 @@ const HoldemBotEngine = (() => {
         options?.min_raise_to
       );
 
-
     const max =
       num(
         options?.max_raise_to
       );
-
 
     if(
       max <= 0 ||
@@ -1357,9 +1354,52 @@ const HoldemBotEngine = (() => {
     }
 
 
+    /*
+      일반 레이즈는 최소 레이즈를 기준으로 계산한다.
+
+      기존:
+      최소~최대 레이즈 가능 금액의 일정 비율
+
+      변경:
+      최소 레이즈에서 남은 범위의 일부만 사용
+
+      intensity는 기존 봇의 공격성 구분에 사용한다.
+    */
+
+    const ratio =
+      clamp(
+        intensity,
+        0,
+        1
+      );
+
+
+    /*
+      일반적인 베팅에서는
+      전체 레이즈 가능 범위의 최대 15%만 사용한다.
+    */
+
+    const normalRatio =
+      ratio * 0.15;
+
+
+    /*
+      희귀한 폭주 행동.
+
+      기존 chaos 확률을 그대로 적용하면
+      일부 봇이 너무 자주 큰 금액을 선택할 수 있으므로
+      최대 0.5%로 제한한다.
+    */
+
     if(
       chance(
-        chaos
+        Math.min(
+          Math.max(
+            0,
+            chaos
+          ),
+          0.005
+        )
       )
     ) {
 
@@ -1371,20 +1411,12 @@ const HoldemBotEngine = (() => {
     }
 
 
-    const ratio =
-      clamp(
-        intensity,
-        0,
-        1
-      );
-
-
     const target =
       min +
       (
         max - min
       ) *
-      ratio;
+      normalRatio;
 
 
     return clamp(
@@ -1529,24 +1561,73 @@ const HoldemBotEngine = (() => {
       "raise"
     ) {
 
-      decision.raiseTo =
-        clamp(
-          int(
-            decision.raiseTo
-          ),
-          int(
-            o.min_raise_to
-          ),
-          int(
-            o.max_raise_to
-          )
+      const minRaise =
+        Number(
+          o.min_raise_to
         );
 
-    } else {
+      const maxRaise =
+        Number(
+          o.max_raise_to
+        );
+
+      const requestedRaise =
+        Number(
+          decision.raiseTo
+        );
+
+      if(
+        !o.can_raise ||
+        !Number.isFinite(minRaise) ||
+        !Number.isFinite(maxRaise) ||
+        minRaise <= 0 ||
+        maxRaise < minRaise
+      ) {
+
+        if(o.can_check) {
+
+          decision = {
+            action: "check"
+          };
+
+        } else if(o.can_call) {
+
+          decision = {
+            action: "call"
+          };
+
+        } else {
+
+          decision = {
+            action: "fold"
+          };
+
+        }
+
+      } else {
+
+        decision.raiseTo =
+          clamp(
+            Number.isFinite(requestedRaise)
+              ? Math.floor(requestedRaise)
+              : Math.ceil(minRaise),
+            Math.ceil(minRaise),
+            Math.floor(maxRaise)
+          );
+
+      }
+
+    }
+
+    if(
+      decision.action !==
+      "raise"
+    ) {
 
       decision.raiseTo =
         null;
 
+    }
     }
 
 
@@ -1832,19 +1913,8 @@ const HoldemBotEngine = (() => {
     if(
       street === "preflop"
     ) {
-
       let allInChance =
-        0.01;
-
-
-      if(
-        equity >= 0.30
-      ) {
-
-        allInChance =
-          0.03;
-
-      }
+        0.002;
 
 
       if(
@@ -1852,7 +1922,7 @@ const HoldemBotEngine = (() => {
       ) {
 
         allInChance =
-          0.07;
+          0.003;
 
       }
 
@@ -1862,7 +1932,7 @@ const HoldemBotEngine = (() => {
       ) {
 
         allInChance =
-          0.15;
+          0.005;
 
       }
 
@@ -1872,8 +1942,9 @@ const HoldemBotEngine = (() => {
       ) {
 
         allInChance =
-          0.30;
+          0.008;
 
+      }
       }
 
 
@@ -2143,9 +2214,8 @@ const HoldemBotEngine = (() => {
       무근거 올인은 매우 드물게 한다.
     */
 
-
     let postflopAllInChance =
-      0.005;
+      0.002;
 
 
     if(
@@ -2153,7 +2223,7 @@ const HoldemBotEngine = (() => {
     ) {
 
       postflopAllInChance =
-        0.025;
+        0.003;
 
     }
 
@@ -2163,7 +2233,7 @@ const HoldemBotEngine = (() => {
     ) {
 
       postflopAllInChance =
-        0.08;
+        0.004;
 
     }
 
@@ -2173,7 +2243,7 @@ const HoldemBotEngine = (() => {
     ) {
 
       postflopAllInChance =
-        0.18;
+        0.006;
 
     }
 
@@ -2183,8 +2253,9 @@ const HoldemBotEngine = (() => {
     ) {
 
       postflopAllInChance =
-        0.32;
+        0.008;
 
+    }
     }
 
 
@@ -2197,11 +2268,13 @@ const HoldemBotEngine = (() => {
       callPressure >= 0.45
     ) {
 
-      postflopAllInChance +=
-        0.08;
+      postflopAllInChance =
+        Math.min(
+          0.009,
+          postflopAllInChance + 0.001
+        );
 
     }
-
 
     if(
       o.can_raise &&
