@@ -1627,7 +1627,7 @@ const HoldemBotEngine = (() => {
       decision.raiseTo =
         null;
 
-    }
+    
     }
 
 
@@ -1945,7 +1945,6 @@ const HoldemBotEngine = (() => {
           0.008;
 
       }
-      }
 
 
       /*
@@ -2256,7 +2255,7 @@ const HoldemBotEngine = (() => {
         0.008;
 
     }
-    }
+    
 
 
     /*
