@@ -3840,7 +3840,10 @@ style="white-space:pre-line;line-height:1.5"
 
 </div>
 
-<script src="bot-engine.js"></script>
+<script
+src="./bot-engine.js"
+onerror="window.botEngineLoadFailed=true;"
+></script>
   
 <script>
 
@@ -10894,13 +10897,16 @@ if(
 
 showModal(
 "봇 엔진 오류",
-"HoldemBotEngine을 찾을 수 없습니다."
+window.botEngineLoadFailed
+?
+"bot-engine.js 파일을 불러오지 못했습니다.\nHTML과 같은 폴더에 bot-engine.js가 있는지 확인해주세요."
+:
+"bot-engine.js는 불러왔지만 HoldemBotEngine 등록에 실패했습니다."
 );
 
 return;
 
 }
-
 
 botRunnerBusy =
 true;
