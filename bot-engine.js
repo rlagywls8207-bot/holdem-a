@@ -1955,15 +1955,17 @@ const HoldemBotEngine = (() => {
         현재 콜 금액이 자기 남은 칩에서
         상당한 비중을 차지한다는 뜻이다.
       */
+if(
+  callPressure >= 0.45
+) {
 
-      if(
-        callPressure >= 0.45
-      ) {
+  allInChance =
+    Math.min(
+      0.009,
+      allInChance + 0.001
+    );
 
-        allInChance +=
-          0.08;
-
-      }
+}
 
 
       if(
