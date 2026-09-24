@@ -9298,9 +9298,19 @@ ${escapeHtml(bot.display_name)}
 
 <div class="seatSub">
 
-${formatChip(bot.chips)}
+칩: ${formatChip(bot.chips)}
 
-${bot.is_ready ? " · 준비" : ""}
+<br>
+
+여분: ${
+bot.reserve_chips === null
+? "-"
+: formatNumber(bot.reserve_chips)
+}
+
+<br>
+
+${bot.is_ready ? "준비" : ""}
 
 </div>
 
