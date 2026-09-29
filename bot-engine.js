@@ -1647,18 +1647,16 @@ const HoldemBotEngine = (() => {
      블러핑 거의 없음
   ========================================================== */
 
-  function decideHonest(
+   function decideHonest(
     context
   ) {
 
     const {
-
       equity,
       options,
-      potOdds
-
-    } =
-    context;
+      potOdds,
+      street
+    } = context;
 
 
     const o =
@@ -1671,25 +1669,378 @@ const HoldemBotEngine = (() => {
       );
 
 
-    if(
-      call > 0 &&
-      equity <
+    const chips =
       Math.max(
-        0.32,
-        potOdds + 0.07
-      )
+        1,
+        num(
+          o.my_chips
+        )
+      );
+
+
+    const max =
+      num(
+        o.max_raise_to
+      );
+
+
+    const callPressure =
+      call /
+      chips;
+
+
+    /*
+      ==========================================================
+      HONEST / 김용우
+
+      핵심 성향
+
+      - 처음에는 콜로 들어갈 수 있음
+      - 애매한 패에서는 콜 위주
+      - 압박이 커지면 빠르게 포기
+      - 약한 패 블러프는 거의 하지 않음
+      - 강한 패에서는 확실하게 큰 공격 가능
+      - 베팅 크기는 비교적 작고 단계적으로 증가
+      - 손실 최소화를 중요하게 생각함
+      - 탈락 직전에는 예외적으로 약한 패 올인 가능
+      ==========================================================
+    */
+
+
+    const required =
+      potOdds +
+      0.035;
+
+
+    /*
+      패 강도 구간
+    */
+
+    let strength =
+      0;
+
+
+    if(
+      equity >= 0.32
     ) {
 
-      return {
-        action: "fold"
-      };
+      strength =
+        1;
 
     }
 
 
     if(
-      equity < 0.43
+      equity >= 0.45
     ) {
+
+      strength =
+        2;
+
+    }
+
+
+    if(
+      equity >= 0.62
+    ) {
+
+      strength =
+        3;
+
+    }
+
+
+    if(
+      equity >= 0.78
+    ) {
+
+      strength =
+        4;
+
+    }
+
+
+    /*
+      ==========================================================
+      최후 승부
+
+      자유서술 반영.
+
+      "패가 약하고 칩이 적어
+       다음 판 참여 가능성이 낮으면
+       이번이 마지막 판이라고 생각하고
+       올인하기도 한다."
+
+      현재 엔진에는 시작 스택이나
+      다음 판 최소 참가칩 정보가 없으므로
+      '현재 콜 금액이 남은 칩의 대부분을
+       차지하는 상황'을 탈락 위기의
+      보수적인 대용 지표로 사용한다.
+
+      평상시 약한 패 올인이 아니라
+      극단적 위기에서만 드물게 발생한다.
+      ==========================================================
+    */
+
+    const lastStandSituation =
+      call > 0 &&
+      callPressure >= 0.72;
+
+
+    if(
+      lastStandSituation &&
+      strength <= 1 &&
+      o.can_raise &&
+      max > 0 &&
+      chance(
+        0.14
+      )
+    ) {
+
+      return {
+
+        action: "raise",
+
+        raiseTo:
+        int(
+          max
+        )
+
+      };
+
+    }
+
+
+    /*
+      ==========================================================
+      큰 압박
+
+      설문 05 / 07 / 08 / 10 반영.
+
+      김용우는 약하거나 애매한 패로
+      큰 압박을 오래 버티지 않는다.
+      ==========================================================
+    */
+
+    if(
+      call > 0 &&
+      callPressure >= 0.28 &&
+      strength <= 2
+    ) {
+
+      if(o.can_fold) {
+
+        return {
+          action: "fold"
+        };
+
+      }
+
+    }
+
+
+    /*
+      승률이 팟 오즈에 비해
+      명확하게 부족하면 손실을 끊는다.
+    */
+
+    if(
+      call > 0 &&
+      equity <
+      required - 0.045 &&
+      strength <= 1
+    ) {
+
+      if(o.can_fold) {
+
+        return {
+          action: "fold"
+        };
+
+      }
+
+    }
+
+
+    /*
+      ==========================================================
+      매우 강한 패
+
+      설문 04 반영.
+
+      강한 패에서는 오히려
+      큰 레이즈를 선호한다.
+
+      김용우의 큰 베팅은
+      블러프가 아니라 실제 강한 패와
+      비교적 직접적으로 연결된다.
+      ==========================================================
+    */
+
+    if(
+      strength === 4 &&
+      o.can_raise
+    ) {
+
+      let intensity =
+        randomBetween(
+          0.64,
+          0.92
+        );
+
+
+      /*
+        프리플랍보다 후반 스트리트에서
+        조금 더 큰 가치 베팅을 허용.
+      */
+
+      if(
+        street === "turn" ||
+        street === "river"
+      ) {
+
+        intensity =
+          randomBetween(
+            0.72,
+            0.96
+          );
+
+      }
+
+
+      return {
+
+        action: "raise",
+
+        raiseTo:
+        chooseRaiseTarget({
+
+          options: o,
+
+          intensity:
+          intensity,
+
+          chaos:
+          0.02
+
+        })
+
+      };
+
+    }
+
+
+    /*
+      ==========================================================
+      좋은 패
+
+      적당한 베팅에서 시작해서
+      점점 키우는 성향.
+
+      무조건 공격하지 않고
+      일부 콜도 허용한다.
+      ==========================================================
+    */
+
+    if(
+      strength === 3
+    ) {
+
+      let raiseChance =
+        0.54;
+
+
+      if(
+        callPressure >= 0.20
+      ) {
+
+        raiseChance -=
+          0.10;
+
+      }
+
+
+      if(
+        o.can_raise &&
+        chance(
+          clamp(
+            raiseChance,
+            0.32,
+            0.62
+          )
+        )
+      ) {
+
+        let minIntensity =
+          0.22;
+
+
+        let maxIntensity =
+          0.46;
+
+
+        if(
+          street === "turn"
+        ) {
+
+          minIntensity =
+            0.30;
+
+          maxIntensity =
+            0.56;
+
+        }
+
+
+        if(
+          street === "river"
+        ) {
+
+          minIntensity =
+            0.38;
+
+          maxIntensity =
+            0.66;
+
+        }
+
+
+        return {
+
+          action: "raise",
+
+          raiseTo:
+          chooseRaiseTarget({
+
+            options: o,
+
+            intensity:
+            randomBetween(
+              minIntensity,
+              maxIntensity
+            ),
+
+            chaos:
+            0.02
+
+          })
+
+        };
+
+      }
+
+
+      if(
+        call > 0 &&
+        o.can_call
+      ) {
+
+        return {
+          action: "call"
+        };
+
+      }
+
 
       if(o.can_check) {
 
@@ -1699,16 +2050,150 @@ const HoldemBotEngine = (() => {
 
       }
 
+    }
+
+
+    /*
+      ==========================================================
+      중간 패
+
+      설문 01 / 02 / 03 반영.
+
+      기본적으로 콜/체크 위주.
+      공격적으로 키우지 않는다.
+      ==========================================================
+    */
+
+    if(
+      strength === 2
+    ) {
 
       if(
-        o.can_call &&
-        call <=
-        Math.max(
-          1,
-          num(
-            o.my_chips
-          ) *
-          0.08
+        call > 0 &&
+        o.can_call
+      ) {
+
+        let callChance =
+          0.68;
+
+
+        callChance -=
+          callPressure *
+          1.15;
+
+
+        if(
+          equity >= required
+        ) {
+
+          callChance +=
+            0.08;
+
+        }
+
+
+        if(
+          chance(
+            clamp(
+              callChance,
+              0.16,
+              0.76
+            )
+          )
+        ) {
+
+          return {
+            action: "call"
+          };
+
+        }
+
+
+        if(o.can_fold) {
+
+          return {
+            action: "fold"
+          };
+
+        }
+
+      }
+
+
+      if(o.can_check) {
+
+        return {
+          action: "check"
+        };
+
+      }
+
+    }
+
+
+    /*
+      ==========================================================
+      약한 패
+
+      작은 금액까지는 볼 수 있지만
+      상대가 계속 밀면 쉽게 포기한다.
+      ==========================================================
+    */
+
+    if(
+      call > 0 &&
+      o.can_call &&
+      strength <= 1
+    ) {
+
+      let callChance =
+        strength === 1
+        ? 0.42
+        : 0.25;
+
+
+      /*
+        아주 싼 콜은 설문 01/09에 따라
+        조금 더 자주 받아준다.
+      */
+
+      if(
+        callPressure <= 0.05
+      ) {
+
+        callChance +=
+          0.24;
+
+      }
+
+
+      if(
+        callPressure >= 0.10
+      ) {
+
+        callChance -=
+          0.14;
+
+      }
+
+
+      if(
+        callPressure >= 0.18
+      ) {
+
+        callChance -=
+          0.20;
+
+      }
+
+
+      if(
+        chance(
+          clamp(
+            callChance,
+            0.04,
+            0.68
+          )
         )
       ) {
 
@@ -1719,93 +2204,77 @@ const HoldemBotEngine = (() => {
       }
 
 
+      if(o.can_fold) {
+
+        return {
+          action: "fold"
+        };
+
+      }
+
+    }
+
+
+    /*
+      ==========================================================
+      매우 드문 블러프
+
+      설문 12 / 13 / 19 반영.
+
+      체크할 수 있는 상황에서조차
+      대부분 같이 체크한다.
+
+      단, 후반 스트리트에서
+      상대가 약해 보일 수 있는 상황에
+      아주 낮은 확률로만 블러프한다.
+
+      한 번 블러프를 선택하면
+      작은 찌르기가 아니라
+      어느 정도 강한 패처럼 베팅한다.
+      ==========================================================
+    */
+
+    if(
+      o.can_raise &&
+      call === 0 &&
+      (
+        street === "turn" ||
+        street === "river"
+      ) &&
+      chance(
+        0.045
+      )
+    ) {
+
       return {
-        action: "fold"
+
+        action: "raise",
+
+        raiseTo:
+        chooseRaiseTarget({
+
+          options: o,
+
+          intensity:
+          randomBetween(
+            0.38,
+            0.62
+          ),
+
+          chaos:
+          0.02
+
+        })
+
       };
 
     }
 
 
-    if(
-      equity < 0.64
-    ) {
-
-      if(
-        o.can_call &&
-        call > 0
-      ) {
-
-        return {
-          action: "call"
-        };
-
-      }
-
-
-      if(o.can_check) {
-
-        return {
-          action: "check"
-        };
-
-      }
-
-    }
-
-
-    if(
-      equity >= 0.64 &&
-      o.can_raise
-    ) {
-
-      const intensity =
-        equity >= 0.84
-        ? randomBetween(
-            0.68,
-            0.95
-          )
-        : randomBetween(
-            0.20,
-            0.48
-          );
-
-
-      if(
-        equity >= 0.76 ||
-        chance(0.62)
-      ) {
-
-        return {
-
-          action: "raise",
-
-          raiseTo:
-          chooseRaiseTarget({
-
-            options: o,
-            intensity,
-            chaos: 0.03
-
-          })
-
-        };
-
-      }
-
-    }
-
-
-    if(
-      o.can_call &&
-      call > 0
-    ) {
-
-      return {
-        action: "call"
-      };
-
-    }
-
+    /*
+      무료로 다음 카드를 볼 수 있으면
+      대부분 체크.
+    */
 
     if(o.can_check) {
 
@@ -1816,14 +2285,32 @@ const HoldemBotEngine = (() => {
     }
 
 
+    /*
+      마지막 안전장치.
+
+      콜할 수 있어도 비용이 크지 않고
+      최소 기대 승률을 충족할 때만 콜.
+    */
+
+    if(
+      o.can_call &&
+      call > 0 &&
+      equity >= required &&
+      callPressure < 0.16
+    ) {
+
+      return {
+        action: "call"
+      };
+
+    }
+
+
     return {
       action: "fold"
     };
 
-  }
-
-
-  /* ==========================================================
+  }  /* ==========================================================
      불나방 캐릭터
 
      핵심
