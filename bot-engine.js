@@ -1833,7 +1833,7 @@ const HoldemBotEngine = (() => {
      - 좋은 패에서도 똑같은 난폭 행동 가능.
   ========================================================== */
 
-  function decideMoth(
+   function decideMoth(
     context
   ) {
 
@@ -1879,409 +1879,250 @@ const HoldemBotEngine = (() => {
 
 
     /*
-      BBB 불나방
+      ==========================================================
+      BBB / 김효진
 
-      기본 성향
-      - 폴드를 싫어함
-      - 콜을 쉽게 함
-      - 레이즈를 자주 함
-      - 약한 패로도 블러프 가능
-      - 하지만 근거 없는 올인은 드묾
-      - 플랍 이후에는 프리플랍보다 더 난폭해짐
+      설문 기반 성향
+
+      - 처음부터 무조건 공격하지는 않음
+      - 콜로 판에 들어가는 것을 좋아함
+      - 상대가 압박하면 쉽게 물러서지 않음
+      - 중간 이상 패에서는 재공격 성향이 강함
+      - 약한 패에서도 블러프 레이즈 가능
+      - 좋은 패도 가끔 콜/체크로 숨김
+      - 가끔 예상보다 훨씬 큰 승부를 시작함
+      - 위기에서는 무조건 난폭해지는 대신
+        버티다가 특정 순간 크게 승부함
+      ==========================================================
     */
 
-    const madness =
+
+    /*
+      한 번의 행동에서 나타나는
+      김효진 특유의 변동성.
+
+      낮음  : 평소보다 조심
+      보통  : 기본 성향
+      높음  : 공격성 증가
+      폭발  : 갑자기 큰 승부 가능
+    */
+
+    const mood =
       Math.random();
 
 
+    const cautious =
+      mood < 0.14;
+
+
+    const aggressive =
+      mood >= 0.68;
+
+
+    const escalate =
+      mood >= 0.88;
+
+
     /*
-      ----------------------------------------------------------
-      프리플랍
-      ----------------------------------------------------------
+      현재 칩에서 콜 금액이 차지하는 비율이
+      매우 크면 위기 상황으로 취급한다.
 
-      equity 대략 분류
-
-      < 0.30  : 쓰레기
-      < 0.43  : 약함
-      < 0.58  : 보통
-      < 0.75  : 좋음
-      >= 0.75 : 최상급
-
-      올인은 패 강도와 어느 정도 연결한다.
+      단, 위기라고 자동 올인하지 않는다.
     */
 
+    const danger =
+      callPressure >= 0.45;
+
+
+    /*
+      ----------------------------------------------------------
+      패 강도 구간
+
+      기존 엔진의 equity 체계를 그대로 사용한다.
+      ----------------------------------------------------------
+    */
+
+    let strength =
+      0;
+
+
     if(
-      street === "preflop"
+      equity >= 0.30
     ) {
-      let allInChance =
+
+      strength =
+        1;
+
+    }
+
+
+    if(
+      equity >= 0.43
+    ) {
+
+      strength =
+        2;
+
+    }
+
+
+    if(
+      equity >= 0.58
+    ) {
+
+      strength =
+        3;
+
+    }
+
+
+    if(
+      equity >= 0.75
+    ) {
+
+      strength =
+        4;
+
+    }
+
+
+    /*
+      ----------------------------------------------------------
+      올인 / 최대 레이즈
+
+      김효진은 기존 불나방처럼
+      아무 이유 없이 자주 올인하지 않는다.
+
+      대신 강한 패, 큰 압박,
+      폭발 성향이 겹치면 갑자기
+      최대 승부까지 갈 수 있다.
+      ----------------------------------------------------------
+    */
+
+    let allInChance =
+      0.001;
+
+
+    if(
+      strength === 1
+    ) {
+
+      allInChance =
         0.002;
 
-
-      if(
-        equity >= 0.43
-      ) {
-
-        allInChance =
-          0.003;
-
-      }
-
-
-      if(
-        equity >= 0.58
-      ) {
-
-        allInChance =
-          0.005;
-
-      }
-
-
-      if(
-        equity >= 0.75
-      ) {
-
-        allInChance =
-          0.008;
-
-      }
-
-
-      /*
-        남은 스택이 적으면
-        불나방답게 올인 범위가 넓어진다.
-
-        callPressure가 크다는 것은
-        현재 콜 금액이 자기 남은 칩에서
-        상당한 비중을 차지한다는 뜻이다.
-      */
-if(
-  callPressure >= 0.45
-) {
-
-  allInChance =
-    Math.min(
-      0.009,
-      allInChance + 0.001
-    );
-
-}
-
-
-      if(
-        o.can_raise &&
-        max > 0 &&
-        chance(
-          allInChance
-        )
-      ) {
-
-        return {
-
-          action: "raise",
-
-          raiseTo:
-          int(
-            max
-          )
-
-        };
-
-      }
-
-
-      /*
-        일반 레이즈.
-
-        약한 패도 충분히 레이즈하지만
-        기존처럼 무조건적인 폭주 확률로
-        결정하지 않는다.
-      */
-
-      let raiseChance =
-        0.14;
-
-
-      if(
-        equity >= 0.30
-      ) {
-
-        raiseChance =
-          0.27;
-
-      }
-
-
-      if(
-        equity >= 0.43
-      ) {
-
-        raiseChance =
-          0.38;
-
-      }
-
-
-      if(
-        equity >= 0.58
-      ) {
-
-        raiseChance =
-          0.55;
-
-      }
-
-
-      if(
-        equity >= 0.75
-      ) {
-
-        raiseChance =
-          0.55;
-
-      }
-
-
-      /*
-        BBB 특유의 변덕.
-
-        약한 패에서도 가끔
-        갑자기 공격적으로 변한다.
-      */
-
-      if(
-        madness > 0.88
-      ) {
-
-        raiseChance +=
-          0.12;
-
-      }
-
-
-      if(
-        o.can_raise &&
-        chance(
-          raiseChance
-        )
-      ) {
-
-        return {
-
-          action: "raise",
-
-          raiseTo:
-          chooseRaiseTarget({
-
-            options: o,
-
-            intensity:
-            randomBetween(
-              0.18,
-              equity >= 0.58
-              ? 0.78
-              : 0.58
-            ),
-
-            chaos:
-            0.38
-
-          })
-
-        };
-
-      }
-
-
-      /*
-        콜 판단.
-
-        BBB는 약한 패도 싸게 볼 수 있으면
-        상당히 자주 따라간다.
-
-        다만 상대의 큰 베팅은
-        완전히 무시하지 않는다.
-      */
-
-      if(
-        call > 0 &&
-        o.can_call
-      ) {
-
-        let callChance =
-          0.50;
-
-
-        if(
-          equity < 0.30
-        ) {
-
-          callChance =
-            0.50;
-
-        } else if(
-          equity < 0.43
-        ) {
-
-          callChance =
-            0.58;
-
-        } else if(
-          equity < 0.58
-        ) {
-
-          callChance =
-            0.68;
-
-        } else {
-
-          callChance =
-            0.82;
-
-        }
-
-
-        /*
-          요구 금액이 커질수록
-          BBB도 조금은 겁을 먹는다.
-        */
-
-        callChance -=
-          callPressure *
-          0.45;
-
-
-        if(
-          chance(
-            callChance
-          )
-        ) {
-
-          return {
-            action: "call"
-          };
-
-        }
-
-
-        if(o.can_fold) {
-
-          return {
-            action: "fold"
-          };
-
-        }
-
-      }
-
-
-      if(o.can_check) {
-
-        return {
-          action: "check"
-        };
-
-      }
-
-
-      if(o.can_call) {
-
-        return {
-          action: "call"
-        };
-
-      }
-
-
-      return {
-        action: "fold"
-      };
-
-    }
-
-
-    /*
-      ----------------------------------------------------------
-      플랍 / 턴 / 리버
-      ----------------------------------------------------------
-
-      프리플랍보다 공격성을 높인다.
-
-      equity가 높으면 실제 강한 패 또는
-      강한 드로우일 가능성이 있으므로
-      큰 공격까지 허용한다.
-
-      낮은 equity에서도 블러프 레이즈는 가능하지만
-      무근거 올인은 매우 드물게 한다.
-    */
-
-    let postflopAllInChance =
-      0.002;
-
-
-    if(
-      equity >= 0.35
-    ) {
-
-      postflopAllInChance =
-        0.003;
-
     }
 
 
     if(
-      equity >= 0.50
+      strength === 2
     ) {
 
-      postflopAllInChance =
+      allInChance =
         0.004;
 
     }
 
 
     if(
-      equity >= 0.65
+      strength === 3
     ) {
 
-      postflopAllInChance =
-        0.006;
+      allInChance =
+        0.010;
 
     }
 
 
     if(
-      equity >= 0.80
+      strength === 4
     ) {
 
-      postflopAllInChance =
-        0.008;
+      allInChance =
+        0.020;
 
     }
-    
 
 
     /*
-      이미 큰 결정을 요구받는 상황에서는
-      평소보다 올인 쪽으로 조금 더 기운다.
+      플랍 이후에는
+      승부가 진행된 만큼 큰 결정을
+      조금 더 허용한다.
     */
 
     if(
-      callPressure >= 0.45
+      street !== "preflop"
     ) {
 
-      postflopAllInChance =
-        Math.min(
-          0.009,
-          postflopAllInChance + 0.001
-        );
+      allInChance *=
+        1.35;
 
     }
+
+
+    /*
+      평소에는 위기에서 오히려
+      칩을 조금 지키려 한다.
+    */
+
+    if(
+      danger &&
+      !escalate
+    ) {
+
+      allInChance *=
+        0.70;
+
+    }
+
+
+    /*
+      하지만 폭발 상태에서는
+      위기 상황이 오히려 큰 승부의
+      계기가 될 수 있다.
+    */
+
+    if(
+      danger &&
+      escalate
+    ) {
+
+      allInChance +=
+        strength >= 2
+        ? 0.055
+        : 0.018;
+
+    }
+
+
+    /*
+      좋은 패 + 폭발 상태에서는
+      갑작스러운 대승부 가능.
+    */
+
+    if(
+      escalate &&
+      strength >= 3
+    ) {
+
+      allInChance +=
+        0.035;
+
+    }
+
+
+    allInChance =
+      clamp(
+        allInChance,
+        0,
+        0.12
+      );
+
 
     if(
       o.can_raise &&
       max > 0 &&
       chance(
-        postflopAllInChance
+        allInChance
       )
     ) {
 
@@ -2300,79 +2141,260 @@ if(
 
 
     /*
-      플랍 이후 일반 공격성.
+      ----------------------------------------------------------
+      일반 레이즈
 
-      아무것도 없어도 블러프 가능.
-      승률이 조금만 생겨도 공격성이
-      빠르게 올라간다.
+      설문 핵심:
+      콜러처럼 보이지만 수동적인 캐릭터가 아니다.
+
+      약한 패에서도 공격 가능하고,
+      중간 이상 패에서는 공격성이 빠르게 올라간다.
+      ----------------------------------------------------------
     */
 
-    let aggressionChance =
-      0.12;
+    let raiseChance;
 
 
     if(
-      equity >= 0.30
+      strength === 0
     ) {
 
-      aggressionChance =
-        0.24;
+      raiseChance =
+        0.17;
 
-    }
-
-
-    if(
-      equity >= 0.45
+    } else if(
+      strength === 1
     ) {
 
-      aggressionChance =
-        0.40;
+      raiseChance =
+        0.29;
 
-    }
-
-
-    if(
-      equity >= 0.60
+    } else if(
+      strength === 2
     ) {
 
-      aggressionChance =
+      raiseChance =
+        0.43;
+
+    } else if(
+      strength === 3
+    ) {
+
+      raiseChance =
+        0.55;
+
+    } else {
+
+      /*
+        최상급 패도 무조건 레이즈하지 않는다.
+        일부는 콜/체크로 숨긴다.
+      */
+
+      raiseChance =
         0.58;
 
     }
 
 
+    /*
+      플랍 이후에는
+      프리플랍보다 조금 더 공격적.
+    */
+
     if(
-      equity >= 0.75
+      street !== "preflop"
     ) {
 
-      aggressionChance =
-        0.72;
+      raiseChance +=
+        0.05;
 
     }
 
 
     /*
-      가끔 패와 무관하게 욱해서
-      레이즈하는 불나방 성향.
-      단, 여기서는 자동 올인이 아니다.
+      조심스러운 순간.
     */
 
     if(
-      madness > 0.90
+      cautious
     ) {
 
-      aggressionChance +=
+      raiseChance -=
         0.12;
 
     }
 
 
+    /*
+      공격적인 순간.
+    */
+
+    if(
+      aggressive
+    ) {
+
+      raiseChance +=
+        0.09;
+
+    }
+
+
+    /*
+      김효진 특유의 갑작스러운 폭발.
+
+      약한 패에서도 적용되므로
+      블러프 레이즈가 가능하다.
+    */
+
+    if(
+      escalate
+    ) {
+
+      raiseChance +=
+        0.17;
+
+    }
+
+
+    /*
+      상대가 큰 금액을 요구한다고
+      바로 움츠러들지는 않는다.
+
+      보통 이상의 패에서는
+      오히려 맞받아칠 가능성을 높인다.
+    */
+
+    if(
+      call > 0 &&
+      callPressure >= 0.18 &&
+      strength >= 2
+    ) {
+
+      raiseChance +=
+        0.08;
+
+    }
+
+
+    if(
+      call > 0 &&
+      callPressure >= 0.35 &&
+      strength >= 2
+    ) {
+
+      raiseChance +=
+        0.07;
+
+    }
+
+
+    /*
+      단, 약한 패 + 큰 압박 + 평상시에는
+      무조건 싸우지는 않는다.
+    */
+
+    if(
+      danger &&
+      strength <= 1 &&
+      !escalate
+    ) {
+
+      raiseChance -=
+        0.14;
+
+    }
+
+
+    raiseChance =
+      clamp(
+        raiseChance,
+        0.05,
+        0.82
+      );
+
+
     if(
       o.can_raise &&
       chance(
-        aggressionChance
+        raiseChance
       )
     ) {
+
+      /*
+        베팅 크기도 일정하지 않게 한다.
+
+        기본적으로 중간~큰 레이즈를 선호하고,
+        폭발 상태에서는 훨씬 크게 갈 수 있다.
+      */
+
+      let minIntensity =
+        0.20;
+
+
+      let maxIntensity =
+        0.62;
+
+
+      if(
+        strength >= 2
+      ) {
+
+        minIntensity =
+          0.28;
+
+        maxIntensity =
+          0.74;
+
+      }
+
+
+      if(
+        strength >= 3
+      ) {
+
+        minIntensity =
+          0.34;
+
+        maxIntensity =
+          0.86;
+
+      }
+
+
+      if(
+        escalate
+      ) {
+
+        minIntensity =
+          Math.max(
+            minIntensity,
+            0.48
+          );
+
+        maxIntensity =
+          0.96;
+
+      }
+
+
+      /*
+        약한 패의 블러프에서도
+        가끔 크게 밀어붙인다.
+      */
+
+      if(
+        strength <= 1 &&
+        escalate
+      ) {
+
+        minIntensity =
+          0.40;
+
+        maxIntensity =
+          0.88;
+
+      }
+
 
       return {
 
@@ -2385,17 +2407,14 @@ if(
 
           intensity:
           randomBetween(
-            equity >= 0.60
-            ? 0.38
-            : 0.18,
-
-            equity >= 0.60
-            ? 0.88
-            : 0.62
+            minIntensity,
+            maxIntensity
           ),
 
           chaos:
-          0.42
+          escalate
+          ? 0.58
+          : 0.40
 
         })
 
@@ -2405,8 +2424,12 @@ if(
 
 
     /*
-      BBB는 콜을 상당히 좋아한다.
-      그러나 큰 베팅에는 어느 정도 반응한다.
+      ----------------------------------------------------------
+      콜 / 폴드
+
+      김효진은 판에 남는 성향이 강하다.
+      하지만 아무 금액이나 무조건 콜하지는 않는다.
+      ----------------------------------------------------------
     */
 
     if(
@@ -2414,27 +2437,144 @@ if(
       o.can_call
     ) {
 
-      let willingness =
-        0.54 +
-        (
-          equity *
-          0.34
-        );
+      let callChance;
 
 
-      willingness -=
+      if(
+        strength === 0
+      ) {
+
+        callChance =
+          0.55;
+
+      } else if(
+        strength === 1
+      ) {
+
+        callChance =
+          0.63;
+
+      } else if(
+        strength === 2
+      ) {
+
+        callChance =
+          0.72;
+
+      } else if(
+        strength === 3
+      ) {
+
+        callChance =
+          0.82;
+
+      } else {
+
+        /*
+          매우 강한 패도 일부는
+          콜로 숨길 수 있다.
+        */
+
+        callChance =
+          0.88;
+
+      }
+
+
+      /*
+        상대 압박에 대한 저항이 높다.
+
+        기존 BBB보다 큰 베팅에 의한
+        콜 확률 감소를 완화한다.
+      */
+
+      callChance -=
         callPressure *
-        0.38;
+        0.27;
 
 
-      willingness -=
+      /*
+        팟 오즈도 완전히 무시하지는 않는다.
+      */
+
+      callChance -=
         potOdds *
-        0.08;
+        0.04;
+
+
+      /*
+        조심스러운 순간에는
+        약한 패를 조금 더 버린다.
+      */
+
+      if(
+        cautious &&
+        strength <= 1
+      ) {
+
+        callChance -=
+          0.10;
+
+      }
+
+
+      /*
+        공격 모드인데 레이즈 판정에서
+        레이즈하지 않았다면,
+        그래도 쉽게 포기하지 않는다.
+      */
+
+      if(
+        aggressive
+      ) {
+
+        callChance +=
+          0.05;
+
+      }
+
+
+      /*
+        위기 상황.
+
+        약한 패는 오히려 보호적으로,
+        보통 이상이면 끝까지 맞설 수 있다.
+      */
+
+      if(
+        danger
+      ) {
+
+        if(
+          strength <= 1
+        ) {
+
+          callChance -=
+            escalate
+            ? 0.02
+            : 0.15;
+
+        } else {
+
+          callChance +=
+            0.06;
+
+        }
+
+      }
+
+
+      callChance =
+        clamp(
+          callChance,
+          0.10,
+          0.94
+        );
 
 
       if(
         chance(
-          willingness
+          callChance
         )
       ) {
 
@@ -2457,38 +2597,106 @@ if(
 
 
     /*
-      체크할 수 있어도
-      가끔 괜히 한 번 더 찌른다.
+      ----------------------------------------------------------
+      체크 가능한 상황
+
+      공짜 카드라고 무조건 체크하지 않는다.
+
+      약한 패 블러프와
+      강한 패 공격 모두 가능하다.
+      ----------------------------------------------------------
     */
 
     if(
-      o.can_raise &&
-      chance(
-        0.12
-      )
+      o.can_raise
     ) {
 
-      return {
+      let probeChance =
+        0.13;
 
-        action: "raise",
 
-        raiseTo:
-        chooseRaiseTarget({
+      if(
+        strength >= 2
+      ) {
 
-          options: o,
+        probeChance =
+          0.24;
 
-          intensity:
-          randomBetween(
-            0.16,
-            0.48
-          ),
+      }
 
-          chaos:
-          0.32
 
-        })
+      if(
+        strength >= 3
+      ) {
 
-      };
+        probeChance =
+          0.34;
+
+      }
+
+
+      if(
+        escalate
+      ) {
+
+        probeChance +=
+          0.18;
+
+      }
+
+
+      if(
+        cautious
+      ) {
+
+        probeChance -=
+          0.08;
+
+      }
+
+
+      if(
+        chance(
+          clamp(
+            probeChance,
+            0.04,
+            0.60
+          )
+        )
+      ) {
+
+        return {
+
+          action: "raise",
+
+          raiseTo:
+          chooseRaiseTarget({
+
+            options: o,
+
+            intensity:
+            randomBetween(
+
+              escalate
+              ? 0.42
+              : 0.18,
+
+              escalate
+              ? 0.88
+              : 0.58
+
+            ),
+
+            chaos:
+            escalate
+            ? 0.55
+            : 0.35
+
+          })
+
+        };
+
+      }
 
     }
 
@@ -2516,7 +2724,8 @@ if(
     };
 
   }
-  /* ==========================================================
+   
+   /* ==========================================================
      마스터 캐릭터
 
      - 승률
