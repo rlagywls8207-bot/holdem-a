@@ -419,9 +419,9 @@ function drawCardRank(
   const fontSize =
   rank === "10"
   ?
-  11
+  24
   :
-  14;
+  29;
 
 
   return `
@@ -433,14 +433,16 @@ function drawCardRank(
 
       fill="${color}"
 
-      font-family="monospace"
+      font-family="Arial Black, Arial, sans-serif"
       font-size="${fontSize}"
       font-weight="900"
 
       text-anchor="middle"
       dominant-baseline="middle"
 
-      shape-rendering="crispEdges"
+      stroke="${color}"
+      stroke-width="0.7"
+      paint-order="stroke fill"
     >${cardEscapeHtml(rank)}</text>
   `;
 
@@ -645,180 +647,6 @@ function drawNumberCardCenter(
 
 }
 
-
-/* =========================================================
-   QUEEN CROWN
-========================================================= */
-
-function drawQueenCrown(){
-
-  return `
-    <g>
-
-      <path
-        d="
-          M 35 42
-
-          L 39 29
-          L 47 37
-
-          L 55 25
-          L 63 37
-
-          L 71 29
-          L 75 42
-
-          Z
-        "
-        fill="${CARD_COLORS.crown}"
-      />
-
-      <rect
-        x="37"
-        y="40"
-        width="36"
-        height="7"
-        fill="${CARD_COLORS.crown}"
-      />
-
-      <rect
-        x="37"
-        y="45"
-        width="36"
-        height="3"
-        fill="${CARD_COLORS.crownShade}"
-      />
-
-    </g>
-  `;
-
-}
-
-
-/* =========================================================
-   KING CROWN
-========================================================= */
-
-function drawKingCrown(){
-
-  return `
-    <g>
-
-      <!-- 뒤쪽 솟은 부분 -->
-
-      <path
-        d="
-          M 38 39
-
-          L 41 25
-          L 49 34
-
-          L 55 20
-          L 61 34
-
-          L 69 25
-          L 72 39
-
-          Z
-        "
-        fill="${CARD_COLORS.crownShade}"
-      />
-
-
-      <!-- 앞쪽 왕관 -->
-
-      <path
-        d="
-          M 34 41
-
-          L 39 29
-          L 47 38
-
-          L 55 24
-          L 63 38
-
-          L 71 29
-          L 76 41
-
-          L 73 49
-
-          Q 55 55 37 49
-
-          Z
-        "
-        fill="${CARD_COLORS.crown}"
-      />
-
-
-      <!-- 둥근 하단 면 -->
-
-      <path
-        d="
-          M 37 46
-
-          Q 55 53 73 46
-
-          L 72 53
-
-          Q 55 60 38 53
-
-          Z
-        "
-        fill="${CARD_COLORS.crownShade}"
-      />
-
-
-      <!-- 보석 주변 음영 -->
-
-      <rect
-        x="51"
-        y="43"
-        width="2"
-        height="2"
-        fill="${CARD_COLORS.crownShade}"
-      />
-
-      <rect
-        x="57"
-        y="43"
-        width="2"
-        height="2"
-        fill="${CARD_COLORS.crownShade}"
-      />
-
-      <rect
-        x="51"
-        y="49"
-        width="2"
-        height="2"
-        fill="${CARD_COLORS.crownShade}"
-      />
-
-      <rect
-        x="57"
-        y="49"
-        width="2"
-        height="2"
-        fill="${CARD_COLORS.crownShade}"
-      />
-
-
-      <!-- 보라색 보석 -->
-
-      <rect
-        x="53"
-        y="45"
-        width="4"
-        height="4"
-        fill="${CARD_COLORS.purple}"
-      />
-
-    </g>
-  `;
-
-}
-
-
 /* =========================================================
    FACE CARD CENTER
 ========================================================= */
@@ -829,48 +657,71 @@ function drawFaceCardCenter(
   color
 ){
 
-  if(
-    rank === "J"
-  ){
+  const sizes = {
 
-    return `
-      <g>
+    J:38,
+    Q:44,
+    K:50
 
-        ${drawCardSuit(
-          suit,
-          50,
-          51,
-          43,
-          color
-        )}
-
-      </g>
-    `;
-
-  }
+  };
 
 
-  if(
-    rank === "Q"
-  ){
+  const decorations = {
 
-    return `
-      <g>
+    J:`
+      <rect
+        x="37"
+        y="73"
+        width="26"
+        height="4"
+        rx="2"
+        fill="${color}"
+        opacity=".45"
+      />
+    `,
 
-        ${drawCardSuit(
-          suit,
-          50,
-          60,
-          42,
-          color
-        )}
+    Q:`
+      <rect
+        x="34"
+        y="76"
+        width="32"
+        height="4"
+        rx="2"
+        fill="${color}"
+      />
 
-        ${drawQueenCrown()}
+      <rect
+        x="39"
+        y="82"
+        width="22"
+        height="3"
+        rx="1.5"
+        fill="${color}"
+        opacity=".45"
+      />
+    `,
 
-      </g>
-    `;
+    K:`
+      <rect
+        x="31"
+        y="78"
+        width="38"
+        height="5"
+        rx="2"
+        fill="${color}"
+      />
 
-  }
+      <rect
+        x="36"
+        y="86"
+        width="28"
+        height="4"
+        rx="2"
+        fill="${color}"
+      />
+    `
+
+  };
 
 
   return `
@@ -879,19 +730,17 @@ function drawFaceCardCenter(
       ${drawCardSuit(
         suit,
         50,
-        61,
-        43,
+        48,
+        sizes[rank] ?? 42,
         color
       )}
 
-      ${drawKingCrown()}
+      ${decorations[rank] ?? ""}
 
     </g>
   `;
 
 }
-
-
 /* =========================================================
    CARD SVG
 ========================================================= */
@@ -989,24 +838,24 @@ function pixelCardSvg(
 
       <!-- upper rank -->
 
-      ${drawCardRank(
-        rank,
-        16,
-        18,
-        color,
-        false
-      )}
+${drawCardRank(
+  rank,
+  19,
+  22,
+  color,
+  false
+)}
 
 
       <!-- lower rank -->
 
-      ${drawCardRank(
-        rank,
-        84,
-        122,
-        color,
-        true
-      )}
+${drawCardRank(
+  rank,
+  81,
+  118,
+  color,
+  true
+)}
 
 
       <!-- center artwork -->
