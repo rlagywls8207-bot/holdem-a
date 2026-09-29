@@ -1015,63 +1015,85 @@ button{
   gap:3px;
   min-height:49px;
 }
-
 .pixelCard{
   position:relative;
+
   width:34px;
   height:48px;
   flex:0 0 34px;
+
   overflow:hidden;
-  border:2px solid #171717;
-  border-radius:2px;
-  background:#f0eadc;
-  color:#111;
-  font-family:monospace;
+
+  border:0;
+  border-radius:0;
+
+  background:transparent;
+
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
 }
 
-.pixelCard.red{
-  color:#a52727;
-}
+.pixelCardSvg{
+  display:block;
 
-.pixelCardRank{
-  position:absolute;
-  left:3px;
-  top:3px;
-  font-size:10px;
-  font-weight:900;
-}
+  width:100%;
+  height:100%;
 
-.pixelCardSuit{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-45%);
-  font-size:17px;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
 }
 
 .pixelCardBack{
+  box-sizing:border-box;
+
+  border:2px solid #510E78;
+  border-radius:3px;
+
   background:
     repeating-linear-gradient(
       0deg,
-      #263f69 0,
-      #263f69 4px,
-      #39588b 4px,
-      #39588b 8px
+      #510E78 0,
+      #510E78 3px,
+      #73409A 3px,
+      #73409A 6px
     );
-  border-color:#ccc4ac;
 }
 
 .pixelCardBack::after{
   content:"";
+
   position:absolute;
   inset:4px;
-  border:2px solid rgba(255,255,255,.35);
+
+  border:1px solid #FAFAFA;
+
+  opacity:.7;
+}
+
+.pixelCard.unknown{
+  box-sizing:border-box;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:2px solid #510E78;
+  border-radius:3px;
+
+  background:#FAFAFA;
+
+  color:#510E78;
+
+  font-family:monospace;
+  font-size:18px;
+  font-weight:900;
 }
 
 .cardPlaceholder{
   width:34px;
   height:48px;
   flex:0 0 34px;
+
   border:1px dashed rgba(255,255,255,.22);
 }
 
@@ -2667,6 +2689,15 @@ button{
   margin:20px 0;
 }
 
+.ruleCards .pixelCard{
+  width:48px;
+  height:67px;
+  flex:0 0 48px;
+
+  box-shadow:
+    0 3px 7px rgba(0,0,0,.12);
+}
+  
 .rulePlayingCard{
   width:48px;
   height:67px;
@@ -3064,6 +3095,12 @@ button{
     font-size:16px;
   }
 
+.ruleCards .pixelCard{
+  width:43px;
+  height:61px;
+  flex:0 0 43px;
+}
+  
   .ruleMiniTable{
     width:220px;
     height:140px;
@@ -4960,6 +4997,11 @@ src="./bot-engine.js"
 onerror="window.botEngineLoadFailed=true;"
 ></script>
   
+<script
+src="./holdem-cards.js"
+onerror="window.holdemCardsLoadFailed=true;"
+></script>
+
 <script>
 
 const APP_VERSION =
@@ -11407,104 +11449,6 @@ await enterGame();
 
 
 /* ==========================================================
-   카드
-========================================================== */
-
-function cardHtml(
-card
-){
-
-if(!card){
-
-return '<div class="cardPlaceholder"></div>';
-
-}
-
-
-const rank =
-String(
-card.rank_text ??
-card.rank ??
-"?"
-);
-
-
-const suitMap = {
-
-hearts:
-"♥",
-
-diamonds:
-"♦",
-
-clubs:
-"♣",
-
-spades:
-"♠",
-
-H:
-"♥",
-
-D:
-"♦",
-
-C:
-"♣",
-
-S:
-"♠"
-
-};
-
-
-const suit =
-suitMap[
-card.suit
-]
-??
-card.suit
-??
-"?";
-
-
-const red =
-suit === "♥" ||
-suit === "♦";
-
-
-return `
-
-<div class="pixelCard${red ? " red" : ""}">
-
-<div class="pixelCardRank">
-${escapeHtml(rank)}
-</div>
-
-<div class="pixelCardSuit">
-${escapeHtml(suit)}
-</div>
-
-</div>
-
-`;
-
-}
-
-
-function cardBackHtml(){
-
-return `
-
-<div class="pixelCard pixelCardBack">
-</div>
-
-`;
-
-}
-
-
-/* ==========================================================
    게임 진입
 ========================================================== */
 
@@ -16920,34 +16864,6 @@ ${label}
 `;
 
 }
-
-
-function ruleCard(
-rank,
-suit,
-red = false
-){
-
-return `
-<div class="rulePlayingCard ${red ? "red" : ""}">
-<div>${rank}</div>
-<div>${suit}</div>
-</div>
-`;
-
-}
-
-
-function ruleUnknownCard(){
-
-return `
-<div class="rulePlayingCard unknown">
-?
-</div>
-`;
-
-}
-
 
 const RULE_PAGES = [
 
