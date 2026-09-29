@@ -2740,15 +2740,12 @@ const HoldemBotEngine = (() => {
   ) {
 
     const {
-
       equity,
       options,
       potOdds,
       opponentCount,
       street
-
-    } =
-    context;
+    } = context;
 
 
     const o =
@@ -2770,24 +2767,39 @@ const HoldemBotEngine = (() => {
       );
 
 
+    const max =
+      num(
+        o.max_raise_to
+      );
+
+
     const callPressure =
       call /
       chips;
 
 
     /*
-      필요한 최소 기대 승률.
-      약간의 안전 마진을 둔다.
+      ==========================================================
+      MASTER / 제선 팍
+
+      핵심 성향
+
+      - 불필요한 큰 싸움을 피함
+      - 강한 패를 콜/체크로 숨기는 비율이 높음
+      - 약한 패도 선택적으로 강한 패처럼 연기
+      - 블러프를 시작하면 쉽게 끊지 않는 성향
+      - 상대 압박에는 패가 없으면 손실 최소화
+      - 베팅 크기를 일부러 일정하게 만들지 않음
+      - 위기라고 무조건 도박하지 않음
+      - 확실하거나 승부 가치가 생기면 강하게 공격
+      ==========================================================
     */
+
 
     const required =
       potOdds +
       0.025;
 
-
-    /*
-      다인팟에서는 블러핑을 줄임
-    */
 
     const headsUpLike =
       opponentCount <= 1;
@@ -2799,130 +2811,105 @@ const HoldemBotEngine = (() => {
 
 
     /*
-      명백한 폴드
+      이번 판단의 플레이 스타일 변화.
+
+      제선 팍은 항상 같은 크기로
+      같은 행동을 하지 않는다.
+
+      이 값은 패의 강도를 바꾸는 것이 아니라
+      같은 상황에서 어떤 라인을 선택할지를 흔든다.
+    */
+
+    const temperament =
+      Math.random();
+
+
+    const deceptive =
+      temperament >= 0.62;
+
+
+    const committed =
+      temperament >= 0.84;
+
+
+    /*
+      패 강도 구간.
+    */
+
+    let strength =
+      0;
+
+
+    if(
+      equity >= 0.32
+    ) {
+
+      strength =
+        1;
+
+    }
+
+
+    if(
+      equity >= 0.46
+    ) {
+
+      strength =
+        2;
+
+    }
+
+
+    if(
+      equity >= 0.62
+    ) {
+
+      strength =
+        3;
+
+    }
+
+
+    if(
+      equity >= 0.78
+    ) {
+
+      strength =
+        4;
+
+    }
+
+
+    /*
+      ==========================================================
+      1. 큰 압박을 받았을 때
+
+      설문 06 / 07 / 20 반영.
+
+      약한 패로 상대의 큰 공격을
+      무작정 따라가지 않는다.
+
+      이것이 김효진과 가장 큰 차이 중 하나다.
+      ==========================================================
     */
 
     if(
       call > 0 &&
-      equity <
-      required - 0.06
+      callPressure >= 0.32 &&
+      strength <= 1
     ) {
-
-      if(
-        !(
-          headsUpLike &&
-          lateStreet &&
-          o.can_raise &&
-          chance(0.08)
-        )
-      ) {
-
-        return {
-          action: "fold"
-        };
-
-      }
-
-    }
-
-
-    /*
-      강한 핸드
-    */
-
-    if(
-      equity >= 0.72 &&
-      o.can_raise
-    ) {
-
-      let intensity =
-        0.38 +
-        (
-          equity - 0.72
-        ) *
-        1.35;
-
-
-      intensity =
-        clamp(
-          intensity,
-          0.32,
-          0.88
-        );
-
 
       /*
-        너무 강하면 가끔 상대를 끌어들이기 위해
-        체크/콜을 섞는다.
+        극히 일부만 선택적 블러프 재공격.
+        평상시에는 손실 최소화.
       */
 
       if(
-        equity > 0.88 &&
-        chance(0.22)
-      ) {
-
-        if(
-          o.can_check
-        ) {
-
-          return {
-            action: "check"
-          };
-
-        }
-
-
-        if(
-          o.can_call
-        ) {
-
-          return {
-            action: "call"
-          };
-
-        }
-
-      }
-
-
-      return {
-
-        action: "raise",
-
-        raiseTo:
-        chooseRaiseTarget({
-
-          options: o,
-
-          intensity:
-          intensity,
-
-          chaos:
-          0.08
-
-        })
-
-      };
-
-    }
-
-
-    /*
-      중간 강도
-    */
-
-    if(
-      equity >=
-      required + 0.07
-    ) {
-
-      if(
+        headsUpLike &&
         o.can_raise &&
-        callPressure < 0.18 &&
+        deceptive &&
         chance(
-          headsUpLike
-          ? 0.30
-          : 0.16
+          0.10
         )
       ) {
 
@@ -2937,12 +2924,292 @@ const HoldemBotEngine = (() => {
 
             intensity:
             randomBetween(
-              0.16,
-              0.36
+              0.48,
+              0.82
             ),
 
             chaos:
-            0.06
+            0.08
+
+          })
+
+        };
+
+      }
+
+
+      if(o.can_fold) {
+
+        return {
+          action: "fold"
+        };
+
+      }
+
+    }
+
+
+    /*
+      ==========================================================
+      2. 매우 강한 패
+
+      설문 04 반영.
+
+      강한 패라고 바로 공격하지 않는다.
+      상대에게 약하게 보이도록
+      체크/콜을 상당히 자주 섞는다.
+      ==========================================================
+    */
+
+    if(
+      strength === 4
+    ) {
+
+      let trapChance =
+        0.46;
+
+
+      /*
+        프리플랍에서도 숨길 수 있지만
+        플랍 이후 트랩 비중을 더 높인다.
+      */
+
+      if(
+        street !== "preflop"
+      ) {
+
+        trapChance +=
+          0.08;
+
+      }
+
+
+      /*
+        상대가 이미 큰 금액을 밀어 넣었다면
+        트랩보다 가치 확보를 조금 더 선호.
+      */
+
+      if(
+        callPressure >= 0.24
+      ) {
+
+        trapChance -=
+          0.12;
+
+      }
+
+
+      if(
+        chance(
+          clamp(
+            trapChance,
+            0.24,
+            0.62
+          )
+        )
+      ) {
+
+        if(
+          call > 0 &&
+          o.can_call
+        ) {
+
+          return {
+            action: "call"
+          };
+
+        }
+
+
+        if(o.can_check) {
+
+          return {
+            action: "check"
+          };
+
+        }
+
+      }
+
+
+      if(o.can_raise) {
+
+        /*
+          강한 패의 베팅 크기도 고정하지 않는다.
+
+          작은 유도 베팅부터
+          큰 가치 베팅까지 섞는다.
+        */
+
+        let intensity;
+
+
+        const sizeRoll =
+          Math.random();
+
+
+        if(
+          sizeRoll < 0.24
+        ) {
+
+          intensity =
+            randomBetween(
+              0.14,
+              0.28
+            );
+
+        } else if(
+          sizeRoll < 0.64
+        ) {
+
+          intensity =
+            randomBetween(
+              0.34,
+              0.58
+            );
+
+        } else {
+
+          intensity =
+            randomBetween(
+              0.68,
+              0.94
+            );
+
+        }
+
+
+        return {
+
+          action: "raise",
+
+          raiseTo:
+          chooseRaiseTarget({
+
+            options: o,
+
+            intensity:
+            intensity,
+
+            chaos:
+            0.10
+
+          })
+
+        };
+
+      }
+
+    }
+
+
+    /*
+      ==========================================================
+      3. 좋은 패
+
+      좋은 패는 공격하되
+      무조건 레이즈하지 않는다.
+
+      콜을 섞어서 패를 숨기고
+      상대가 계속 들어오도록 허용한다.
+      ==========================================================
+    */
+
+    if(
+      strength === 3
+    ) {
+
+      let raiseChance =
+        0.48;
+
+
+      if(
+        callPressure < 0.15
+      ) {
+
+        raiseChance +=
+          0.08;
+
+      }
+
+
+      if(
+        lateStreet
+      ) {
+
+        raiseChance +=
+          0.06;
+
+      }
+
+
+      if(
+        deceptive
+      ) {
+
+        raiseChance -=
+          0.13;
+
+      }
+
+
+      if(
+        o.can_raise &&
+        chance(
+          clamp(
+            raiseChance,
+            0.28,
+            0.68
+          )
+        )
+      ) {
+
+        let intensity;
+
+
+        /*
+          설문 16:
+          상황에 따라 베팅 크기가
+          극단적으로 달라질 수 있음.
+        */
+
+        if(
+          chance(
+            0.38
+          )
+        ) {
+
+          intensity =
+            randomBetween(
+              0.58,
+              0.90
+            );
+
+        } else {
+
+          intensity =
+            randomBetween(
+              0.20,
+              0.48
+            );
+
+        }
+
+
+        return {
+
+          action: "raise",
+
+          raiseTo:
+          chooseRaiseTarget({
+
+            options: o,
+
+            intensity:
+            intensity,
+
+            chaos:
+            0.08
 
           })
 
@@ -2952,8 +3219,8 @@ const HoldemBotEngine = (() => {
 
 
       if(
-        o.can_call &&
-        call > 0
+        call > 0 &&
+        o.can_call
       ) {
 
         return {
@@ -2975,32 +3242,277 @@ const HoldemBotEngine = (() => {
 
 
     /*
-      계산된 블러핑
+      ==========================================================
+      4. 중간 패
 
-      상대가 적고
-      체크 가능한 상황 또는 콜 부담이 작을 때
-      낮은 빈도로 공격.
+      기본적으로 상황을 관찰한다.
+
+      싸게 볼 수 있으면 콜,
+      비싸지면 빠질 수 있으며,
+      좋은 공격 기회에서는 선택적으로 레이즈.
+      ==========================================================
     */
 
-    const bluffChance =
+    if(
+      strength === 2
+    ) {
+
+      let mediumRaiseChance =
+        headsUpLike
+        ? 0.28
+        : 0.16;
+
+
+      if(
+        callPressure >= 0.18
+      ) {
+
+        mediumRaiseChance -=
+          0.10;
+
+      }
+
+
+      if(
+        deceptive &&
+        headsUpLike
+      ) {
+
+        mediumRaiseChance +=
+          0.08;
+
+      }
+
+
+      if(
+        o.can_raise &&
+        chance(
+          clamp(
+            mediumRaiseChance,
+            0.06,
+            0.42
+          )
+        )
+      ) {
+
+        return {
+
+          action: "raise",
+
+          raiseTo:
+          chooseRaiseTarget({
+
+            options: o,
+
+            intensity:
+            randomBetween(
+              0.22,
+              0.56
+            ),
+
+            chaos:
+            0.06
+
+          })
+
+        };
+
+      }
+
+
+      if(
+        call > 0 &&
+        o.can_call
+      ) {
+
+        let callChance =
+          0.67;
+
+
+        callChance -=
+          callPressure *
+          0.72;
+
+
+        if(
+          equity >= required
+        ) {
+
+          callChance +=
+            0.10;
+
+        }
+
+
+        if(
+          chance(
+            clamp(
+              callChance,
+              0.18,
+              0.82
+            )
+          )
+        ) {
+
+          return {
+            action: "call"
+          };
+
+        }
+
+
+        if(o.can_fold) {
+
+          return {
+            action: "fold"
+          };
+
+        }
+
+      }
+
+
+      if(o.can_check) {
+
+        return {
+          action: "check"
+        };
+
+      }
+
+    }
+
+
+    /*
+      ==========================================================
+      5. 선택적 블러프
+
+      설문 09 / 12 / 14 / 19 반영.
+
+      아무 약한 패나 공격하는 것이 아니다.
+
+      상대 수가 적고,
+      부담이 크지 않으며,
+      상대를 폴드시킬 여지가 있다고 볼 때
+      강한 패처럼 공격한다.
+      ==========================================================
+    */
+
+    let bluffChance =
+      0.04;
+
+
+    if(
       headsUpLike
-      ?
-      (
-        lateStreet
-        ? 0.16
-        : 0.09
-      )
-      :
-      0.035;
+    ) {
+
+      bluffChance =
+        0.13;
+
+    }
+
+
+    if(
+      headsUpLike &&
+      lateStreet
+    ) {
+
+      bluffChance =
+        0.20;
+
+    }
+
+
+    if(
+      deceptive
+    ) {
+
+      bluffChance +=
+        0.08;
+
+    }
+
+
+    /*
+      큰 베팅을 이미 맞고 있는 상황에서는
+      허세로 돈을 계속 태우지 않는다.
+    */
+
+    if(
+      callPressure >= 0.18
+    ) {
+
+      bluffChance *=
+        0.42;
+
+    }
+
+
+    if(
+      callPressure >= 0.30
+    ) {
+
+      bluffChance *=
+        0.25;
+
+    }
 
 
     if(
       o.can_raise &&
-      callPressure < 0.12 &&
       chance(
-        bluffChance
+        clamp(
+          bluffChance,
+          0.01,
+          0.32
+        )
       )
     ) {
+
+      /*
+        블러프가 선택됐을 때는
+        소심한 찌르기보다
+        실제 강한 패처럼 보이게 한다.
+
+        committed가 걸리면
+        특히 큰 사이즈를 사용한다.
+      */
+
+      let bluffIntensity;
+
+
+      if(
+        committed
+      ) {
+
+        bluffIntensity =
+          randomBetween(
+            0.62,
+            0.92
+          );
+
+      } else if(
+        chance(
+          0.46
+        )
+      ) {
+
+        bluffIntensity =
+          randomBetween(
+            0.42,
+            0.68
+          );
+
+      } else {
+
+        bluffIntensity =
+          randomBetween(
+            0.20,
+            0.40
+          );
+
+      }
+
 
       return {
 
@@ -3012,13 +3524,10 @@ const HoldemBotEngine = (() => {
           options: o,
 
           intensity:
-          randomBetween(
-            0.24,
-            0.48
-          ),
+          bluffIntensity,
 
           chaos:
-          0.04
+          0.08
 
         })
 
@@ -3028,23 +3537,107 @@ const HoldemBotEngine = (() => {
 
 
     /*
-      콜할 가치가 거의 정확히 맞는 경계 상황
+      ==========================================================
+      6. 약한 패의 콜
+
+      설문 01 / 03 / 05 반영.
+
+      처음부터 전부 폴드하지는 않는다.
+      싸게 볼 수 있으면 콜하지만,
+      비용이 커지면 손실을 끊는다.
+      ==========================================================
     */
 
     if(
       call > 0 &&
-      o.can_call &&
-      equity >=
-      required - 0.015 &&
-      callPressure < 0.24
+      o.can_call
     ) {
 
-      return {
-        action: "call"
-      };
+      let callChance =
+        strength === 1
+        ? 0.48
+        : 0.32;
+
+
+      if(
+        callPressure < 0.06
+      ) {
+
+        callChance +=
+          0.18;
+
+      }
+
+
+      if(
+        callPressure >= 0.15
+      ) {
+
+        callChance -=
+          0.18;
+
+      }
+
+
+      if(
+        callPressure >= 0.25
+      ) {
+
+        callChance -=
+          0.24;
+
+      }
+
+
+      /*
+        계산상 콜 가치가 있다면
+        약간 더 오래 남는다.
+      */
+
+      if(
+        equity >=
+        required - 0.015
+      ) {
+
+        callChance +=
+          0.12;
+
+      }
+
+
+      if(
+        chance(
+          clamp(
+            callChance,
+            0.05,
+            0.72
+          )
+        )
+      ) {
+
+        return {
+          action: "call"
+        };
+
+      }
+
+
+      if(o.can_fold) {
+
+        return {
+          action: "fold"
+        };
+
+      }
 
     }
 
+
+    /*
+      체크할 수 있으면
+      불필요하게 칩을 쓰지 않고
+      다음 상황을 본다.
+    */
 
     if(o.can_check) {
 
@@ -3059,10 +3652,7 @@ const HoldemBotEngine = (() => {
       action: "fold"
     };
 
-  }
-
-
-  /* ==========================================================
+  }  /* ==========================================================
      생각 시간
   ========================================================== */
 
