@@ -2050,16 +2050,1027 @@ button{
 }
 
 
-/* 룰북 */
-.ruleNumber{
+/* ==========================================================
+   룰북 V2
+========================================================== */
+
+.rulesScreen{
+  width:100%;
+  color:#111;
+}
+
+
+/* 상단 */
+
+.ruleBookTop{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:8px;
+  margin-bottom:14px;
+}
+
+.ruleBookTopTitle{
+  color:#fff;
+  text-align:center;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:1.4px;
+}
+
+.ruleHomeButton,
+.ruleArrowButton,
+.ruleReturnButton{
+  width:auto;
+  margin:0;
+  border:1px solid #444;
+  background:#202020;
+  color:#fff;
+}
+
+.ruleHomeButton{
+  padding:8px 11px;
   font-size:12px;
 }
 
-.ruleSection{
-  font-size:15px;
+.rulePageControls{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:5px;
+}
+
+.ruleArrowButton{
+  min-width:34px;
+  padding:8px 9px;
+  font-size:14px;
+}
+
+.ruleReturnButton{
+  padding:8px 9px;
+  font-size:10px;
+  white-space:nowrap;
+}
+
+/* ==========================================================
+   룰북 검색
+========================================================== */
+
+.ruleSearchPanel{
+  position:relative;
+  z-index:20;
+
+  width:calc(100% - 12px);
+  max-width:480px;
+
+  margin:0 auto 10px;
+
+  padding:10px;
+
+  border:1px solid #444;
+  border-radius:8px;
+
+  background:#171717;
+
+  box-shadow:
+    0 10px 25px rgba(0,0,0,.35);
+}
+
+
+.ruleSearchBox{
+  display:flex;
+  align-items:center;
+
+  gap:7px;
+}
+
+
+.ruleSearchInput{
+  flex:1;
+
+  min-width:0;
+
+  margin:0;
+  padding:10px 12px;
+
+  border:1px solid #555;
+  border-radius:6px;
+
+  outline:none;
+
+  background:#fff;
+  color:#111;
+
+  font-size:14px;
+}
+
+
+.ruleSearchInput:focus{
+  border-color:#aaa;
+}
+
+
+.ruleSearchClose{
+  width:38px;
+  min-width:38px;
+
+  margin:0;
+  padding:8px;
+
+  border:1px solid #555;
+
+  background:#252525;
+  color:#fff;
+
+  font-size:18px;
+}
+
+
+.ruleSearchResults{
+  max-height:300px;
+
+  overflow-y:auto;
+
+  margin-top:8px;
+}
+
+
+.ruleSearchEmpty{
+  padding:18px 10px;
+
+  color:#aaa;
+
+  text-align:center;
+
+  font-size:12px;
+}
+
+
+.ruleSearchResult{
+  display:block;
+
+  width:100%;
+
+  margin:0;
+  padding:11px 8px;
+
+  border:0;
+  border-bottom:1px solid #353535;
+  border-radius:0;
+
+  background:transparent;
+
+  color:#fff;
+
+  text-align:left;
+}
+
+
+.ruleSearchResult:last-child{
+  border-bottom:0;
+}
+
+
+.ruleSearchResult:hover{
+  background:#242424;
+}
+
+
+.ruleSearchResultTop{
+  display:flex;
+  align-items:center;
+
+  gap:9px;
+
+  margin-bottom:5px;
+}
+
+
+.ruleSearchResultNumber{
+  flex:none;
+
+  min-width:29px;
+
+  color:#777;
+
+  font-family:Georgia,serif;
+
+  font-size:11px;
+  font-weight:900;
+}
+
+
+.ruleSearchResultTitle{
+  color:#fff;
+
+  font-size:13px;
+  font-weight:900;
+}
+
+
+.ruleSearchResultSnippet{
+  margin-left:38px;
+
+  overflow:hidden;
+
+  color:#aaa;
+
+  font-size:11px;
+  line-height:1.55;
+
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+}
+
+
+.ruleSearchMark{
+  padding:0 2px;
+
+  border-radius:2px;
+
+  background:#ffe783;
+  color:#111;
+}
+
+
+/* 검색 결과에서 이동한 페이지의 단어 */
+
+.ruleSearchTargetFlash{
+  animation:
+    ruleSearchTargetFlash
+    1.5s ease;
+}
+
+
+@keyframes ruleSearchTargetFlash{
+
+  0%,
+  55%{
+    background:#ffe783;
+    color:#111;
+  }
+
+  100%{
+    background:transparent;
+    color:inherit;
+  }
+
+}
+
+/* 종이 묶음 */
+
+.ruleBookStage{
+  position:relative;
+  width:calc(100% - 12px);
+  max-width:480px;
+  margin:0 auto;
+  padding:0 0 15px;
+  touch-action:pan-x;
+}
+
+.rulePaper{
+  position:relative;
+  z-index:3;
+  min-height:660px;
+  padding:42px 27px 48px;
+  overflow:hidden;
+
+  background:
+    linear-gradient(
+      rgba(0,0,0,.015),
+      rgba(0,0,0,.015)
+    ),
+    #f8f6ef;
+
+  color:#181818;
+
+  border:1px solid #d8d4ca;
+  border-radius:3px;
+
+  box-shadow:
+    0 13px 30px rgba(0,0,0,.42);
+
+  transform-origin:12px 10px;
+}
+
+.rulePaperBack{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  min-height:660px;
+
+  background:#ece9df;
+  border:1px solid #cfcbbf;
+  border-radius:3px;
+
+  pointer-events:none;
+}
+
+.rulePaperBack1{
+  transform:
+    translate(5px,6px)
+    rotate(.45deg);
+}
+
+.rulePaperBack2{
+  transform:
+    translate(9px,11px)
+    rotate(1deg);
+
+  background:#dfdcd2;
+}
+
+
+/* 스테이플 */
+
+.ruleStaple{
+  position:absolute;
+  top:15px;
+  left:17px;
+
+  width:24px;
+  height:8px;
+
+  border:2px solid #8d8d8d;
+  border-bottom:0;
+
+  border-radius:7px 7px 0 0;
+
+  transform:rotate(-8deg);
+
+  opacity:.85;
+}
+
+
+/* 내용 */
+
+.rulePageContent{
+  position:relative;
+  z-index:2;
+
+  min-height:555px;
+
+  font-family:
+    "Noto Sans KR",
+    Arial,
+    sans-serif;
+
+  line-height:1.7;
+}
+
+.ruleChapter{
+  margin-bottom:5px;
+
+  color:#777;
+
+  font-size:11px;
+  font-weight:900;
+
+  letter-spacing:1.1px;
+}
+
+.rulePageTitle{
+  margin:0 0 22px;
+
+  color:#111;
+
+  font-size:25px;
+  line-height:1.25;
+  font-weight:900;
+}
+
+.ruleLead{
+  margin:0 0 19px;
+
+  font-size:17px;
+  line-height:1.7;
+  font-weight:800;
+}
+
+.ruleText{
+  margin:0 0 17px;
+
+  font-size:14px;
+  line-height:1.8;
+}
+
+.ruleSmall{
+  margin-top:18px;
+
+  color:#696969;
+
+  font-size:11px;
   line-height:1.65;
 }
-  
+
+.ruleEmphasis{
+  margin:22px 0;
+
+  padding:15px 16px;
+
+  border-left:4px solid #222;
+
+  background:#ece9e0;
+
+  font-size:15px;
+  font-weight:900;
+  line-height:1.65;
+}
+
+
+/* 링크 */
+
+.ruleLink{
+  padding:0;
+
+  margin:0;
+
+  width:auto;
+
+  display:inline;
+
+  border:0;
+  border-radius:0;
+
+  background:transparent;
+
+  color:#1769d2;
+
+  font:inherit;
+  font-weight:800;
+
+  text-decoration:underline;
+  text-decoration-thickness:1px;
+  text-underline-offset:2px;
+
+  cursor:pointer;
+}
+
+.ruleLink:hover{
+  color:#0c4fa8;
+}
+
+
+/* 링크로 도착한 대상 */
+
+.ruleTargetFlash{
+  animation:ruleTargetFlash 1.15s ease;
+}
+
+@keyframes ruleTargetFlash{
+
+  0%{
+    background:#ffe783;
+    box-shadow:0 0 0 5px #ffe783;
+  }
+
+  100%{
+    background:transparent;
+    box-shadow:0 0 0 0 transparent;
+  }
+
+}
+
+
+/* 페이지 번호 */
+
+.rulePageNumber{
+  position:absolute;
+
+  left:0;
+  right:0;
+  bottom:17px;
+
+  text-align:center;
+
+  color:#777;
+
+  font-family:Georgia,serif;
+  font-size:11px;
+}
+
+
+/* 챕터 간지 */
+
+.ruleChapterCover{
+  min-height:510px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  text-align:center;
+}
+
+.ruleChapterNumber{
+  margin-bottom:9px;
+
+  color:#aaa;
+
+  font-family:Georgia,serif;
+  font-size:65px;
+  line-height:1;
+}
+
+.ruleChapterTitle{
+  margin-bottom:17px;
+
+  font-size:30px;
+  font-weight:900;
+}
+
+.ruleChapterDescription{
+  max-width:270px;
+
+  color:#555;
+
+  font-size:14px;
+  line-height:1.8;
+}
+
+
+/* 목차 */
+
+.ruleTocTitle{
+  margin-bottom:25px;
+
+  text-align:center;
+
+  font-family:Georgia,serif;
+  font-size:28px;
+  font-weight:900;
+}
+
+.ruleTocItem{
+  display:block;
+
+  width:100%;
+
+  margin:0;
+  padding:16px 4px;
+
+  border:0;
+  border-bottom:1px solid #d6d1c6;
+  border-radius:0;
+
+  background:transparent;
+
+  color:#111;
+
+  text-align:left;
+}
+
+.ruleTocItem:last-child{
+  border-bottom:0;
+}
+
+.ruleTocNumber{
+  display:inline-block;
+
+  width:39px;
+
+  color:#999;
+
+  font-family:Georgia,serif;
+  font-size:14px;
+}
+
+.ruleTocName{
+  font-size:17px;
+  font-weight:900;
+}
+
+.ruleTocDescription{
+  display:block;
+
+  margin:5px 0 0 39px;
+
+  color:#777;
+
+  font-size:11px;
+  font-weight:400;
+}
+
+
+/* 카드 그림 */
+
+.ruleCards{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+
+  gap:7px;
+
+  margin:20px 0;
+}
+
+.rulePlayingCard{
+  width:48px;
+  height:67px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  border:1px solid #b9b6ad;
+  border-radius:6px;
+
+  background:#fff;
+
+  box-shadow:
+    0 3px 7px rgba(0,0,0,.12);
+
+  color:#111;
+
+  font-family:Georgia,serif;
+  font-size:18px;
+  font-weight:900;
+
+  line-height:1.05;
+}
+
+.rulePlayingCard.red{
+  color:#b52b2b;
+}
+
+.rulePlayingCard.unknown{
+  color:#aaa;
+
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #efefef,
+      #efefef 5px,
+      #e3e3e3 5px,
+      #e3e3e3 10px
+    );
+}
+
+.ruleCardLabel{
+  margin-top:7px;
+
+  color:#777;
+
+  text-align:center;
+
+  font-size:10px;
+}
+
+
+/* 단계 */
+
+.ruleFlow{
+  margin:22px 0;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+
+  gap:5px;
+}
+
+.ruleFlowStep{
+  min-width:180px;
+
+  padding:9px 14px;
+
+  border:1px solid #ccc7bb;
+
+  background:#fff;
+
+  text-align:center;
+
+  font-size:13px;
+  font-weight:900;
+}
+
+.ruleFlowArrow{
+  color:#999;
+
+  font-size:15px;
+}
+
+
+/* 행동 설명 */
+
+.ruleActionList{
+  margin:18px 0;
+}
+
+.ruleAction{
+  display:grid;
+  grid-template-columns:67px 1fr;
+
+  gap:9px;
+
+  padding:10px 0;
+
+  border-bottom:1px solid #ddd9cf;
+}
+
+.ruleAction:last-child{
+  border-bottom:0;
+}
+
+.ruleActionName{
+  font-weight:900;
+}
+
+.ruleActionDescription{
+  color:#444;
+
+  font-size:13px;
+}
+
+
+/* 테이블 축소 그림 */
+
+.ruleMiniTable{
+  position:relative;
+
+  width:250px;
+  height:155px;
+
+  margin:25px auto;
+
+  border:6px solid #373737;
+  border-radius:50%;
+
+  background:#315e48;
+
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.15);
+}
+
+.ruleMiniSeat{
+  position:absolute;
+
+  min-width:56px;
+
+  padding:5px 7px;
+
+  border-radius:8px;
+
+  background:#171717;
+  color:#fff;
+
+  text-align:center;
+
+  font-size:9px;
+  font-weight:900;
+}
+
+.ruleMiniSeat.top{
+  top:-18px;
+  left:96px;
+}
+
+.ruleMiniSeat.left{
+  left:-20px;
+  top:64px;
+}
+
+.ruleMiniSeat.right{
+  right:-20px;
+  top:64px;
+}
+
+.ruleMiniSeat.bottom{
+  bottom:-18px;
+  left:96px;
+}
+
+.ruleMiniPot{
+  position:absolute;
+
+  left:50%;
+  top:50%;
+
+  transform:translate(-50%,-50%);
+
+  color:#fff;
+
+  font-size:11px;
+  font-weight:900;
+}
+
+
+/* 팟 그림 */
+
+.rulePotVisual{
+  margin:27px auto;
+
+  text-align:center;
+}
+
+.rulePotChips{
+  margin-bottom:7px;
+
+  font-size:42px;
+  line-height:1;
+}
+
+.rulePotAmount{
+  font-size:18px;
+  font-weight:900;
+}
+
+
+/* 족보 */
+
+.ruleHand{
+  margin:20px 0 26px;
+
+  text-align:center;
+}
+
+.ruleHandName{
+  margin-bottom:8px;
+
+  font-size:17px;
+  font-weight:900;
+}
+
+.ruleHandDescription{
+  margin-top:8px;
+
+  color:#666;
+
+  font-size:11px;
+}
+
+
+/* 마지막 */
+
+.ruleFinish{
+  min-height:510px;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+
+  text-align:center;
+}
+
+.ruleFinishTitle{
+  margin-bottom:16px;
+
+  font-size:29px;
+  font-weight:900;
+}
+
+.ruleFinishText{
+  margin-bottom:24px;
+
+  color:#555;
+
+  font-size:14px;
+  line-height:1.8;
+}
+
+.rulePaperButton{
+  margin:8px auto 0;
+
+  max-width:270px;
+
+  background:#181818;
+  color:#fff;
+}
+
+
+/* 페이지 넘김 */
+
+.ruleFlipNext{
+  animation:ruleFlipNext .38s ease;
+}
+
+.ruleFlipPrevious{
+  animation:ruleFlipPrevious .38s ease;
+}
+
+@keyframes ruleFlipNext{
+
+  0%{
+    transform:
+      rotate(0)
+      translateY(0);
+
+    opacity:1;
+  }
+
+  45%{
+    transform:
+      rotate(-2deg)
+      translateY(-20px);
+
+    opacity:.35;
+  }
+
+  100%{
+    transform:
+      rotate(0)
+      translateY(0);
+
+    opacity:1;
+  }
+
+}
+
+@keyframes ruleFlipPrevious{
+
+  0%{
+    transform:
+      rotate(0)
+      translateY(0);
+
+    opacity:1;
+  }
+
+  45%{
+    transform:
+      rotate(2deg)
+      translateY(20px);
+
+    opacity:.35;
+  }
+
+  100%{
+    transform:
+      rotate(0)
+      translateY(0);
+
+    opacity:1;
+  }
+
+}
+
+
+/* 모바일 */
+
+@media(max-width:430px){
+
+  .ruleBookTop{
+    grid-template-columns:auto 1fr auto;
+  }
+
+  .ruleBookTopTitle{
+    font-size:10px;
+  }
+
+  .ruleReturnButton{
+    position:absolute;
+
+    top:58px;
+    right:17px;
+
+    z-index:8;
+
+    background:#222;
+  }
+
+  .rulePaper{
+    min-height:620px;
+
+    padding:
+      40px
+      21px
+      45px;
+  }
+
+  .rulePaperBack{
+    min-height:620px;
+  }
+
+  .rulePageTitle{
+    font-size:22px;
+  }
+
+  .ruleLead{
+    font-size:15px;
+  }
+
+  .ruleText{
+    font-size:13px;
+  }
+
+  .rulePlayingCard{
+    width:43px;
+    height:61px;
+
+    font-size:16px;
+  }
+
+  .ruleMiniTable{
+    width:220px;
+    height:140px;
+  }
+
+}
+
 </style>
 </head>
 
@@ -2073,7 +3084,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v0.15.0.6
+v0.16.0
 </div>
 
 <div class="subtitle">
@@ -2253,9 +3264,9 @@ onclick="showBank()"
 class="menuButton"
 onclick="showRules()"
 >
-룰북
+룰북 / 튜토리얼
 <small>
-텍사스 홀덤 진행과 족보를 확인합니다.
+처음부터 배우거나 필요한 규칙을 다시 확인합니다.
 </small>
 </button>
 
@@ -3786,29 +4797,133 @@ class="message"
 
 
 <!-- =====================================================
-     룰북
+     룰북 / 튜토리얼
 ===================================================== -->
 
 <div
 id="rulesScreen"
-class="card hidden"
+class="rulesScreen hidden"
 >
 
+<div class="ruleBookTop">
+
 <button
-class="secondary backButton"
+class="ruleHomeButton"
 onclick="showHome()"
 >
 ← 홈
 </button>
 
-<h2>텍사스 홀덤 룰북</h2>
+<div class="ruleBookTopTitle">
+HOLDEM A RULE BOOK
+</div>
 
-<div id="fullRules"></div>
+<div class="rulePageControls">
+
+<button
+id="ruleSearchButton"
+class="ruleArrowButton"
+onclick="toggleRuleSearch()"
+aria-label="룰북 검색"
+>
+⌕
+</button>
+
+<button
+id="ruleBackToOriginButton"
+class="ruleReturnButton hidden"
+onclick="returnRuleLinkOrigin()"
+>
+← 읽던 곳으로
+</button>
+
+<button
+class="ruleArrowButton"
+onclick="previousRulePage()"
+aria-label="이전 페이지"
+>
+←
+</button>
+
+<button
+class="ruleArrowButton"
+onclick="nextRulePage()"
+aria-label="다음 페이지"
+>
+→
+</button>
 
 </div>
 
+</div>
 
-<!-- =====================================================
+<div
+id="ruleSearchPanel"
+class="ruleSearchPanel hidden"
+>
+
+<div class="ruleSearchBox">
+
+<input
+id="ruleSearchInput"
+class="ruleSearchInput"
+type="search"
+placeholder="룰북 검색"
+autocomplete="off"
+oninput="searchRuleBook()"
+>
+
+<button
+class="ruleSearchClose"
+onclick="closeRuleSearch()"
+aria-label="검색 닫기"
+>
+×
+</button>
+
+</div>
+
+<div
+id="ruleSearchResults"
+class="ruleSearchResults"
+>
+</div>
+
+</div>
+  
+<div
+id="ruleBookStage"
+class="ruleBookStage"
+>
+
+<div class="rulePaper rulePaperBack rulePaperBack2"></div>
+<div class="rulePaper rulePaperBack rulePaperBack1"></div>
+
+<div
+id="rulePaper"
+class="rulePaper"
+>
+
+<div class="ruleStaple">
+</div>
+
+<div
+id="rulePageContent"
+class="rulePageContent"
+>
+</div>
+
+<div
+id="rulePageNumber"
+class="rulePageNumber"
+>
+</div>
+
+</div>
+
+</div>
+
+</div><!-- =====================================================
      모달
 ===================================================== -->
 
@@ -3848,7 +4963,7 @@ onerror="window.botEngineLoadFailed=true;"
 <script>
 
 const APP_VERSION =
-"v0.15.0.6";
+"v0.16.0";
 
 
 const SUPABASE_URL =
@@ -4290,6 +5405,65 @@ function showRules(){
 hideAllScreens();
 
 
+rulePageIndex =
+0;
+
+ruleLinkOriginIndex =
+null;
+
+rulePendingTarget =
+null;
+
+ruleSearchOriginIndex =
+null;
+
+ruleSearchQuery =
+"";
+
+
+const searchPanel =
+byId(
+"ruleSearchPanel"
+);
+
+
+const searchInput =
+byId(
+"ruleSearchInput"
+);
+
+
+const searchResults =
+byId(
+"ruleSearchResults"
+);
+
+
+if(searchPanel){
+
+searchPanel.classList.add(
+"hidden"
+);
+
+}
+
+
+if(searchInput){
+
+searchInput.value =
+"";
+
+}
+
+
+if(searchResults){
+
+searchResults.innerHTML =
+"";
+
+}
+
+
 renderFullRules();
 
 
@@ -4301,7 +5475,6 @@ byId(
 );
 
 }
-
 
 /* ==========================================================
    모달
@@ -15704,189 +16877,3251 @@ byId(
 
 
 /* ==========================================================
-   전체 룰북
+   룰북 V2
 ========================================================== */
 
-function renderFullRules(){
+let rulePageIndex =
+0;
 
-byId(
-"fullRules"
-)
-.innerHTML = `
+let ruleLinkOriginIndex =
+null;
 
-<div class="ruleSection">
+let rulePendingTarget =
+null;
 
-<div class="ruleNumber">
+let ruleTouchStartY =
+null;
+
+let ruleTouchStartX =
+null;
+
+let ruleFlipBusy =
+false;
+
+let ruleSearchQuery =
+"";
+
+let ruleSearchOriginIndex =
+null;
+
+function ruleLink(
+label,
+pageId,
+targetId = ""
+){
+
+return `
+<button
+class="ruleLink"
+onclick="openRuleLink('${pageId}','${targetId}')"
+>
+${label}
+</button>
+`;
+
+}
+
+
+function ruleCard(
+rank,
+suit,
+red = false
+){
+
+return `
+<div class="rulePlayingCard ${red ? "red" : ""}">
+<div>${rank}</div>
+<div>${suit}</div>
+</div>
+`;
+
+}
+
+
+function ruleUnknownCard(){
+
+return `
+<div class="rulePlayingCard unknown">
+?
+</div>
+`;
+
+}
+
+
+const RULE_PAGES = [
+
+/* ==========================================================
+   목차
+========================================================== */
+
+{
+
+id:"toc",
+
+number:"",
+
+html:`
+
+<div class="ruleTocTitle">
+RULE BOOK
+</div>
+
+<button
+class="ruleTocItem"
+onclick="goToRulePage('chapter1')"
+>
+
+<span class="ruleTocNumber">
+01
+</span>
+
+<span class="ruleTocName">
+게임 전 알아야 할 것
+</span>
+
+<span class="ruleTocDescription">
+처음이라면 여기부터
+</span>
+
+</button>
+
+
+<button
+class="ruleTocItem"
+onclick="goToRulePage('chapter2')"
+>
+
+<span class="ruleTocNumber">
+02
+</span>
+
+<span class="ruleTocName">
+게임 진행
+</span>
+
+<span class="ruleTocDescription">
+한 판을 처음부터 끝까지
+</span>
+
+</button>
+
+
+<button
+class="ruleTocItem"
+onclick="goToRulePage('chapter3')"
+>
+
+<span class="ruleTocNumber">
+03
+</span>
+
+<span class="ruleTocName">
+게임 종료
+</span>
+
+<span class="ruleTocDescription">
+승리와 족보 알아보기
+</span>
+
+</button>
+
+
+<button
+class="ruleTocItem"
+onclick="showTutorialComingSoon()"
+>
+
+<span class="ruleTocNumber">
+04
+</span>
+
+<span class="ruleTocName">
+튜토리얼 게임
+</span>
+
+<span class="ruleTocDescription">
+직접 플레이하면서 익히기
+</span>
+
+</button>
+
+`
+
+},
+
+
+/* ==========================================================
+   CHAPTER 01
+========================================================== */
+
+{
+
+id:"chapter1",
+
+number:"01",
+
+html:`
+
+<div class="ruleChapterCover">
+
+<div class="ruleChapterNumber">
 01
 </div>
 
-<div class="ruleTitle">
-홀카드와 공용카드
+<div class="ruleChapterTitle">
+게임 전<br>
+알아야 할 것
 </div>
 
+<div class="ruleChapterDescription">
+처음부터 전부 외울 필요는 없습니다.<br>
+게임을 시작하기 전에 필요한 것부터 알아봅시다.
+</div>
+
+</div>
+
+`
+
+},
+
+
+{
+
+id:"1-1",
+
+number:"1-1",
+
+html:`
+
+<div class="ruleChapter">
+01 · 게임 전 알아야 할 것
+</div>
+
+<h2 class="rulePageTitle">
+어떤 게임인가요?
+</h2>
+
+<p class="ruleLead">
 각 플레이어는 자신만 볼 수 있는 카드 2장을 받습니다.
+</p>
 
-공용 카드는
-플랍에서 3장,
-턴에서 1장,
-리버에서 1장이 공개됩니다.
+<p class="ruleText">
+게임이 진행되면 테이블 가운데에
+모두가 함께 사용하는 카드가 공개됩니다.
+</p>
 
-최대 7장 중 가장 좋은 5장으로 승부합니다.
+<p class="ruleText">
+내 카드와 가운데 카드를 이용해 좋은 패를 만들고,
+마지막까지 승부해서
+${ruleLink("Pot","1-4","potTitle")}을 가져가면 됩니다.
+</p>
+
+<div class="ruleCards">
+
+${ruleCard("A","♠")}
+${ruleCard("K","♠")}
 
 </div>
 
+<div class="ruleCardLabel">
+내 카드
+</div>
 
-<div class="ruleSection">
+<div class="ruleCards">
 
-<div class="ruleNumber">
+${ruleUnknownCard()}
+${ruleUnknownCard()}
+${ruleUnknownCard()}
+${ruleUnknownCard()}
+${ruleUnknownCard()}
+
+</div>
+
+<div class="ruleCardLabel">
+게임 중 공개되는 가운데 카드
+</div>
+
+`
+
+},
+
+
+{
+
+id:"1-2",
+
+number:"1-2",
+
+html:`
+
+<div class="ruleChapter">
+01 · 게임 전 알아야 할 것
+</div>
+
+<h2 class="rulePageTitle">
+먼저 이것만 찾아보세요
+</h2>
+
+<p class="ruleText">
+처음 게임 화면을 보면 정보가 많아 보일 수 있습니다.
+우선 아래 다섯 가지만 찾으면 됩니다.
+</p>
+
+<div class="ruleMiniTable">
+
+<div class="ruleMiniSeat top">
+상대
+</div>
+
+<div class="ruleMiniSeat left">
+상대
+</div>
+
+<div class="ruleMiniSeat right">
+상대
+</div>
+
+<div class="ruleMiniSeat bottom">
+나 · 카드
+</div>
+
+<div class="ruleMiniPot">
+POT
+</div>
+
+</div>
+
+<div class="ruleActionList">
+
+<div class="ruleAction">
+<div class="ruleActionName">내 카드</div>
+<div class="ruleActionDescription">나만 볼 수 있는 카드입니다.</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">내 칩</div>
+<div class="ruleActionDescription">게임에서 사용할 수 있는 칩입니다.</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">가운데 카드</div>
+<div class="ruleActionDescription">모두가 함께 사용하는 카드입니다.</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">Pot</div>
+<div class="ruleActionDescription">이번 판에 걸린 칩이 모입니다.</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">행동 버튼</div>
+<div class="ruleActionDescription">내 차례가 오면 사용합니다.</div>
+</div>
+
+</div>
+
+<p class="ruleSmall">
+${ruleLink("D","1-3","roleTitle")} ·
+${ruleLink("SB","1-3","roleTitle")} ·
+${ruleLink("BB","1-3","roleTitle")}가 궁금하다면 눌러보세요.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"1-3",
+
+number:"1-3",
+
+html:`
+
+<div class="ruleChapter">
+01 · 게임 전 알아야 할 것
+</div>
+
+<h2
+id="roleTitle"
+class="rulePageTitle"
+>
+D · SB · BB가 뭐예요?
+</h2>
+
+<p class="ruleText">
+게임을 시작하면 몇몇 플레이어 옆에
+<b>D / SB / BB</b>가 표시됩니다.
+</p>
+
+<div class="ruleActionList">
+
+<div class="ruleAction">
+<div class="ruleActionName">D</div>
+<div class="ruleActionDescription">Dealer. 이번 판의 기준이 되는 위치입니다.</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">SB</div>
+<div class="ruleActionDescription">Small Blind. 판 시작 때 정해진 칩을 먼저 냅니다.</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">BB</div>
+<div class="ruleActionDescription">Big Blind. SB보다 많은 정해진 칩을 먼저 냅니다.</div>
+</div>
+
+</div>
+
+<div class="ruleEmphasis">
+처음에는 위치를 외울 필요 없습니다.<br>
+게임 화면에서 확인할 수 있습니다.
+</div>
+
+<p class="ruleSmall">
+이 위치들은 판이 바뀌면서 이동합니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"1-4",
+
+number:"1-4",
+
+html:`
+
+<div class="ruleChapter">
+01 · 게임 전 알아야 할 것
+</div>
+
+<h2
+id="potTitle"
+class="rulePageTitle"
+>
+Pot이 뭐예요?
+</h2>
+
+<div class="rulePotVisual">
+
+<div class="rulePotChips">
+● ● ●
+</div>
+
+<div class="rulePotAmount">
+POT
+</div>
+
+</div>
+
+<p class="ruleLead">
+플레이어들이 이번 판에 베팅한 칩이 모이는 곳입니다.
+</p>
+
+<p class="ruleText">
+판이 끝나면 승자가 Pot을 가져갑니다.
+</p>
+
+<p class="ruleSmall">
+승자가 여러 명이라면?
+${ruleLink("공동 승리 보기","3-8","tieTitle")}
+</p>
+
+`
+
+},
+
+
+{
+
+id:"1-5",
+
+number:"1-5",
+
+html:`
+
+<div class="ruleChapter">
+01 · 게임 전 알아야 할 것
+</div>
+
+<h2 class="rulePageTitle">
+한 판은 이렇게 흘러갑니다
+</h2>
+
+<div class="ruleFlow">
+
+<div class="ruleFlowStep">
+내 카드 2장
+</div>
+
+<div class="ruleFlowArrow">↓</div>
+
+<div class="ruleFlowStep">
+${ruleLink("프리플랍","2-1")}
+</div>
+
+<div class="ruleFlowArrow">↓</div>
+
+<div class="ruleFlowStep">
+${ruleLink("플랍","2-4","flopTitle")} · 가운데 카드 3장
+</div>
+
+<div class="ruleFlowArrow">↓</div>
+
+<div class="ruleFlowStep">
+${ruleLink("턴","2-6","turnTitle")} · +1장
+</div>
+
+<div class="ruleFlowArrow">↓</div>
+
+<div class="ruleFlowStep">
+${ruleLink("리버","2-7","riverTitle")} · +1장
+</div>
+
+<div class="ruleFlowArrow">↓</div>
+
+<div class="ruleFlowStep">
+${ruleLink("쇼다운","3-1")} · 승부
+</div>
+
+</div>
+
+<div class="ruleEmphasis">
+내 카드 2장을 받고,<br>
+가운데 카드가 3장 → 1장 → 1장 공개됩니다.
+</div>
+
+<p class="ruleText">
+그리고 그 사이마다 플레이어들이 행동합니다.
+</p>
+
+<p class="ruleSmall">
+이름은 지금 외우지 않아도 됩니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"1-6",
+
+number:"1-6",
+
+html:`
+
+<div class="ruleChapter">
+01 · 게임 전 알아야 할 것
+</div>
+
+<h2 class="rulePageTitle">
+내 차례에는 뭘 하나요?
+</h2>
+
+<div class="ruleActionList">
+
+<div class="ruleAction">
+<div class="ruleActionName">폴드</div>
+<div class="ruleActionDescription">이번 판을 포기합니다.</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">체크</div>
+<div class="ruleActionDescription">칩을 더 내지 않고 넘깁니다.</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">콜</div>
+<div class="ruleActionDescription">필요한 만큼 칩을 내고 따라갑니다.</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">레이즈</div>
+<div class="ruleActionDescription">더 많은 칩을 겁니다.</div>
+</div>
+
+</div>
+
+<div class="ruleEmphasis">
+매번 네 가지를 모두 사용할 수 있는 것은 아닙니다.
+</div>
+
+<p class="ruleText">
+내 차례가 되면
+현재 상황에서 할 수 있는 행동이 화면에 표시됩니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"1-7",
+
+number:"1-7",
+
+html:`
+
+<div class="ruleChapter">
+01 · 게임 전 알아야 할 것
+</div>
+
+<h2
+id="allinTitle"
+class="rulePageTitle"
+>
+가진 칩을 전부 걸었다면?
+</h2>
+
+<p class="ruleLead">
+콜이나 레이즈를 하면서 가진 칩을 모두 사용하면
+<b>올인</b> 상태가 됩니다.
+</p>
+
+<p class="ruleText">
+올인한 뒤에는 더 이상 행동하지 않습니다.
+</p>
+
+<p class="ruleText">
+하지만 승부에는 계속 남아 있으며,
+마지막에 이기면 Pot을 받을 수 있습니다.
+</p>
+
+<p class="ruleSmall">
+폴드와 달리 올인은 승부를 포기한 것이 아닙니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"1-8",
+
+number:"1-8",
+
+html:`
+
+<div class="ruleChapter">
+01 · 게임 전 알아야 할 것
+</div>
+
+<h2 class="rulePageTitle">
+이제 한 판을 따라가 봅시다
+</h2>
+
+<div class="ruleFinish">
+
+<div class="ruleFinishTitle">
+여기까지만 알아도<br>
+게임을 시작할 수 있습니다.
+</div>
+
+<div class="ruleFinishText">
+이제 실제 한 판이 어떻게 진행되는지<br>
+처음부터 따라가 봅시다.
+</div>
+
+<button
+class="rulePaperButton"
+onclick="goToRulePage('chapter2')"
+>
+02 게임 진행으로 →
+</button>
+
+</div>
+
+`
+
+},
+
+
+/* ==========================================================
+   CHAPTER 02
+========================================================== */
+
+{
+
+id:"chapter2",
+
+number:"02",
+
+html:`
+
+<div class="ruleChapterCover">
+
+<div class="ruleChapterNumber">
 02
 </div>
 
-<div class="ruleTitle">
-D · SB · BB
+<div class="ruleChapterTitle">
+게임 진행
 </div>
 
-D는 딜러 버튼입니다.
-
-3명 이상에서는 D의 왼쪽이 SB,
-그 다음이 BB입니다.
-
-2명일 때는 D가 동시에 SB이며
-상대가 BB입니다.
-
-판이 끝나면 D는 시계 방향으로 이동합니다.
+<div class="ruleChapterDescription">
+카드가 나오는 순간부터<br>
+한 판을 그대로 따라가 봅시다.
+</div>
 
 </div>
 
+`
 
-<div class="ruleSection">
+},
 
-<div class="ruleNumber">
+
+{
+
+id:"2-1",
+
+number:"2-1",
+
+html:`
+
+<div class="ruleChapter">
+02 · 게임 진행
+</div>
+
+<h2 class="rulePageTitle">
+게임이 시작됐어요
+</h2>
+
+<p class="ruleText">
+판이 시작되면 D, SB, BB가 정해지고
+각 플레이어에게 카드 2장이 지급됩니다.
+</p>
+
+<p class="ruleText">
+SB와 BB의 칩은 자동으로 적용됩니다.
+</p>
+
+<div class="ruleCards">
+
+${ruleCard("A","♠")}
+${ruleCard("K","♥",true)}
+
+</div>
+
+<div class="ruleEmphasis">
+가장 먼저 할 일:<br>
+내 카드 2장을 확인하세요.
+</div>
+
+<p class="ruleText">
+이제 <b>프리플랍</b>이 시작됩니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"2-2",
+
+number:"2-2",
+
+html:`
+
+<div class="ruleChapter">
+02 · 게임 진행
+</div>
+
+<h2 class="rulePageTitle">
+내 차례가 왔어요
+</h2>
+
+<p class="ruleLead">
+내 차례가 되면 행동 버튼을 사용할 수 있습니다.
+</p>
+
+<p class="ruleText">
+화면에 표시된 선택지를 보고
+원하는 행동을 선택하세요.
+</p>
+
+<div class="ruleActionList">
+
+<div class="ruleAction">
+<div class="ruleActionName">폴드</div>
+<div class="ruleActionDescription">포기</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">체크</div>
+<div class="ruleActionDescription">그대로 넘기기</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">콜</div>
+<div class="ruleActionDescription">따라가기</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">레이즈</div>
+<div class="ruleActionDescription">더 걸기</div>
+</div>
+
+</div>
+
+`
+
+},
+
+
+{
+
+id:"2-3",
+
+number:"2-3",
+
+html:`
+
+<div class="ruleChapter">
+02 · 게임 진행
+</div>
+
+<h2 class="rulePageTitle">
+상대가 레이즈했어요
+</h2>
+
+<div class="ruleActionList">
+
+<div class="ruleAction">
+<div class="ruleActionName">나</div>
+<div class="ruleActionDescription">콜</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">상대 A</div>
+<div class="ruleActionDescription">콜</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">상대 B</div>
+<div class="ruleActionDescription"><b>레이즈 ↑</b></div>
+</div>
+
+</div>
+
+<p class="ruleText">
+누군가 레이즈하면 베팅 금액이 달라집니다.
+</p>
+
+<p class="ruleText">
+이미 행동했더라도
+새로운 금액을 아직 맞추지 않았다면
+다시 차례가 올 수 있습니다.
+</p>
+
+<div class="ruleEmphasis">
+한 번 행동했다고 항상 그 단계가 끝난 것은 아닙니다.
+</div>
+
+`
+
+},
+
+
+{
+
+id:"2-4",
+
+number:"2-4",
+
+html:`
+
+<div class="ruleChapter">
+02 · 게임 진행
+</div>
+
+<h2
+id="flopTitle"
+class="rulePageTitle"
+>
+가운데 카드가 3장 나왔어요
+</h2>
+
+<div class="ruleCards">
+
+${ruleCard("A","♠")}
+${ruleCard("7","♥",true)}
+${ruleCard("J","♣")}
+
+</div>
+
+<div class="ruleEmphasis">
+FLOP · 플랍
+</div>
+
+<p class="ruleText">
+프리플랍의 행동이 끝나면
+가운데 카드 3장이 공개됩니다.
+</p>
+
+<p class="ruleText">
+가운데 카드는 특정 플레이어의 카드가 아니라
+모두가 함께 사용합니다.
+</p>
+
+<p class="ruleText">
+카드가 공개된 뒤 다시 플레이어들의 행동이 시작됩니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"2-5",
+
+number:"2-5",
+
+html:`
+
+<div class="ruleChapter">
+02 · 게임 진행
+</div>
+
+<h2 class="rulePageTitle">
+아무도 칩을 더 걸지 않는다면?
+</h2>
+
+<div class="ruleActionList">
+
+<div class="ruleAction">
+<div class="ruleActionName">PLAYER A</div>
+<div class="ruleActionDescription">CHECK</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">PLAYER B</div>
+<div class="ruleActionDescription">CHECK</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">YOU</div>
+<div class="ruleActionDescription">CHECK</div>
+</div>
+
+</div>
+
+<p class="ruleText">
+베팅할 필요가 없는 상황에서는 체크할 수 있습니다.
+</p>
+
+<p class="ruleText">
+필요한 플레이어가 모두 체크하면
+현재 단계가 끝나고 다음 카드로 넘어갑니다.
+</p>
+
+<p class="ruleSmall">
+체크해도 승부에는 그대로 남아 있습니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"2-6",
+
+number:"2-6",
+
+html:`
+
+<div class="ruleChapter">
+02 · 게임 진행
+</div>
+
+<h2
+id="turnTitle"
+class="rulePageTitle"
+>
+네 번째 카드
+</h2>
+
+<div class="ruleCards">
+
+${ruleCard("A","♠")}
+${ruleCard("7","♥",true)}
+${ruleCard("J","♣")}
+${ruleCard("Q","♦",true)}
+${ruleUnknownCard()}
+
+</div>
+
+<div class="ruleEmphasis">
+TURN · 턴
+</div>
+
+<p class="ruleText">
+플랍이 끝나면 네 번째 가운데 카드가 공개됩니다.
+</p>
+
+<p class="ruleText">
+카드가 공개된 뒤 다시 행동합니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"2-7",
+
+number:"2-7",
+
+html:`
+
+<div class="ruleChapter">
+02 · 게임 진행
+</div>
+
+<h2
+id="riverTitle"
+class="rulePageTitle"
+>
+마지막 카드
+</h2>
+
+<div class="ruleCards">
+
+${ruleCard("A","♠")}
+${ruleCard("7","♥",true)}
+${ruleCard("J","♣")}
+${ruleCard("Q","♦",true)}
+${ruleCard("2","♠")}
+
+</div>
+
+<div class="ruleEmphasis">
+RIVER · 리버
+</div>
+
+<p class="ruleText">
+턴이 끝나면 다섯 번째이자
+마지막 가운데 카드가 공개됩니다.
+</p>
+
+<p class="ruleText">
+이제 마지막 행동이 진행됩니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"2-8",
+
+number:"2-8",
+
+html:`
+
+<div class="ruleChapter">
+02 · 게임 진행
+</div>
+
+<h2 class="rulePageTitle">
+나 빼고 모두 폴드했어요
+</h2>
+
+<div class="ruleActionList">
+
+<div class="ruleAction">
+<div class="ruleActionName">PLAYER A</div>
+<div class="ruleActionDescription">FOLD</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">PLAYER B</div>
+<div class="ruleActionDescription">FOLD</div>
+</div>
+
+<div class="ruleAction">
+<div class="ruleActionName">YOU</div>
+<div class="ruleActionDescription"><b>WIN</b></div>
+</div>
+
+</div>
+
+<p class="ruleLead">
+이 경우에는 바로 승리합니다.
+</p>
+
+<p class="ruleText">
+혼자만 승부에 남았다면
+남은 카드를 끝까지 공개할 필요가 없습니다.
+</p>
+
+<div class="ruleEmphasis">
+즉시 Pot 획득
+</div>
+
+`
+
+},
+
+
+{
+
+id:"2-9",
+
+number:"2-9",
+
+html:`
+
+<div class="ruleChapter">
+02 · 게임 진행
+</div>
+
+<h2 class="rulePageTitle">
+더 이상 아무도 행동할 수 없다면?
+</h2>
+
+<p class="ruleText">
+승부할 플레이어는 남아 있지만
+더 이상 행동할 사람이 없을 수도 있습니다.
+</p>
+
+<p class="ruleText">
+예를 들어 여러 플레이어가
+${ruleLink("올인","1-7","allinTitle")}한 상황입니다.
+</p>
+
+<div class="ruleFlow">
+
+<div class="ruleFlowStep">
+FLOP
+</div>
+
+<div class="ruleFlowArrow">↓</div>
+
+<div class="ruleFlowStep">
+TURN
+</div>
+
+<div class="ruleFlowArrow">↓</div>
+
+<div class="ruleFlowStep">
+RIVER
+</div>
+
+<div class="ruleFlowArrow">↓</div>
+
+<div class="ruleFlowStep">
+SHOWDOWN
+</div>
+
+</div>
+
+<p class="ruleText">
+이 경우 남은 가운데 카드가 자동으로 공개되고
+쇼다운까지 진행됩니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"2-10",
+
+number:"2-10",
+
+html:`
+
+<div class="ruleChapter">
+02 · 게임 진행
+</div>
+
+<h2 class="rulePageTitle">
+원하는 만큼 레이즈할 수 없어요
+</h2>
+
+<p class="ruleLead">
+상황에 따라 레이즈할 수 있는 최대 금액이 제한될 수 있습니다.
+</p>
+
+<p class="ruleText">
+화면에서 선택할 수 있는 범위 안에서
+금액을 정하면 됩니다.
+</p>
+
+<div class="ruleEmphasis">
+게임할 때는 화면에 표시되는 최대 금액만 확인해도 충분합니다.
+</div>
+
+<p class="ruleSmall">
+${ruleLink("왜 최대 금액이 제한되나요?","2-11","capTitle")}
+</p>
+
+`
+
+},
+
+
+{
+
+id:"2-11",
+
+number:"2-11",
+
+html:`
+
+<div class="ruleChapter">
+02 · 게임 진행 · 자세히 보기
+</div>
+
+<h2
+id="capTitle"
+class="rulePageTitle"
+>
+베팅 상한
+</h2>
+
+<p class="ruleText">
+HOLDEM A에서는 승부에 남아 있는 플레이어들의
+<b>판 시작 칩</b>을 기준으로
+베팅 가능한 범위가 제한됩니다.
+</p>
+
+<p class="ruleText">
+플레이어가 폴드하면
+승부에 남아 있는 플레이어가 달라지므로
+베팅 가능한 범위도 달라질 수 있습니다.
+</p>
+
+<p class="ruleText">
+이 때문에 HOLDEM A에서는
+별도의 <b>사이드 팟</b>을 만들지 않습니다.
+</p>
+
+<p class="ruleSmall">
+베팅 상한까지 베팅했다고 해서 반드시 올인은 아닙니다.
+실제 남은 칩을 모두 사용했을 때만 올인입니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"2-12",
+
+number:"2-12",
+
+html:`
+
+<div class="ruleChapter">
+02 · 게임 진행
+</div>
+
+<h2 class="rulePageTitle">
+마지막까지 둘 이상 남았다면
+</h2>
+
+<div class="ruleFinish">
+
+<div class="ruleFinishText">
+리버의 마지막 행동까지 끝났는데<br>
+둘 이상의 플레이어가 남아 있다면…
+</div>
+
+<div class="ruleChapterNumber"
+style="font-size:43px;color:#222"
+>
+SHOWDOWN
+</div>
+
+<div class="ruleFinishText">
+이제 서로의 패를 비교합니다.
+</div>
+
+<button
+class="rulePaperButton"
+onclick="goToRulePage('chapter3')"
+>
+03 게임 종료로 →
+</button>
+
+</div>
+
+`
+
+},
+
+
+/* ==========================================================
+   CHAPTER 03
+========================================================== */
+
+{
+
+id:"chapter3",
+
+number:"03",
+
+html:`
+
+<div class="ruleChapterCover">
+
+<div class="ruleChapterNumber">
 03
 </div>
 
-<div class="ruleTitle">
-베팅
+<div class="ruleChapterTitle">
+게임 종료
 </div>
 
-체크는 추가 베팅 없이 넘기기,
-콜은 현재 베팅에 맞추기,
-레이즈는 현재보다 높게 올리기,
-폴드는 현재 판을 포기하는 행동입니다.
-
+<div class="ruleChapterDescription">
+마지막까지 남았다면<br>
+이제 승자를 결정할 차례입니다.
 </div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">
-04
-</div>
-
-<div class="ruleTitle">
-팟
-</div>
-
-플레이어들이 판에 건 칩이 모이는 곳입니다.
-
-승자가 팟의 칩을 가져갑니다.
 
 </div>
 
+`
 
-<div class="ruleSection">
+},
 
-<div class="ruleNumber">
-05
+
+{
+
+id:"3-1",
+
+number:"3-1",
+
+html:`
+
+<div class="ruleChapter">
+03 · 게임 종료
 </div>
 
-<div class="ruleTitle">
-HOLDEM A 베팅 상한
+<h2 class="rulePageTitle">
+이기는 방법은 두 가지
+</h2>
+
+<div class="ruleActionList">
+
+<div class="ruleAction">
+<div class="ruleActionName">①</div>
+<div class="ruleActionDescription">
+<b>다른 플레이어가 모두 폴드</b><br>
+마지막 한 명이 바로 승리합니다.
+</div>
 </div>
 
-사이드 팟은 사용하지 않습니다.
-
-아직 폴드하지 않은 플레이어 가운데
-가장 적은 총 가용 칩이
-현재 판의 최대 총 베팅액이 됩니다.
-
-예를 들어 활성 플레이어의 총 가용 칩이
-30 / 70 / 100이라면 상한은 30입니다.
-
-30을 가진 플레이어가 폴드하면
-상한은 70으로 바뀝니다.
-
+<div class="ruleAction">
+<div class="ruleActionName">②</div>
+<div class="ruleActionDescription">
+<b>쇼다운</b><br>
+둘 이상 남았다면 카드의 강도를 비교합니다.
 </div>
-
-
-<div class="ruleSection">
-
-<div class="ruleNumber">
-06
 </div>
-
-<div class="ruleTitle">
-쇼다운
-</div>
-
-리버의 마지막 베팅까지 2명 이상 남으면
-서버가 패를 비교해 승자를 결정합니다.
-
-모두 같은 최종 패라면
-팟을 나눕니다.
-
-다른 모두가 폴드했다면
-카드를 공개하지 않고 즉시 승리합니다.
 
 </div>
 
-
-<div class="ruleSection">
-
-<div class="ruleNumber">
-07
+<div class="ruleEmphasis">
+승리는 이 두 가지 방법으로 결정됩니다.
 </div>
 
-<div class="ruleTitle">
-족보
+`
+
+},
+
+
+{
+
+id:"3-2",
+
+number:"3-2",
+
+html:`
+
+<div class="ruleChapter">
+03 · 게임 종료
 </div>
 
-1. 로열 플러시<br>
-2. 스트레이트 플러시<br>
-3. 포카드<br>
-4. 풀하우스<br>
-5. 플러시<br>
-6. 스트레이트<br>
-7. 트리플<br>
-8. 투페어<br>
-9. 원페어<br>
-10. 하이카드
+<h2 class="rulePageTitle">
+내 패는 어떻게 만들어지나요?
+</h2>
 
+<p class="ruleText">
+내 카드와 가운데 카드를 함께 보고
+만들 수 있는 가장 강한 5장의 조합으로 승부합니다.
+</p>
+
+<div class="ruleCardLabel">
+내 카드
 </div>
 
+<div class="ruleCards">
 
-<div class="ruleSection">
-
-<div class="ruleNumber">
-08
-</div>
-
-<div class="ruleTitle">
-힌트
-</div>
-
-힌트는 현재 공개된 카드 기준으로
-이미 완성된 자신의 족보 이름만 보여줍니다.
-
-승률,
-상대 패 추정,
-필요한 다음 카드,
-추천 행동,
-추천 베팅 크기는 보여주지 않습니다.
+${ruleCard("A","♠")}
+${ruleCard("K","♠")}
 
 </div>
 
+<div class="ruleCardLabel">
+가운데 카드
+</div>
+
+<div class="ruleCards">
+
+${ruleCard("Q","♠")}
+${ruleCard("J","♠")}
+${ruleCard("10","♠")}
+${ruleCard("4","♥",true)}
+${ruleCard("2","♦",true)}
+
+</div>
+
+<div class="ruleEmphasis">
+A♠ K♠ Q♠ J♠ 10♠<br>
+로열 플러시
+</div>
+
+`
+
+},
+
+
+{
+
+id:"3-3",
+
+number:"3-3",
+
+html:`
+
+<div class="ruleChapter">
+03 · 게임 종료 · 족보
+</div>
+
+<h2 class="rulePageTitle">
+가장 강한 족보
+</h2>
+
+<div class="ruleHand">
+
+<div class="ruleHandName">
+로열 플러시
+</div>
+
+<div class="ruleCards">
+${ruleCard("10","♠")}
+${ruleCard("J","♠")}
+${ruleCard("Q","♠")}
+${ruleCard("K","♠")}
+${ruleCard("A","♠")}
+</div>
+
+</div>
+
+<div class="ruleHand">
+
+<div class="ruleHandName">
+스트레이트 플러시
+</div>
+
+<div class="ruleCards">
+${ruleCard("5","♥",true)}
+${ruleCard("6","♥",true)}
+${ruleCard("7","♥",true)}
+${ruleCard("8","♥",true)}
+${ruleCard("9","♥",true)}
+</div>
+
+</div>
+
+<div class="ruleHand">
+
+<div class="ruleHandName">
+포카드
+</div>
+
+<div class="ruleCards">
+${ruleCard("Q","♠")}
+${ruleCard("Q","♥",true)}
+${ruleCard("Q","♦",true)}
+${ruleCard("Q","♣")}
+${ruleCard("3","♠")}
+</div>
+
+</div>
+
+`
+
+},
+
+
+{
+
+id:"3-4",
+
+number:"3-4",
+
+html:`
+
+<div class="ruleChapter">
+03 · 게임 종료 · 족보
+</div>
+
+<h2 class="rulePageTitle">
+강한 족보
+</h2>
+
+<div class="ruleHand">
+
+<div class="ruleHandName">
+풀하우스
+</div>
+
+<div class="ruleCards">
+${ruleCard("10","♠")}
+${ruleCard("10","♥",true)}
+${ruleCard("10","♦",true)}
+${ruleCard("7","♣")}
+${ruleCard("7","♠")}
+</div>
+
+</div>
+
+<div class="ruleHand">
+
+<div class="ruleHandName">
+플러시
+</div>
+
+<div class="ruleCards">
+${ruleCard("A","♣")}
+${ruleCard("J","♣")}
+${ruleCard("8","♣")}
+${ruleCard("5","♣")}
+${ruleCard("2","♣")}
+</div>
+
+</div>
+
+`
+
+},
+
+
+{
+
+id:"3-5",
+
+number:"3-5",
+
+html:`
+
+<div class="ruleChapter">
+03 · 게임 종료 · 족보
+</div>
+
+<h2 class="rulePageTitle">
+이어지는 족보
+</h2>
+
+<div class="ruleHand">
+
+<div class="ruleHandName">
+스트레이트
+</div>
+
+<div class="ruleCards">
+${ruleCard("5","♠")}
+${ruleCard("6","♥",true)}
+${ruleCard("7","♦",true)}
+${ruleCard("8","♣")}
+${ruleCard("9","♠")}
+</div>
+
+</div>
+
+<div class="ruleHand">
+
+<div class="ruleHandName">
+트리플
+</div>
+
+<div class="ruleCards">
+${ruleCard("K","♠")}
+${ruleCard("K","♥",true)}
+${ruleCard("K","♦",true)}
+${ruleCard("8","♣")}
+${ruleCard("3","♠")}
+</div>
+
+</div>
+
+<div class="ruleHand">
+
+<div class="ruleHandName">
+투페어
+</div>
+
+<div class="ruleCards">
+${ruleCard("J","♠")}
+${ruleCard("J","♥",true)}
+${ruleCard("4","♣")}
+${ruleCard("4","♦",true)}
+${ruleCard("A","♠")}
+</div>
+
+</div>
+
+`
+
+},
+
+
+{
+
+id:"3-6",
+
+number:"3-6",
+
+html:`
+
+<div class="ruleChapter">
+03 · 게임 종료 · 족보
+</div>
+
+<h2 class="rulePageTitle">
+기본 족보
+</h2>
+
+<div class="ruleHand">
+
+<div class="ruleHandName">
+원페어
+</div>
+
+<div class="ruleCards">
+${ruleCard("A","♠")}
+${ruleCard("A","♥",true)}
+${ruleCard("10","♣")}
+${ruleCard("7","♦",true)}
+${ruleCard("3","♠")}
+</div>
+
+</div>
+
+<div class="ruleHand">
+
+<div class="ruleHandName">
+하이카드
+</div>
+
+<div class="ruleCards">
+${ruleCard("A","♠")}
+${ruleCard("J","♥",true)}
+${ruleCard("8","♣")}
+${ruleCard("5","♦",true)}
+${ruleCard("2","♠")}
+</div>
+
+</div>
+
+<p class="ruleSmall">
+강한 순서:<br>
+로열 플러시 → 스트레이트 플러시 → 포카드 →
+풀하우스 → 플러시 → 스트레이트 → 트리플 →
+투페어 → 원페어 → 하이카드
+</p>
+
+`
+
+},
+
+
+{
+
+id:"3-7",
+
+number:"3-7",
+
+html:`
+
+<div class="ruleChapter">
+03 · 게임 종료
+</div>
+
+<h2 class="rulePageTitle">
+같은 종류의 패라면?
+</h2>
+
+<p class="ruleLead">
+족보 이름이 같다고 바로 무승부가 되는 것은 아닙니다.
+</p>
+
+<p class="ruleText">
+같은 종류의 족보라면
+그 족보를 이루는 카드들을 비교해
+더 강한 패를 결정합니다.
+</p>
+
+<div class="ruleEmphasis">
+최종적으로 가장 강한 5장을 비교합니다.
+</div>
+
+<p class="ruleSmall">
+세부 비교 예시는 실제 게임의 판정 방식과 맞춰
+추가할 예정입니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"3-8",
+
+number:"3-8",
+
+html:`
+
+<div class="ruleChapter">
+03 · 게임 종료
+</div>
+
+<h2
+id="tieTitle"
+class="rulePageTitle"
+>
+완전히 같다면?
+</h2>
+
+<p class="ruleLead">
+가장 강한 5장까지 비교했는데도 같다면 공동 승리입니다.
+</p>
+
+<div class="rulePotVisual">
+
+<div class="rulePotAmount">
+POT 100
+</div>
+
+<div
+style="
+margin-top:18px;
+font-size:25px;
+"
+>
+↙　↘
+</div>
+
+<div
+style="
+margin-top:10px;
+font-weight:900;
+"
+>
+PLAYER A +50　 PLAYER B +50
+</div>
+
+</div>
+
+<p class="ruleText">
+Pot은 공동 승자들이 나눠 가집니다.
+</p>
+
+<p class="ruleSmall">
+정확히 나누어지지 않는 칩은
+게임의 정해진 좌석 순서에 따라 지급됩니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"3-9",
+
+number:"3-9",
+
+html:`
+
+<div class="ruleChapter">
+03 · 게임 종료
+</div>
+
+<h2 class="rulePageTitle">
+승자가 정해졌습니다
+</h2>
+
+<div class="ruleFinish">
+
+<div
+style="
+font-size:12px;
+color:#888;
+font-weight:900;
+"
+>
+WINNER
+</div>
+
+<div
+style="
+margin:8px 0 20px;
+font-size:28px;
+font-weight:900;
+"
+>
+YOU
+</div>
+
+<div class="ruleCards">
+${ruleCard("A","♠")}
+${ruleCard("A","♥",true)}
+${ruleCard("A","♦",true)}
+${ruleCard("8","♣")}
+${ruleCard("8","♥",true)}
+</div>
+
+<div
+style="
+font-size:18px;
+font-weight:900;
+"
+>
+FULL HOUSE
+</div>
+
+<div class="ruleFinishText">
+승부가 끝나면 Pot이 승자에게 지급되고<br>
+이번 판이 종료됩니다.
+</div>
+
+</div>
+
+`
+
+},
+
+
+{
+
+id:"3-10",
+
+number:"3-10",
+
+html:`
+
+<div class="ruleChapter">
+03 · 게임 종료
+</div>
+
+<h2 class="rulePageTitle">
+봇 플레이어
+</h2>
+
+<p class="ruleText">
+게임에는 봇 플레이어가 참가할 수 있습니다.
+</p>
+
+<p class="ruleText">
+봇도 플레이어와 같은 게임 규칙에 따라 행동하며
+판이 끝날 때까지 함께 승부합니다.
+</p>
+
+<p class="ruleSmall">
+일반 봇이 최대 보유 칩을 초과한 경우에는
+현재 판의 정산이 모두 끝난 뒤,
+다음 판이 시작되기 전에 최대치가 적용됩니다.
+</p>
+
+`
+
+},
+
+
+{
+
+id:"3-11",
+
+number:"3-11",
+
+html:`
+
+<div class="ruleFinish">
+
+<div class="ruleFinishTitle">
+준비됐나요?
+</div>
+
+<div class="ruleFinishText">
+전부 외울 필요는 없습니다.<br><br>
+
+이제 직접 한 판을 플레이하면서<br>
+방금 본 것들을 하나씩 확인해봅시다.
+</div>
+
+<button
+class="rulePaperButton"
+onclick="showTutorialComingSoon()"
+>
+튜토리얼 게임 시작
+</button>
+
+<button
+class="ruleLink"
+style="display:block;margin:20px auto 0"
+onclick="goToRulePage('toc')"
+>
+처음부터 다시 읽기
+</button>
+
+</div>
+
+`
+
+}
+
+];
+
+
+function findRulePageIndex(
+pageId
+){
+
+return RULE_PAGES.findIndex(
+page =>
+page.id === pageId
+);
+
+}
+
+
+function renderFullRules(){
+
+if(
+rulePageIndex < 0 ||
+rulePageIndex >= RULE_PAGES.length
+){
+
+rulePageIndex =
+0;
+
+}
+
+
+const page =
+RULE_PAGES[
+rulePageIndex
+];
+
+
+const content =
+byId(
+"rulePageContent"
+);
+
+
+const number =
+byId(
+"rulePageNumber"
+);
+
+
+if(!content || !number){
+
+return;
+
+}
+
+
+content.innerHTML =
+page.html;
+
+
+number.textContent =
+page.number || "";
+
+
+const returnButton =
+byId(
+"ruleBackToOriginButton"
+);
+
+
+if(returnButton){
+
+returnButton.classList.toggle(
+"hidden",
+ruleLinkOriginIndex === null
+);
+
+}
+
+
+if(rulePendingTarget){
+
+requestAnimationFrame(
+() => {
+
+const target =
+byId(
+rulePendingTarget
+);
+
+
+if(target){
+
+target.classList.remove(
+"ruleTargetFlash"
+);
+
+
+void target.offsetWidth;
+
+
+target.classList.add(
+"ruleTargetFlash"
+);
+
+}
+
+
+rulePendingTarget =
+null;
+
+}
+);
+
+}
+
+}
+
+
+function goToRulePage(
+pageId,
+direction = "next"
+){
+
+const nextIndex =
+findRulePageIndex(
+pageId
+);
+
+
+if(nextIndex < 0){
+
+return;
+
+}
+
+
+changeRulePage(
+nextIndex,
+direction
+);
+
+}
+
+
+function changeRulePage(
+nextIndex,
+direction
+){
+
+if(ruleFlipBusy){
+
+return;
+
+}
+
+
+if(
+nextIndex < 0 ||
+nextIndex >= RULE_PAGES.length ||
+nextIndex === rulePageIndex
+){
+
+return;
+
+}
+
+
+const paper =
+byId(
+"rulePaper"
+);
+
+
+if(!paper){
+
+rulePageIndex =
+nextIndex;
+
+renderFullRules();
+
+return;
+
+}
+
+
+ruleFlipBusy =
+true;
+
+
+paper.classList.remove(
+"ruleFlipNext",
+"ruleFlipPrevious"
+);
+
+
+void paper.offsetWidth;
+
+
+paper.classList.add(
+direction === "previous"
+?
+"ruleFlipPrevious"
+:
+"ruleFlipNext"
+);
+
+
+setTimeout(
+() => {
+
+rulePageIndex =
+nextIndex;
+
+
+renderFullRules();
+
+
+paper.classList.remove(
+"ruleFlipNext",
+"ruleFlipPrevious"
+);
+
+
+ruleFlipBusy =
+false;
+
+},
+190
+);
+
+}
+
+
+function nextRulePage(){
+
+if(
+rulePageIndex >=
+RULE_PAGES.length - 1
+){
+
+return;
+
+}
+
+
+changeRulePage(
+rulePageIndex + 1,
+"next"
+);
+
+}
+
+
+function previousRulePage(){
+
+if(rulePageIndex <= 0){
+
+return;
+
+}
+
+
+changeRulePage(
+rulePageIndex - 1,
+"previous"
+);
+
+}
+
+
+function openRuleLink(
+pageId,
+targetId = ""
+){
+
+const nextIndex =
+findRulePageIndex(
+pageId
+);
+
+
+if(nextIndex < 0){
+
+return;
+
+}
+
+
+ruleLinkOriginIndex =
+rulePageIndex;
+
+
+rulePendingTarget =
+targetId || null;
+
+
+const direction =
+nextIndex >= rulePageIndex
+?
+"next"
+:
+"previous";
+
+
+changeRulePage(
+nextIndex,
+direction
+);
+
+}
+
+
+function returnRuleLinkOrigin(){
+
+if(ruleLinkOriginIndex === null){
+
+return;
+
+}
+
+
+const targetIndex =
+ruleLinkOriginIndex;
+
+
+ruleLinkOriginIndex =
+null;
+
+rulePendingTarget =
+null;
+  
+ruleSearchOriginIndex =
+null;
+
+const direction =
+targetIndex >= rulePageIndex
+?
+"next"
+:
+"previous";
+
+
+changeRulePage(
+targetIndex,
+direction
+);
+
+}
+
+/* ==========================================================
+   룰북 검색
+========================================================== */
+
+function toggleRuleSearch(){
+
+const panel =
+byId(
+"ruleSearchPanel"
+);
+
+
+if(!panel){
+
+return;
+
+}
+
+
+if(
+panel.classList.contains(
+"hidden"
+)
+){
+
+openRuleSearch();
+
+}
+else{
+
+closeRuleSearch();
+
+}
+
+}
+
+
+function openRuleSearch(){
+
+const panel =
+byId(
+"ruleSearchPanel"
+);
+
+
+const input =
+byId(
+"ruleSearchInput"
+);
+
+
+if(!panel || !input){
+
+return;
+
+}
+
+
+panel.classList.remove(
+"hidden"
+);
+
+
+input.value =
+ruleSearchQuery;
+
+
+searchRuleBook();
+
+
+setTimeout(
+() => {
+
+input.focus();
+
+},
+0
+);
+
+}
+
+
+function closeRuleSearch(){
+
+const panel =
+byId(
+"ruleSearchPanel"
+);
+
+
+if(!panel){
+
+return;
+
+}
+
+
+panel.classList.add(
+"hidden"
+);
+
+}
+
+
+/*
+HTML 페이지에서 사람이 실제로 읽는 텍스트만 추출한다.
+검색 때문에 별도의 검색용 문서를 관리하지 않아도 된다.
+*/
+
+function getRulePageSearchText(
+page
+){
+
+const temp =
+document.createElement(
+"div"
+);
+
+
+temp.innerHTML =
+page.html;
+
+
+return (
+temp.textContent ||
+""
+)
+.replace(
+/\s+/g,
+" "
+)
+.trim();
+
+}
+
+
+/*
+검색 결과 상단에 보여줄 제목.
+페이지의 첫 h2를 우선 사용하고,
+간지/목차처럼 h2가 없으면 사람이 읽을 수 있는 첫 텍스트를 사용한다.
+*/
+
+function getRulePageSearchTitle(
+page
+){
+
+const temp =
+document.createElement(
+"div"
+);
+
+
+temp.innerHTML =
+page.html;
+
+
+const title =
+temp.querySelector(
+".rulePageTitle, .ruleChapterTitle, .ruleTocTitle"
+);
+
+
+if(title){
+
+return (
+title.textContent ||
+""
+)
+.replace(
+/\s+/g,
+" "
+)
+.trim();
+
+}
+
+
+const text =
+(
+temp.textContent ||
+""
+)
+.replace(
+/\s+/g,
+" "
+)
+.trim();
+
+
+return (
+text.slice(
+0,
+35
+) ||
+"룰북"
+);
+
+}
+
+
+function escapeRuleSearchHtml(
+text
+){
+
+return String(
+text ?? ""
+)
+.replace(
+/&/g,
+"&amp;"
+)
+.replace(
+/</g,
+"&lt;"
+)
+.replace(
+/>/g,
+"&gt;"
+)
+.replace(
+/"/g,
+"&quot;"
+)
+.replace(
+/'/g,
+"&#039;"
+);
+
+}
+
+
+function escapeRuleSearchRegExp(
+text
+){
+
+return String(
+text ?? ""
+)
+.replace(
+/[.*+?^${}()|[\]\\]/g,
+"\\$&"
+);
+
+}
+
+
+/*
+검색어가 등장한 위치 주변만 잘라서 보여준다.
+*/
+
+function getRuleSearchSnippet(
+text,
+query
+){
+
+const lowerText =
+text.toLocaleLowerCase();
+
+
+const lowerQuery =
+query.toLocaleLowerCase();
+
+
+const matchIndex =
+lowerText.indexOf(
+lowerQuery
+);
+
+
+if(matchIndex < 0){
+
+return text.slice(
+0,
+90
+);
+
+}
+
+
+const before =
+35;
+
+
+const after =
+55;
+
+
+const start =
+Math.max(
+0,
+matchIndex - before
+);
+
+
+const end =
+Math.min(
+text.length,
+matchIndex +
+query.length +
+after
+);
+
+
+let snippet =
+text.slice(
+start,
+end
+);
+
+
+if(start > 0){
+
+snippet =
+"… " + snippet;
+
+}
+
+
+if(end < text.length){
+
+snippet += " …";
+
+}
+
+
+return snippet;
+
+}
+
+
+function highlightRuleSearchText(
+text,
+query
+){
+
+const safeText =
+escapeRuleSearchHtml(
+text
+);
+
+
+if(!query){
+
+return safeText;
+
+}
+
+
+const safeQuery =
+escapeRuleSearchHtml(
+query
+);
+
+
+const expression =
+new RegExp(
+`(${escapeRuleSearchRegExp(
+safeQuery
+)})`,
+"gi"
+);
+
+
+return safeText.replace(
+expression,
+'<span class="ruleSearchMark">$1</span>'
+);
+
+}
+
+
+function searchRuleBook(){
+
+const input =
+byId(
+"ruleSearchInput"
+);
+
+
+const results =
+byId(
+"ruleSearchResults"
+);
+
+
+if(!input || !results){
+
+return;
+
+}
+
+
+const query =
+input.value
+.trim();
+
+
+ruleSearchQuery =
+query;
+
+
+if(!query){
+
+results.innerHTML =
+`
+<div class="ruleSearchEmpty">
+찾고 싶은 단어를 입력하세요.<br>
+예: 플랍, 레이즈, 올인, 족보
+</div>
 `;
+
+return;
+
+}
+
+
+const normalizedQuery =
+query.toLocaleLowerCase();
+
+
+const matches =
+RULE_PAGES
+.map(
+(page,index) => {
+
+const text =
+getRulePageSearchText(
+page
+);
+
+
+const title =
+getRulePageSearchTitle(
+page
+);
+
+
+const normalizedText =
+text.toLocaleLowerCase();
+
+
+const position =
+normalizedText.indexOf(
+normalizedQuery
+);
+
+
+if(position < 0){
+
+return null;
+
+}
+
+
+return {
+page,
+index,
+text,
+title,
+position
+};
+
+}
+)
+.filter(
+Boolean
+)
+.sort(
+(a,b) => {
+
+/*
+제목에서 검색된 페이지를 먼저 보여준다.
+그 다음 본문 등장 순서.
+*/
+
+const aTitle =
+a.title
+.toLocaleLowerCase()
+.includes(
+normalizedQuery
+);
+
+
+const bTitle =
+b.title
+.toLocaleLowerCase()
+.includes(
+normalizedQuery
+);
+
+
+if(
+aTitle !== bTitle
+){
+
+return aTitle
+?
+-1
+:
+1;
+
+}
+
+
+return (
+a.index -
+b.index
+);
+
+}
+);
+
+
+if(matches.length === 0){
+
+results.innerHTML =
+`
+<div class="ruleSearchEmpty">
+<b>${escapeRuleSearchHtml(query)}</b>에 대한 결과가 없습니다.
+</div>
+`;
+
+return;
+
+}
+
+
+results.innerHTML =
+matches
+.map(
+match => {
+
+const snippet =
+getRuleSearchSnippet(
+match.text,
+query
+);
+
+
+return `
+<button
+class="ruleSearchResult"
+onclick="openRuleSearchResult('${match.page.id}')"
+>
+
+<div class="ruleSearchResultTop">
+
+<div class="ruleSearchResultNumber">
+${escapeRuleSearchHtml(
+match.page.number ||
+""
+)}
+</div>
+
+<div class="ruleSearchResultTitle">
+${highlightRuleSearchText(
+match.title,
+query
+)}
+</div>
+
+</div>
+
+<div class="ruleSearchResultSnippet">
+${highlightRuleSearchText(
+snippet,
+query
+)}
+</div>
+
+</button>
+`;
+
+}
+)
+.join(
+""
+);
+
+}
+
+
+function openRuleSearchResult(
+pageId
+){
+
+const nextIndex =
+findRulePageIndex(
+pageId
+);
+
+
+if(nextIndex < 0){
+
+return;
+
+}
+
+
+/*
+검색을 시작하기 전 읽고 있던 위치를 기억한다.
+검색 결과를 연속해서 눌러도 최초 위치는 유지한다.
+*/
+
+if(
+ruleSearchOriginIndex === null
+){
+
+ruleSearchOriginIndex =
+rulePageIndex;
+
+}
+
+
+ruleLinkOriginIndex =
+ruleSearchOriginIndex;
+
+
+const query =
+ruleSearchQuery;
+
+
+closeRuleSearch();
+
+
+const direction =
+nextIndex >= rulePageIndex
+?
+"next"
+:
+"previous";
+
+
+changeRulePage(
+nextIndex,
+direction
+);
+
+
+setTimeout(
+() => {
+
+highlightRuleSearchOnCurrentPage(
+query
+);
+
+},
+260
+);
+
+}
+
+
+/*
+페이지가 렌더링된 뒤 실제 텍스트 노드에서
+첫 번째 검색어를 찾아 잠깐 강조한다.
+
+HTML 문자열 자체를 replace하지 않으므로
+버튼 onclick이나 태그를 망가뜨리지 않는다.
+*/
+
+function highlightRuleSearchOnCurrentPage(
+query
+){
+
+if(!query){
+
+return;
+
+}
+
+
+const root =
+byId(
+"rulePageContent"
+);
+
+
+if(!root){
+
+return;
+
+}
+
+
+const walker =
+document.createTreeWalker(
+root,
+NodeFilter.SHOW_TEXT
+);
+
+
+const normalizedQuery =
+query.toLocaleLowerCase();
+
+
+let textNode =
+null;
+
+
+while(
+textNode =
+walker.nextNode()
+){
+
+const value =
+textNode.nodeValue ||
+"";
+
+
+const index =
+value
+.toLocaleLowerCase()
+.indexOf(
+normalizedQuery
+);
+
+
+if(index < 0){
+
+continue;
+
+}
+
+
+const before =
+value.slice(
+0,
+index
+);
+
+
+const matched =
+value.slice(
+index,
+index + query.length
+);
+
+
+const after =
+value.slice(
+index + query.length
+);
+
+
+const fragment =
+document.createDocumentFragment();
+
+
+if(before){
+
+fragment.appendChild(
+document.createTextNode(
+before
+)
+);
+
+}
+
+
+const mark =
+document.createElement(
+"span"
+);
+
+
+mark.className =
+"ruleSearchTargetFlash";
+
+
+mark.textContent =
+matched;
+
+
+fragment.appendChild(
+mark
+);
+
+
+if(after){
+
+fragment.appendChild(
+document.createTextNode(
+after
+)
+);
+
+}
+
+
+textNode.parentNode.replaceChild(
+fragment,
+textNode
+);
+
+
+mark.scrollIntoView({
+behavior:"smooth",
+block:"center"
+});
+
+
+break;
+
+}
+
+}
+
+function showTutorialComingSoon(){
+
+showModal(
+"튜토리얼 게임",
+"룰북 화면은 먼저 적용하고, 튜토리얼 게임은 실제 게임 엔진과 연결해 별도로 적용합니다."
+);
+
+}
+
+
+/* ==========================================================
+   룰북 스와이프
+========================================================== */
+
+function setupRuleBookSwipe(){
+
+const stage =
+byId(
+"ruleBookStage"
+);
+
+
+if(!stage){
+
+return;
+
+}
+
+
+stage.addEventListener(
+"touchstart",
+event => {
+
+if(
+!event.touches ||
+event.touches.length !== 1
+){
+
+return;
+
+}
+
+
+ruleTouchStartY =
+event.touches[0].clientY;
+
+
+ruleTouchStartX =
+event.touches[0].clientX;
+
+},
+{
+passive:true
+}
+);
+
+
+stage.addEventListener(
+"touchend",
+event => {
+
+if(
+ruleTouchStartY === null ||
+ruleTouchStartX === null ||
+!event.changedTouches ||
+event.changedTouches.length !== 1
+){
+
+ruleTouchStartY =
+null;
+
+ruleTouchStartX =
+null;
+
+return;
+
+}
+
+
+const endY =
+event.changedTouches[0].clientY;
+
+
+const endX =
+event.changedTouches[0].clientX;
+
+
+const deltaY =
+endY -
+ruleTouchStartY;
+
+
+const deltaX =
+endX -
+ruleTouchStartX;
+
+
+ruleTouchStartY =
+null;
+
+ruleTouchStartX =
+null;
+
+
+/*
+작은 터치 이동은 페이지 넘김으로 처리하지 않는다.
+세로 이동이 가로 이동보다 명확하게 클 때만 인정한다.
+*/
+
+if(
+Math.abs(
+deltaY
+) < 65
+){
+
+return;
+
+}
+
+
+if(
+Math.abs(
+deltaY
+) <=
+Math.abs(
+deltaX
+) * 1.25
+){
+
+return;
+
+}
+
+
+/*
+위로 밀기 = 다음 장
+아래로 밀기 = 이전 장
+*/
+
+if(deltaY < 0){
+
+nextRulePage();
+
+}
+else{
+
+previousRulePage();
+
+}
+
+},
+{
+passive:true
+}
+);
 
 }
 
@@ -15896,6 +20131,7 @@ HOLDEM A 베팅 상한
 ========================================================== */
 
 async function start(){
+setupRuleBookSwipe();
 
 const {
 data,
