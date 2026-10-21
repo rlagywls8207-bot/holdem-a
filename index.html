@@ -3248,7 +3248,7 @@ class="accountName"
 id="homePer"
 class="accountPer"
 >
-0퍼
+0원
 </div>
 
 </div>
@@ -3405,7 +3405,7 @@ oninput="updateChipPreview()"
 id="singleChipPreview"
 class="fieldHelp"
 >
-1칩 = 10퍼
+1칩 = 10원
 </div>
 
 <label class="fieldLabel">
@@ -3646,14 +3646,14 @@ class="pokerArea"
 <div>
 
 <div class="smallLabel">
-보유 퍼
+보유 원
 </div>
 
 <div
 id="lobbyMyPer"
 class="smallValue"
 >
-0퍼
+0원
 </div>
 
 </div>
@@ -4384,7 +4384,7 @@ style="margin:2px 0 0"
 class="secondary"
 onclick="saveAvatarColor()"
 >
-이 색으로 변경 · 100퍼
+이 색으로 변경 · 100원
 </button>
 
 </div>
@@ -4652,14 +4652,14 @@ onclick="showHome()"
 <div class="accountBar">
 
 <div>
-보유 퍼
+보유 원
 </div>
 
 <div
 id="shopBalance"
 class="accountPer"
 >
-0퍼
+0원
 </div>
 
 </div>
@@ -4695,14 +4695,14 @@ onclick="showHome()"
 <div class="balanceBox">
 
 <div class="smallLabel">
-보유 퍼
+보유 원
 </div>
 
 <div
 id="bankBalanceValue"
 class="balanceValue"
 >
-0퍼
+0원
 </div>
 
 </div>
@@ -4717,7 +4717,7 @@ class="balanceValue"
 id="bankDepositValue"
 class="balanceValue"
 >
-0퍼
+0원
 </div>
 
 </div>
@@ -4732,7 +4732,7 @@ class="balanceValue"
 id="bankLoanValue"
 class="balanceValue"
 >
-0퍼
+0원
 </div>
 
 </div>
@@ -4813,7 +4813,7 @@ class="fieldHelp"
 id="transferAmount"
 type="number"
 min="1"
-placeholder="송금할 퍼"
+placeholder="송금할 원"
 >
 
 <button
@@ -5152,7 +5152,7 @@ value
 
 function formatPer(value){
 
-return `${formatNumber(value)}퍼`;
+return `${formatNumber(value)}원`;
 
 }
 
@@ -6233,7 +6233,7 @@ byId(
 "singleChipPreview"
 )
 .textContent =
-`1칩 = ${formatNumber(value)}퍼`;
+`1칩 = ${formatNumber(value)}원`;
 
 
 byId(
@@ -6490,7 +6490,7 @@ ${escapeHtml(room.room_code)}
 ${formatNumber(room.player_count)}명 참가
 <br>
 
-1칩 = ${formatNumber(room.chip_value_per)}퍼
+1칩 = ${formatNumber(room.chip_value_per)}원
 <br>
 
 환전 ${formatNumber(room.min_buyin_chips)}
@@ -10857,7 +10857,7 @@ byId(
 
 `방장: ${escapeHtml(currentRoom.host_nickname)}
 <br>
-1칩 = ${formatNumber(currentRoom.chip_value_per)}퍼
+1칩 = ${formatNumber(currentRoom.chip_value_per)}원
 <br>
 환전 ${formatNumber(currentRoom.min_buyin_chips)}
 ~
@@ -11308,8 +11308,8 @@ await refreshLobby();
 if(perShortage){
 
 showModal(
-"퍼 부족",
-"퍼가 부족합니다."
+"원 부족",
+"원가 부족합니다."
 );
 
 }
@@ -16469,7 +16469,7 @@ info.innerHTML =
 
 `예금은 판 종료 시 1% 이자입니다.<br>
 현재 대출금은 판 종료 시 2% 이자입니다.<br>
-현재 대출금이 100,000퍼 이상이면 10%가 적용됩니다.`;
+현재 대출금이 100,000원 이상이면 10%가 적용됩니다.`;
 
 }
 
