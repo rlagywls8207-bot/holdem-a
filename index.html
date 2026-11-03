@@ -3109,127 +3109,18 @@ button{
 }
 
 
-/* HOLDEM A - 1F */
+
+/* =========================================
+   961.8°C - 1F LOBBY
+   ========================================= */
+
+/* 1. 로비 기본 화면 */
+
 #homeScreen.buildingHome {
   width: 100%;
   max-width: none;
   padding: 0;
 }
-.buildingHome .buildingHud {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  justify-content: flex-end;
-  padding: 8px 12px;
-}
-.buildingHome .buildingViewport {
-  position: relative;
-  width: 100%;
-  height: min(70vh, 570px);
-  min-height: 360px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  border: 1px solid #806c50;
-  border-radius: 12px;
-  background: #282a30;
-}
-.buildingHome .buildingScene {
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-around;
-  gap: 75px;
-  box-sizing: border-box;
-  width: 1450px;
-  height: 100%;
-  padding: 80px 100px 70px;
-  background:
-    linear-gradient(to bottom, #363c49 0 78%, #67513d 78% 100%);
-}
-.buildingHome .buildingScene::before {
-  content: "HOLDEM A · 1F";
-  position: absolute;
-  top: 25px;
-  left: 40px;
-  color: #dbc8a1;
-  letter-spacing: 4px;
-}
-.buildingHome .buildingObject {
-  flex: 0 0 205px;
-  height: 250px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  border: 2px solid #b39a73;
-  border-radius: 12px 12px 4px 4px;
-  background: #51483e;
-  color: white;
-  cursor: pointer;
-}
-.buildingHome .buildingObject .objectArt {
-  font-size: 65px;
-  line-height: 1.2;
-}
-.buildingHome .buildingDeskArea {
-  flex: 0 0 205px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.buildingHome .buildingDeskArea .buildingObject {
-  flex: none;
-  width: 100%;
-  height: 180px;
-}
-.buildingHome .buildingPamphlet {
-  width: 100%;
-  min-height: 45px;
-}
-.buildingHome .buildingDoor {
-  height: 310px;
-  background: #73543b;
-}
-.buildingHome .buildingLift {
-  height: 310px;
-  background: #505b69;
-}
-.buildingHome .buildingHint {
-  margin: 12px 0;
-  text-align: center;
-  font-size: 12px;
-  opacity: .7;
-}
-.buildingHome .buildingOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 10000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  background: #000b;
-}
-.buildingHome .buildingOverlay.hidden {
-  display: none;
-}
-.buildingHome .buildingDialogCard {
-  width: min(420px, 100%);
-  padding: 25px 18px;
-  border: 1px solid #b39a73;
-  border-radius: 14px;
-  background: #242b37;
-  color: white;
-  text-align: center;
-}
-.buildingHome .buildingDialogCard button {
-  margin: 5px;
-}
-
-
-/* 961.8°C - 1층 도트 로비 */
 
 body.lobbyFullscreen {
   overflow: hidden;
@@ -3250,35 +3141,61 @@ body.lobbyFullscreen #homeScreen {
   z-index: 1000;
 }
 
+/* 2. 가로 스크롤 영역 */
+
+.buildingHome .buildingViewport {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  background: #160d19;
+}
+
 body.lobbyFullscreen #buildingViewport {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  max-width: none;
   margin: 0;
   padding: 0;
   border: 0;
   border-radius: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
   scrollbar-width: none;
-  background: #160d19;
 }
 
 body.lobbyFullscreen #buildingViewport::-webkit-scrollbar {
   display: none;
 }
 
-body.lobbyFullscreen .buildingScene {
+/* 3. 로비 배경 */
+
+.buildingHome .buildingScene {
   position: relative;
+  box-sizing: border-box;
+}
+
+body.lobbyFullscreen .buildingScene {
+  display: block;
   width: max(100vw, 300dvh);
   height: 100%;
   min-height: 0;
-  padding: 0;
   margin: 0;
+  padding: 0;
   overflow: hidden;
-  background: url("lobby_1f.png") center / 100% 100% no-repeat;
+
+  background-color: #160d19;
+  background-image: url("lobby_1f.png");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* 4. 상단 인벤토리 */
+
+.buildingHome .buildingHud {
+  display: flex;
+  justify-content: flex-end;
 }
 
 body.lobbyFullscreen .buildingHud {
@@ -3291,23 +3208,15 @@ body.lobbyFullscreen .buildingHud {
   background: transparent;
 }
 
-body.lobbyFullscreen .buildingHint {
-  display: none;
-}
-
-body.lobbyFullscreen .buildingOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1100;
-}
+/* 5. 로비 클릭 영역 */
 
 body.lobbyFullscreen .buildingScene .lobbyHotspot {
   position: absolute;
   display: block;
   min-width: 0;
   min-height: 0;
-  padding: 0;
   margin: 0;
+  padding: 0;
   border: 0;
   border-radius: 0;
   box-shadow: none;
@@ -3327,6 +3236,9 @@ body.lobbyFullscreen .buildingScene .lobbyHotspot:focus-visible {
   outline: 2px solid #f3ce88;
 }
 
+/* 6. 오브젝트 클릭 위치 */
+
+/* 지하 계단 */
 body.lobbyFullscreen .lobbyStairs {
   left: 3%;
   top: 38%;
@@ -3334,6 +3246,7 @@ body.lobbyFullscreen .lobbyStairs {
   height: 37%;
 }
 
+/* 안내 데스크 벨 */
 body.lobbyFullscreen .lobbyDesk {
   left: 34%;
   top: 50%;
@@ -3341,6 +3254,15 @@ body.lobbyFullscreen .lobbyDesk {
   height: 17%;
 }
 
+/* 룰북 팸플릿 */
+body.lobbyFullscreen .lobbyPamphlet {
+  left: 42%;
+  top: 54%;
+  width: 5%;
+  height: 14%;
+}
+
+/* 정문 */
 body.lobbyFullscreen .lobbyDoor {
   left: 61%;
   top: 30%;
@@ -3348,6 +3270,7 @@ body.lobbyFullscreen .lobbyDoor {
   height: 46%;
 }
 
+/* 엘리베이터 */
 body.lobbyFullscreen .lobbyLift {
   left: 86%;
   top: 33%;
@@ -3355,12 +3278,7 @@ body.lobbyFullscreen .lobbyLift {
   height: 43%;
 }
 
-body.lobbyFullscreen .lobbyPamphlet {
-  left: 42%;
-  top: 54%;
-  width: 5%;
-  height: 14%;
-}
+/* 7. 임시 안내 글자 */
 
 body.lobbyFullscreen .lobbyExtraArt {
   position: absolute;
@@ -3385,6 +3303,8 @@ body.lobbyFullscreen .lobbyPamphletLabel {
   top: 49%;
 }
 
+/* 8. 버전 표시 */
+
 body.lobbyFullscreen .lobbyVersion {
   position: absolute;
   left: 67.5%;
@@ -3395,6 +3315,50 @@ body.lobbyFullscreen .lobbyVersion {
   color: #b68b58;
   opacity: 0.8;
   pointer-events: none;
+}
+
+/* 9. 하단 안내 */
+
+.buildingHome .buildingHint {
+  margin: 12px 0;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+body.lobbyFullscreen .buildingHint {
+  display: none;
+}
+
+/* 10. 팝업 */
+
+.buildingHome .buildingOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: #000b;
+}
+
+.buildingHome .buildingOverlay.hidden {
+  display: none;
+}
+
+.buildingHome .buildingDialogCard {
+  width: min(420px, 100%);
+  padding: 25px 18px;
+  border: 1px solid #b39a73;
+  border-radius: 14px;
+  background: #242b37;
+  color: white;
+  text-align: center;
+}
+
+.buildingHome .buildingDialogCard button {
+  margin: 5px;
 }
   
 </style>
