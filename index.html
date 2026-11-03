@@ -3374,7 +3374,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v1.0.0.2
+v1.0.0.3
 </div>
 
 <div class="subtitle">
@@ -5253,7 +5253,7 @@ onerror="window.holdemCardsLoadFailed=true;"
 <script>
 
 const APP_VERSION =
-"v1.0.0.2";
+"v1.0.0.3";
 
 
 const SUPABASE_URL =
@@ -6527,15 +6527,20 @@ return;
 
 renderHome();
 
-
 hideAllScreens();
-
-
+document.body.classList.add("lobbyFullscreen");
 
 byId("homeScreen").classList.remove("hidden");
+
+const lobbyVersion = byId("lobbyVersionLabel");
+const existingVersion = document.querySelector(".version");
+
+if (lobbyVersion && existingVersion) {
+  lobbyVersion.textContent = existingVersion.textContent.trim();
+}
+
 closeBuildingDialog();
 requestAnimationFrame(centerBuildingEntrance);
-
 }
 
 
