@@ -3213,23 +3213,32 @@ body.lobbyFullscreen .buildingHud {
 body.lobbyFullscreen .buildingScene .lobbyHotspot {
   position: absolute;
   display: block;
+  box-sizing: border-box;
   min-width: 0;
   min-height: 0;
   margin: 0;
   padding: 0;
-  border: 0;
+  border: none;
   border-radius: 0;
+  outline: none;
   box-shadow: none;
   background: transparent;
-  color: inherit;
+  background-image: none;
+  color: transparent;
+  font-size: 0;
+  opacity: 1;
+  appearance: none;
+  -webkit-appearance: none;
   cursor: pointer;
   transform: none;
   z-index: 2;
 }
 
 body.lobbyFullscreen .buildingScene .lobbyHotspot:hover {
-  background: rgba(255, 215, 130, 0.09);
-  outline: 1px solid rgba(255, 215, 130, 0.35);
+  background: rgba(255, 215, 130, 0.06);
+  border: none;
+  box-shadow: none;
+  transform: none;
 }
 
 body.lobbyFullscreen .buildingScene .lobbyHotspot:focus-visible {
