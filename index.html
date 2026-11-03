@@ -3223,7 +3223,6 @@ body.lobbyFullscreen .buildingScene .lobbyHotspot {
   outline: none;
   box-shadow: none;
   background: transparent;
-  background-image: none;
   color: transparent;
   font-size: 0;
   opacity: 1;
@@ -3235,10 +3234,11 @@ body.lobbyFullscreen .buildingScene .lobbyHotspot {
 }
 
 body.lobbyFullscreen .buildingScene .lobbyHotspot:hover {
-  background: rgba(255, 215, 130, 0.06);
   border: none;
+  outline: none;
   box-shadow: none;
   transform: none;
+  filter: brightness(1.12);
 }
 
 body.lobbyFullscreen .buildingScene .lobbyHotspot:focus-visible {
@@ -3249,10 +3249,15 @@ body.lobbyFullscreen .buildingScene .lobbyHotspot:focus-visible {
 
 /* 지하 계단 */
 body.lobbyFullscreen .lobbyStairs {
-  left: 3%;
-  top: 38%;
-  width: 11%;
+  left: 2%;
+  top: 43%;
+  width: 19%;
   height: 37%;
+
+  background-image: url("lobby_stairs.png") !important;
+  background-size: contain !important;
+  background-position: center bottom !important;
+  background-repeat: no-repeat !important;
 }
 
 /* 안내 데스크 벨 */
@@ -3265,10 +3270,15 @@ body.lobbyFullscreen .lobbyDesk {
 
 /* 룰북 팸플릿 */
 body.lobbyFullscreen .lobbyPamphlet {
-  left: 42%;
-  top: 54%;
-  width: 5%;
-  height: 14%;
+  left: 27%;
+  top: 55%;
+  width: 6%;
+  height: 19%;
+
+  background-image: url("lobby_rulebook.png") !important;
+  background-size: contain !important;
+  background-position: center bottom !important;
+  background-repeat: no-repeat !important;
 }
 
 /* 정문 */
@@ -3285,31 +3295,6 @@ body.lobbyFullscreen .lobbyLift {
   top: 33%;
   width: 9%;
   height: 43%;
-}
-
-/* 7. 임시 안내 글자 */
-
-body.lobbyFullscreen .lobbyExtraArt {
-  position: absolute;
-  z-index: 3;
-  pointer-events: none;
-  font-size: clamp(12px, 1.5vw, 22px);
-  color: #e8c58c;
-  background: rgba(24, 10, 22, 0.86);
-  border: 1px solid #a17a49;
-  border-radius: 5px;
-  padding: 5px 10px;
-  white-space: nowrap;
-}
-
-body.lobbyFullscreen .lobbyStairsLabel {
-  left: 4%;
-  top: 36%;
-}
-
-body.lobbyFullscreen .lobbyPamphletLabel {
-  left: 43%;
-  top: 49%;
 }
 
 /* 8. 버전 표시 */
@@ -3383,7 +3368,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v1.0.0.3
+v1.0.0.4
 </div>
 
 <div class="subtitle">
@@ -3514,9 +3499,6 @@ class="message"
     aria-label="지하 계단"
     title="지하 계단"
   ></button>
-  <span class="lobbyExtraArt lobbyStairsLabel">
-    지하 계단
-  </span>
 
   <!-- 안내 데스크의 벨 -->
   <button
@@ -3533,9 +3515,6 @@ class="message"
     aria-label="룰북"
     title="룰북"
   ></button>
-  <span class="lobbyExtraArt lobbyPamphletLabel">
-    룰북
-  </span>
 
   <!-- 정문 -->
   <button
@@ -5262,7 +5241,7 @@ onerror="window.holdemCardsLoadFailed=true;"
 <script>
 
 const APP_VERSION =
-"v1.0.0.3";
+"v1.0.0.4";
 
 
 const SUPABASE_URL =
