@@ -3228,6 +3228,174 @@ button{
   margin: 5px;
 }
 
+
+/* 961.8°C - 1층 도트 로비 */
+
+body.lobbyFullscreen {
+  overflow: hidden;
+}
+
+body.lobbyFullscreen #homeScreen {
+  position: fixed !important;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  overflow: hidden;
+  background: #160d19;
+  z-index: 1000;
+}
+
+body.lobbyFullscreen #buildingViewport {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  background: #160d19;
+}
+
+body.lobbyFullscreen #buildingViewport::-webkit-scrollbar {
+  display: none;
+}
+
+body.lobbyFullscreen .buildingScene {
+  position: relative;
+  width: max(100vw, 300dvh);
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  background: url("lobby_1f.png") center / 100% 100% no-repeat;
+}
+
+body.lobbyFullscreen .buildingHud {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  left: auto;
+  z-index: 1010;
+  padding: 0;
+  background: transparent;
+}
+
+body.lobbyFullscreen .buildingHint {
+  display: none;
+}
+
+body.lobbyFullscreen .buildingOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+}
+
+body.lobbyFullscreen .buildingScene .lobbyHotspot {
+  position: absolute;
+  display: block;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transform: none;
+  z-index: 2;
+}
+
+body.lobbyFullscreen .buildingScene .lobbyHotspot:hover {
+  background: rgba(255, 215, 130, 0.09);
+  outline: 1px solid rgba(255, 215, 130, 0.35);
+}
+
+body.lobbyFullscreen .buildingScene .lobbyHotspot:focus-visible {
+  outline: 2px solid #f3ce88;
+}
+
+body.lobbyFullscreen .lobbyStairs {
+  left: 3%;
+  top: 38%;
+  width: 11%;
+  height: 37%;
+}
+
+body.lobbyFullscreen .lobbyDesk {
+  left: 34%;
+  top: 50%;
+  width: 8%;
+  height: 17%;
+}
+
+body.lobbyFullscreen .lobbyDoor {
+  left: 61%;
+  top: 30%;
+  width: 13%;
+  height: 46%;
+}
+
+body.lobbyFullscreen .lobbyLift {
+  left: 86%;
+  top: 33%;
+  width: 9%;
+  height: 43%;
+}
+
+body.lobbyFullscreen .lobbyPamphlet {
+  left: 42%;
+  top: 54%;
+  width: 5%;
+  height: 14%;
+}
+
+body.lobbyFullscreen .lobbyExtraArt {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  font-size: clamp(12px, 1.5vw, 22px);
+  color: #e8c58c;
+  background: rgba(24, 10, 22, 0.86);
+  border: 1px solid #a17a49;
+  border-radius: 5px;
+  padding: 5px 10px;
+  white-space: nowrap;
+}
+
+body.lobbyFullscreen .lobbyStairsLabel {
+  left: 4%;
+  top: 36%;
+}
+
+body.lobbyFullscreen .lobbyPamphletLabel {
+  left: 43%;
+  top: 49%;
+}
+
+body.lobbyFullscreen .lobbyVersion {
+  position: absolute;
+  left: 67.5%;
+  top: 22%;
+  transform: translateX(-50%);
+  z-index: 3;
+  font-size: clamp(9px, 0.9vw, 13px);
+  color: #b68b58;
+  opacity: 0.8;
+  pointer-events: none;
+}
   
 </style>
 </head>
@@ -3242,7 +3410,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v1.0.0
+v1.0.0.1
 </div>
 
 <div class="subtitle">
@@ -3363,36 +3531,61 @@ class="message"
   </div>
 
   <div id="buildingViewport" class="buildingViewport">
-    <div class="buildingScene">
 
-      <button class="buildingObject" onclick="openBuildingBasement()">
-        <span class="objectArt">🪜</span>
-        <span>지하 계단</span>
-      </button>
+<div class="buildingScene">
 
-      <div class="buildingDeskArea">
-        <button class="buildingObject" onclick="ringBuildingBell()">
-          <span class="objectArt">🛎️</span>
-          <span>안내 데스크 · 벨</span>
-        </button>
-        <button class="buildingPamphlet" onclick="showRules()">
-          📖 룰북 팸플릿
-        </button>
-      </div>
+  <!-- 지하 계단: 별도 그래픽 배치 예정 -->
+  <button
+    class="lobbyHotspot lobbyStairs"
+    onclick="openBuildingBasement()"
+    aria-label="지하 계단"
+    title="지하 계단"
+  ></button>
+  <span class="lobbyExtraArt lobbyStairsLabel">
+    지하 계단
+  </span>
 
-      <button class="buildingObject buildingDoor" id="buildingDoor"
-              onclick="playBuildingDoor()">
-        <span class="objectArt">🚪</span>
-        <span>정문</span>
-      </button>
+  <!-- 안내 데스크의 벨 -->
+  <button
+    class="lobbyHotspot lobbyDesk"
+    onclick="ringBuildingBell()"
+    aria-label="안내 데스크 벨"
+    title="벨 누르기"
+  ></button>
 
-      <button class="buildingObject buildingLift"
-              onclick="openBuildingElevator()">
-        <span class="objectArt">🛗</span>
-        <span>엘리베이터</span>
-      </button>
+  <!-- 룰북: 별도 그래픽 배치 예정 -->
+  <button
+    class="lobbyHotspot lobbyPamphlet"
+    onclick="showRules()"
+    aria-label="룰북"
+    title="룰북"
+  ></button>
+  <span class="lobbyExtraArt lobbyPamphletLabel">
+    룰북
+  </span>
 
-    </div>
+  <!-- 정문 -->
+  <button
+    id="buildingDoor"
+    class="lobbyHotspot lobbyDoor"
+    onclick="playBuildingDoor()"
+    aria-label="정문"
+    title="정문"
+  ></button>
+
+  <!-- 기존 버전 문구를 그대로 사용 -->
+  <span id="lobbyVersionLabel" class="lobbyVersion"></span>
+
+  <!-- 엘리베이터 -->
+  <button
+    class="lobbyHotspot lobbyLift"
+    onclick="openBuildingElevator()"
+    aria-label="엘리베이터"
+    title="엘리베이터"
+  ></button>
+
+</div>
+
   </div>
 
   <p class="buildingHint">
@@ -5096,7 +5289,7 @@ onerror="window.holdemCardsLoadFailed=true;"
 <script>
 
 const APP_VERSION =
-"v1.0.0";
+"v1.0.0.1";
 
 
 const SUPABASE_URL =
@@ -5400,7 +5593,7 @@ const SCREEN_IDS = [
 
 
 function hideAllScreens(){
-
+document.body.classList.remove("lobbyFullscreen");
 stopTimers();
 
 
@@ -5464,11 +5657,18 @@ byId(
 
 async function showHome() {
   hideAllScreens();
+  document.body.classList.add("lobbyFullscreen");
 
   await refreshProfile();
   renderHome();
 
   byId("homeScreen").classList.remove("hidden");
+  const lobbyVersion = byId("lobbyVersionLabel");
+const existingVersion = document.querySelector(".version");
+
+if (lobbyVersion && existingVersion) {
+  lobbyVersion.textContent = existingVersion.textContent.trim();
+}
   closeBuildingDialog();
   requestAnimationFrame(centerBuildingEntrance);
 }
