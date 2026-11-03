@@ -5539,6 +5539,169 @@ function openBuildingElevator() {
   `);
 }
 
+
+function escapeCatText(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[ch]);
+}
+
+async function openCatInquiry() {
+  showBuildingDialog(`
+    <img src="black_cat.svg" alt="검은 고양이"
+      style="width:192px;height:192px;object-fit:contain;
+      image-rendering:pixelated;display:block;margin:auto;">
+    <h3>검은 고양이</h3>
+    <p>개발자에게 전할 말이 있냥?</p>
+    <textarea id="catInquiryText" maxlength="1000"
+      placeholder="문의 내용을 입력하세요."
+      style="width:100%;min-height:110px;box-sizing:border-box;"></textarea>
+    <p id="catInquiryNotice" role="status"></p>
+    <button id="catInquirySend" onclick="submitCatInquiry()">
+      전송
+    </button>
+    <div id="catAdminEntry"></div>
+  `);
+
+  const { data, error } = await db.rpc("is_cat_inquiry_admin");
+  if (error || !data) return;
+
+  const entry = byId("catAdminEntry");
+  if (entry) {
+    entry.innerHTML = `
+      <button onclick="openCatAdminInbox()">
+        개발자 문의함
+      </button>
+    `;
+  }
+}
+
+async function submitCatInquiry() {
+  const input = byId("catInquiryText");
+  const notice = byId("catInquiryNotice");
+  const button = byId("catInquirySend");
+
+  if (!input || !notice || !button) return;
+
+  const content = input.value.trim();
+
+  if (!content || content.length > 1000) {
+    notice.textContent = "문의 내용을 1~1000자로 입력해 주세요.";
+    return;
+  }
+
+  if (!currentUser?.id) {
+    notice.textContent = "로그인이 필요합니다.";
+    return;
+  }
+
+  button.disabled = true;
+  notice.textContent = "전송 중...";
+
+  const { error } = await db.from("cat_inquiries").insert({
+    user_id: currentUser.id,
+    content
+  });
+
+  if (error) {
+    notice.textContent = "전송에 실패했습니다. 다시 시도해 주세요.";
+    button.disabled = false;
+    return;
+  }
+
+  notice.textContent = "잘 전해주겠냥.";
+  input.value = "";
+  button.disabled = false;
+}
+
+
+async function openCatAdminInbox() {
+  showBuildingDialog(`
+    <h3>개발자 문의함</h3>
+    <p>오래된 문의부터 표시합니다.</p>
+    <div id="catAdminList">불러오는 중...</div>
+  `);
+
+  const { data: allowed, error: authError } =
+    await db.rpc("is_cat_inquiry_admin");
+
+  if (authError || !allowed) {
+    const list = byId("catAdminList");
+    if (list) list.textContent = "접근 권한이 없습니다.";
+    return;
+  }
+
+  const { data, error } = await db
+    .from("cat_inquiries")
+    .select("id,user_id,content,status")
+    .order("created_at", { ascending: true })
+    .order("id", { ascending: true });
+
+  const list = byId("catAdminList");
+  if (!list) return;
+
+  if (error) {
+    list.textContent = "문의 목록을 불러오지 못했습니다.";
+    return;
+  }
+
+  if (!data?.length) {
+    list.textContent = "접수된 문의가 없습니다.";
+    return;
+  }
+
+  const statusNames = {
+    unread: "미확인",
+    reviewing: "확인",
+    done: "처리완료"
+  };
+
+  list.innerHTML = data.map((item, index) => `
+    <div style="border:1px solid #777;border-radius:8px;
+      padding:12px;margin:10px 0;text-align:left;">
+      <strong>#${index + 1}</strong>
+      <p style="font-size:12px;overflow-wrap:anywhere;">
+        계정 ID: ${escapeCatText(item.user_id)}
+      </p>
+      <p style="white-space:pre-wrap;overflow-wrap:anywhere;">
+        ${escapeCatText(item.content)}
+      </p>
+      <label for="catStatus_${item.id}">처리 상태</label>
+      <select id="catStatus_${item.id}"
+        onchange="updateCatInquiryStatus(${item.id},this.value,this)">
+        ${Object.entries(statusNames).map(([key, label]) =>
+          `<option value="${key}"
+            ${item.status === key ? "selected" : ""}>
+            ${label}
+          </option>`
+        ).join("")}
+      </select>
+    </div>
+  `).join("");
+}
+
+async function updateCatInquiryStatus(id, status, select) {
+  if (!["unread", "reviewing", "done"].includes(status)) return;
+
+  select.disabled = true;
+
+  const { error } = await db
+    .from("cat_inquiries")
+    .update({ status })
+    .eq("id", id);
+
+  select.disabled = false;
+
+  if (error) {
+    alert("처리 상태 변경에 실패했습니다.");
+    await openCatAdminInbox();
+  }
+}
+  
 function ringBuildingBell() {
   if (buildingBellTimer !== null) {
     buildingBellCount++;
@@ -5555,14 +5718,10 @@ function ringBuildingBell() {
     const home = byId("homeScreen");
     if (!home || home.classList.contains("hidden")) return;
 
-    if (count >= 3) {
-      showBuildingDialog(`
-        <div style="font-size:65px">🐈‍⬛</div>
-        <h3>검은 고양이</h3>
-        <p>개발자에게 문의하기</p>
-        <p>문의 저장 기능은 DB 연결 후 사용할 수 있습니다.</p>
-      `);
-    } else {
+   if (count >= 3) {
+  openCatInquiry();
+} else {
+     
       showBuildingDialog(`
         <h3>안내 데스크</h3>
         <p>직원이 데스크 아래에서 나타났습니다.</p>
