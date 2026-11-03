@@ -3108,6 +3108,127 @@ button{
 
 }
 
+
+/* HOLDEM A - 1F */
+#homeScreen.buildingHome {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+.buildingHome .buildingHud {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 12px;
+}
+.buildingHome .buildingViewport {
+  position: relative;
+  width: 100%;
+  height: min(70vh, 570px);
+  min-height: 360px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  border: 1px solid #806c50;
+  border-radius: 12px;
+  background: #282a30;
+}
+.buildingHome .buildingScene {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 75px;
+  box-sizing: border-box;
+  width: 1450px;
+  height: 100%;
+  padding: 80px 100px 70px;
+  background:
+    linear-gradient(to bottom, #363c49 0 78%, #67513d 78% 100%);
+}
+.buildingHome .buildingScene::before {
+  content: "HOLDEM A · 1F";
+  position: absolute;
+  top: 25px;
+  left: 40px;
+  color: #dbc8a1;
+  letter-spacing: 4px;
+}
+.buildingHome .buildingObject {
+  flex: 0 0 205px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border: 2px solid #b39a73;
+  border-radius: 12px 12px 4px 4px;
+  background: #51483e;
+  color: white;
+  cursor: pointer;
+}
+.buildingHome .buildingObject .objectArt {
+  font-size: 65px;
+  line-height: 1.2;
+}
+.buildingHome .buildingDeskArea {
+  flex: 0 0 205px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.buildingHome .buildingDeskArea .buildingObject {
+  flex: none;
+  width: 100%;
+  height: 180px;
+}
+.buildingHome .buildingPamphlet {
+  width: 100%;
+  min-height: 45px;
+}
+.buildingHome .buildingDoor {
+  height: 310px;
+  background: #73543b;
+}
+.buildingHome .buildingLift {
+  height: 310px;
+  background: #505b69;
+}
+.buildingHome .buildingHint {
+  margin: 12px 0;
+  text-align: center;
+  font-size: 12px;
+  opacity: .7;
+}
+.buildingHome .buildingOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: #000b;
+}
+.buildingHome .buildingOverlay.hidden {
+  display: none;
+}
+.buildingHome .buildingDialogCard {
+  width: min(420px, 100%);
+  padding: 25px 18px;
+  border: 1px solid #b39a73;
+  border-radius: 14px;
+  background: #242b37;
+  color: white;
+  text-align: center;
+}
+.buildingHome .buildingDialogCard button {
+  margin: 5px;
+}
+
+  
 </style>
 </head>
 
@@ -3230,96 +3351,66 @@ class="message"
      홈
 ===================================================== -->
 
-<div
-id="homeScreen"
-class="hidden"
->
 
-<div class="accountBar">
+<div id="homeScreen" class="hidden buildingHome">
 
-<div
-id="homeNickname"
-class="accountName"
->
--
-</div>
+  <div class="buildingHud">
+    <span id="homeNickname" style="display:none">-</span>
+    <span id="homePer" style="display:none">0퍼</span>
+    <button class="secondary" onclick="toggleBuildingInventory()">
+      인벤토리
+    </button>
+  </div>
 
-<div
-id="homePer"
-class="accountPer"
->
-0원
-</div>
+  <div id="buildingViewport" class="buildingViewport">
+    <div class="buildingScene">
 
-</div>
+      <button class="buildingObject" onclick="openBuildingBasement()">
+        <span class="objectArt">🪜</span>
+        <span>지하 계단</span>
+      </button>
 
-<div class="card">
+      <div class="buildingDeskArea">
+        <button class="buildingObject" onclick="ringBuildingBell()">
+          <span class="objectArt">🛎️</span>
+          <span>안내 데스크 · 벨</span>
+        </button>
+        <button class="buildingPamphlet" onclick="showRules()">
+          📖 룰북 팸플릿
+        </button>
+      </div>
 
-<h2>홈</h2>
+      <button class="buildingObject buildingDoor" id="buildingDoor"
+              onclick="playBuildingDoor()">
+        <span class="objectArt">🚪</span>
+        <span>정문</span>
+      </button>
 
-<button
-class="menuButton"
-onclick="showGameMenu()"
->
-게임 시작
-<small>
-방을 만들거나 참가해 텍사스 홀덤을 시작합니다.
-</small>
-</button>
+      <button class="buildingObject buildingLift"
+              onclick="openBuildingElevator()">
+        <span class="objectArt">🛗</span>
+        <span>엘리베이터</span>
+      </button>
 
-<button
-class="menuButton"
-onclick="showAvatar()"
->
-내 아바타
-<small>
-아바타를 꾸미고 아이템과 털의 색을 바꿀 수 있습니다!
-</small>
-</button>
+    </div>
+  </div>
 
-<button
-class="menuButton"
-onclick="showShop()"
->
-상점
-<small>
-아바타를 꾸미기 위한 아이템을 구매합니다.
-</small>
-</button>
+  <p class="buildingHint">
+    좌우로 스크롤하여 건물 내부를 이동할 수 있습니다.
+  </p>
 
-<button
-class="menuButton"
-onclick="showBank()"
->
-은행
-<small>
-예금, 대출, 상환, 송금을 이용합니다.
-</small>
-</button>
-
-<button
-class="menuButton"
-onclick="showRules()"
->
-룰북 / 튜토리얼
-<small>
-처음부터 배우거나 필요한 규칙을 다시 확인합니다.
-</small>
-</button>
-
-<button
-class="secondary"
-onclick="logout()"
->
-로그아웃
-</button>
+  <div id="buildingDialog" class="buildingOverlay hidden">
+    <div class="buildingDialogCard">
+      <div id="buildingDialogContent"></div>
+      <button class="secondary" onclick="closeBuildingDialog()">
+        닫기
+      </button>
+    </div>
+  </div>
 
 </div>
 
-</div>
-
-
-<!-- =====================================================
+  <!-- =====================================================
      게임 메뉴
 ===================================================== -->
 
@@ -5370,24 +5461,116 @@ byId(
 }
 
 
-async function showHome(){
 
-hideAllScreens();
+async function showHome() {
+  hideAllScreens();
+
+  await refreshProfile();
+  renderHome();
+
+  byId("homeScreen").classList.remove("hidden");
+  closeBuildingDialog();
+  requestAnimationFrame(centerBuildingEntrance);
+}
 
 
-await refreshProfile();
+let buildingBellCount = 0;
+let buildingBellTimer = null;
 
+function showBuildingDialog(html) {
+  byId("buildingDialogContent").innerHTML = html;
+  byId("buildingDialog").classList.remove("hidden");
+}
 
-renderHome();
+function closeBuildingDialog() {
+  byId("buildingDialog").classList.add("hidden");
+}
 
+function toggleBuildingInventory() {
+  showBuildingDialog(`
+    <h3>인벤토리</h3>
+    <p>인벤토리 기능은 추후 연결됩니다.</p>
+    <button onclick="closeBuildingDialog();showAvatar()">
+      내 아바타
+    </button>
+    <button onclick="closeBuildingDialog();logout()">
+      로그아웃
+    </button>
+  `);
+}
 
-byId(
-"homeScreen"
-)
-.classList.remove(
-"hidden"
-);
+function centerBuildingEntrance() {
+  const viewport = byId("buildingViewport");
+  const door = byId("buildingDoor");
+  if (!viewport || !door) return;
 
+  const viewportRect = viewport.getBoundingClientRect();
+  const doorRect = door.getBoundingClientRect();
+
+  viewport.scrollLeft +=
+    doorRect.left + doorRect.width / 2
+    - viewportRect.left - viewportRect.width / 2;
+}
+
+function playBuildingDoor() {
+  requestAnimationFrame(centerBuildingEntrance);
+}
+
+function openBuildingBasement() {
+  showBuildingDialog(`
+    <h3>B1 · 지하</h3>
+    <p>계단 아래 게임룸 입구입니다.</p>
+    <button onclick="closeBuildingDialog();showGameMenu()">
+      게임룸 입장
+    </button>
+  `);
+}
+
+function openBuildingElevator() {
+  showBuildingDialog(`
+    <h3>엘리베이터</h3>
+    <p>이동할 층을 선택하세요.</p>
+    <button onclick="closeBuildingDialog();showShop()">
+      2F
+    </button>
+    <button onclick="closeBuildingDialog()">
+      1F
+    </button>
+  `);
+}
+
+function ringBuildingBell() {
+  if (buildingBellTimer !== null) {
+    buildingBellCount++;
+    return;
+  }
+
+  buildingBellCount = 1;
+
+  buildingBellTimer = setTimeout(() => {
+    const count = buildingBellCount;
+    buildingBellCount = 0;
+    buildingBellTimer = null;
+
+    const home = byId("homeScreen");
+    if (!home || home.classList.contains("hidden")) return;
+
+    if (count >= 3) {
+      showBuildingDialog(`
+        <div style="font-size:65px">🐈‍⬛</div>
+        <h3>검은 고양이</h3>
+        <p>개발자에게 문의하기</p>
+        <p>문의 저장 기능은 DB 연결 후 사용할 수 있습니다.</p>
+      `);
+    } else {
+      showBuildingDialog(`
+        <h3>안내 데스크</h3>
+        <p>직원이 데스크 아래에서 나타났습니다.</p>
+        <p>게임룸은 지하 1층에 있습니다.</p>
+        <p>룰북은 안내 데스크 옆 팸플릿에서 확인할 수 있습니다.</p>
+      `);
+    }
+  }, 2000);
 }
 
 
@@ -6025,12 +6208,10 @@ renderHome();
 hideAllScreens();
 
 
-byId(
-"homeScreen"
-)
-.classList.remove(
-"hidden"
-);
+
+byId("homeScreen").classList.remove("hidden");
+closeBuildingDialog();
+requestAnimationFrame(centerBuildingEntrance);
 
 }
 
