@@ -3204,10 +3204,29 @@ body.lobbyFullscreen .buildingHud {
   right: 12px;
   left: auto;
   z-index: 1010;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
   padding: 0;
   background: transparent;
 }
 
+body.lobbyFullscreen .lobbyHudVersion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 0;
+  padding: 10px 14px;
+  margin: 0;
+  font: inherit;
+  font-size: inherit;
+  line-height: normal;
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
+}
 /* 5. 로비 클릭 영역 */
 
 body.lobbyFullscreen .buildingScene .lobbyHotspot {
@@ -3482,9 +3501,10 @@ class="message"
   <div class="buildingHud">
     <span id="homeNickname" style="display:none">-</span>
     <span id="homePer" style="display:none">0퍼</span>
-    <button class="secondary" onclick="toggleBuildingInventory()">
-      인벤토리
-    </button>
+<span id="lobbyHudVersion" class="secondary lobbyHudVersion"></span>
+<button class="secondary" onclick="toggleBuildingInventory()">
+  인벤토리
+</button>
   </div>
 
   <div id="buildingViewport" class="buildingViewport">
@@ -6121,7 +6141,14 @@ return true;
 
 
 function renderHome(){
+  
+const hudVersion = byId("lobbyHudVersion");
+const originalVersion = document.querySelector(".version");
 
+if (hudVersion && originalVersion) {
+  hudVersion.textContent = originalVersion.textContent.trim();
+}
+  
 if(!currentProfile){
 
 return;
