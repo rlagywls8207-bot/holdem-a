@@ -3492,6 +3492,40 @@ body.lobbyFullscreen #basementScreen {
   height: 39%;
 }
 
+/* B1 ATM — 오른쪽 */
+#basementScreen .b1AtmArt {
+  left: 87%;
+  top: 36%;
+  width: 9%;
+  height: 38%;
+  z-index: 1;
+}
+
+/* B1 파친코 — 왼쪽 */
+#basementScreen .b1PachinkoArt {
+  left: 12%;
+  top: 38%;
+  width: 11%;
+  height: 42%;
+  z-index: 1;
+}
+
+/* 파친코 클릭 영역 — 왼쪽 */
+#basementScreen .b1Pachinko {
+  left: 12%;
+  top: 38%;
+  width: 11%;
+  height: 42%;
+}
+
+/* ATM 클릭 영역 — 오른쪽 */
+#basementScreen .b1Atm {
+  left: 87%;
+  top: 36%;
+  width: 9%;
+  height: 38%;
+}
+
 #basementScreen .b1Topbar {
   position: fixed;
   top: 12px;
@@ -3578,7 +3612,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v1.0.0.5
+v1.0.0.6
 </div>
 
 <div class="subtitle">
@@ -3788,6 +3822,19 @@ class="message"
       <img id="b1CommonArt"
            class="b1Object b1CommonArt"
            src="b1_lounge.png" alt="" aria-hidden="true">
+      
+<!-- ATM -->
+<img id="b1AtmArt"
+     class="b1Object b1AtmArt"
+     src="b1_atm.png"
+     alt="" aria-hidden="true">
+
+<!-- 파친코 -->
+<img id="b1PachinkoArt"
+     class="b1Object b1PachinkoArt"
+     src="b1_pachinko.png"
+     alt="" aria-hidden="true">
+
 
       <!-- 클릭 영역 -->
       <button class="b1Hotspot b1Stairs"
@@ -3810,6 +3857,18 @@ class="message"
               aria-label="공용 테이블"
               title="공용 테이블"></button>
 
+<!-- 왼쪽 파친코 -->
+<button class="b1Hotspot b1Pachinko"
+        onclick="openB1Pachinko()"
+        aria-label="파친코"
+        title="파친코"></button>
+
+<!-- 오른쪽 ATM -->
+<button class="b1Hotspot b1Atm"
+        onclick="openB1Atm()"
+        aria-label="ATM"
+        title="ATM"></button>
+      
     </div>
   </div>
 
@@ -5526,7 +5585,7 @@ onerror="window.holdemCardsLoadFailed=true;"
 <script>
 
 const APP_VERSION =
-"v1.0.0.5";
+"v1.0.0.6";
 
 
 const SUPABASE_URL =
@@ -6033,6 +6092,18 @@ function showB1Unavailable(game) {
     <p>아직 이용할 수 없습니다.</p>
   `);
 }
+
+
+// B1 파친코
+function openB1Pachinko() {
+  showB1Unavailable("파친코");
+}
+
+// B1 ATM
+function openB1Atm() {
+  showBank();
+}
+
 
 // 주사위 테이블
 function openB1Dice() {
