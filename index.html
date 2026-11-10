@@ -3372,6 +3372,198 @@ body.lobbyFullscreen .buildingHint {
 .buildingHome .buildingDialogCard button {
   margin: 5px;
 }
+
+
+/* B1 GAME HALL — 지하 게임홀 전용 */
+
+body.lobbyFullscreen #basementScreen {
+  position: fixed !important;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  overflow: hidden;
+  background: #160d19;
+  z-index: 1000;
+}
+
+#basementScreen .b1Viewport {
+  position: absolute;
+  inset: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  background: #160d19;
+}
+
+#basementScreen .b1Viewport::-webkit-scrollbar {
+  display: none;
+}
+
+#basementScreen .b1Scene {
+  position: relative;
+  width: max(100vw, 300dvh);
+  height: 100%;
+  background: #160d19 url("lobby_b1.png")
+    center / 100% 100% no-repeat;
+}
+
+#basementScreen .b1Hotspot {
+  position: absolute;
+  display: block;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 2;
+}
+
+#basementScreen .b1Hotspot:hover {
+  filter: brightness(1.15);
+}
+
+#basementScreen .b1Hotspot:focus-visible {
+  outline: 2px solid #f3ce88;
+}
+
+#basementScreen .b1Stairs {
+  left: 2%;
+  top: 30%;
+  width: 13%;
+  height: 56%;
+}
+
+#basementScreen .b1Cards {
+  left: 22%;
+  top: 44%;
+  width: 19%;
+  height: 39%;
+}
+
+#basementScreen .b1Dice {
+  left: 45%;
+  top: 44%;
+  width: 16%;
+  height: 39%;
+}
+
+#basementScreen .b1Common {
+  left: 66%;
+  top: 44%;
+  width: 20%;
+  height: 39%;
+}
+
+#basementScreen .b1Object {
+  position: absolute;
+  pointer-events: none;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+#basementScreen .b1CardsArt {
+  left: 22%;
+  top: 44%;
+  width: 19%;
+  height: 39%;
+}
+
+#basementScreen .b1DiceArt {
+  left: 45%;
+  top: 44%;
+  width: 16%;
+  height: 39%;
+}
+
+#basementScreen .b1CommonArt {
+  left: 66%;
+  top: 44%;
+  width: 20%;
+  height: 39%;
+}
+
+#basementScreen .b1Topbar {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 1010;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+#basementScreen .b1Topbar button {
+  pointer-events: auto;
+}
+
+#basementScreen .b1Board {
+  position: fixed;
+  top: 58px;
+  right: 12px;
+  z-index: 1010;
+  width: min(310px, calc(100vw - 24px));
+  max-height: 40dvh;
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid #a17a49;
+  border-radius: 8px;
+  background: rgba(20, 12, 22, .92);
+  color: #f1dec3;
+}
+
+#basementScreen .b1Board h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+#basementScreen .b1RoomLine {
+  padding: 7px 0;
+  border-top: 1px solid #71553e;
+  font-size: 12px;
+}
+
+#basementScreen .b1Overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: #000b;
+}
+
+#basementScreen .b1Overlay.hidden {
+  display: none;
+}
+
+#basementScreen .b1DialogCard {
+  width: min(420px, 100%);
+  padding: 22px 18px;
+  text-align: center;
+  border: 1px solid #b39a73;
+  border-radius: 14px;
+  background: #242b37;
+  color: white;
+}
+
+#basementScreen .b1DialogCard button {
+  margin: 5px;
+}
+
   
 </style>
 </head>
@@ -3386,7 +3578,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v1.0.0.4
+v1.0.0.5
 </div>
 
 <div class="subtitle">
@@ -3578,6 +3770,80 @@ class="message"
      게임 메뉴
 ===================================================== -->
 
+
+<!-- B1 지하 게임홀 -->
+<div id="basementScreen" class="hidden">
+
+  <!-- 가로 스크롤 게임홀 -->
+  <div id="b1Viewport" class="b1Viewport">
+    <div class="b1Scene">
+
+      <!-- 게임 테이블 이미지 -->
+      <img class="b1Object b1CardsArt"
+           src="b1_cards.png" alt="" aria-hidden="true">
+
+      <img class="b1Object b1DiceArt"
+           src="b1_dice.png" alt="" aria-hidden="true">
+
+      <img id="b1CommonArt"
+           class="b1Object b1CommonArt"
+           src="b1_lounge.png" alt="" aria-hidden="true">
+
+      <!-- 클릭 영역 -->
+      <button class="b1Hotspot b1Stairs"
+              onclick="showHome()"
+              aria-label="1층으로 올라가기"
+              title="1F"></button>
+
+      <button class="b1Hotspot b1Cards"
+              onclick="openB1Cards()"
+              aria-label="카드게임 테이블"
+              title="카드게임"></button>
+
+      <button class="b1Hotspot b1Dice"
+              onclick="openB1Dice()"
+              aria-label="주사위 테이블"
+              title="주사위"></button>
+
+      <button class="b1Hotspot b1Common"
+              onclick="openB1Common()"
+              aria-label="공용 테이블"
+              title="공용 테이블"></button>
+
+    </div>
+  </div>
+
+  <!-- 상단 조작 버튼 -->
+  <div class="b1Topbar">
+    <button class="secondary" onclick="showHome()">
+      ← 1F
+    </button>
+
+    <button class="secondary" onclick="refreshB1Board()">
+      방 현황 새로고침
+    </button>
+  </div>
+
+  <!-- 홀덤 방 현황 전광판 -->
+  <section class="b1Board" aria-label="홀덤 방 현황">
+    <h3>홀덤 방 현황</h3>
+    <div id="b1RoomBoard">불러오는 중...</div>
+  </section>
+
+  <!-- 게임 선택 팝업 -->
+  <div id="b1Dialog" class="b1Overlay hidden">
+    <div class="b1DialogCard">
+      <div id="b1DialogContent"></div>
+
+      <button class="secondary" onclick="closeB1Dialog()">
+        닫기
+      </button>
+    </div>
+  </div>
+
+</div>
+
+  
 <div
 id="gameMenuScreen"
 class="card hidden"
@@ -5260,7 +5526,7 @@ onerror="window.holdemCardsLoadFailed=true;"
 <script>
 
 const APP_VERSION =
-"v1.0.0.4";
+"v1.0.0.5";
 
 
 const SUPABASE_URL =
@@ -5547,9 +5813,11 @@ null;
 
 const SCREEN_IDS = [
 
+
 "loginScreen",
 "signupScreen",
 "homeScreen",
+"basementScreen",
 "gameMenuScreen",
 "createRoomScreen",
 "joinRoomScreen",
@@ -5564,6 +5832,7 @@ const SCREEN_IDS = [
 
 
 function hideAllScreens(){
+stopB1BoardRefresh();
 document.body.classList.remove("lobbyFullscreen");
 stopTimers();
 
@@ -5687,14 +5956,176 @@ function playBuildingDoor() {
   requestAnimationFrame(centerBuildingEntrance);
 }
 
+
+/* B1 지하 게임홀 */
+
+let b1BoardTimer = null;
+let b1BoardRequestId = 0;
+let b1CommonMode = "lounge";
+
+// B1을 벗어나면 전광판 자동 갱신 중지
+function stopB1BoardRefresh() {
+  if (b1BoardTimer !== null) {
+    clearInterval(b1BoardTimer);
+    b1BoardTimer = null;
+  }
+
+  b1BoardRequestId++;
+}
+
+// 지하 게임홀 입장
+async function showBasement() {
+  hideAllScreens();
+
+  document.body.classList.add("lobbyFullscreen");
+
+  byId("basementScreen").classList.remove("hidden");
+
+  closeB1Dialog();
+
+  // 입장할 때 전광판 갱신
+  await refreshB1Board();
+
+  // B1에 머무는 동안 15초마다 갱신
+  if (!byId("basementScreen").classList.contains("hidden")) {
+    b1BoardTimer = setInterval(refreshB1Board, 15000);
+  }
+}
+
+// 1층 계단 클릭
 function openBuildingBasement() {
-  showBuildingDialog(`
-    <h3>B1 · 지하</h3>
-    <p>계단 아래 게임룸 입구입니다.</p>
-    <button onclick="closeBuildingDialog();showGameMenu()">
-      게임룸 입장
+  showBasement();
+}
+
+// B1 선택 팝업
+function showB1Dialog(html) {
+  byId("b1DialogContent").innerHTML = html;
+  byId("b1Dialog").classList.remove("hidden");
+}
+
+function closeB1Dialog() {
+  byId("b1Dialog").classList.add("hidden");
+}
+
+// 카드게임 선택
+function openB1Cards() {
+  showB1Dialog(`
+    <h3>카드게임</h3>
+
+    <button onclick="closeB1Dialog();showGameMenu()">
+      홀덤
+    </button>
+
+    <button onclick="showB1Unavailable('블랙잭')">
+      블랙잭
+    </button>
+
+    <button onclick="showB1Unavailable('포커')">
+      포커
     </button>
   `);
+}
+
+// 미구현 게임 안내
+function showB1Unavailable(game) {
+  showB1Dialog(`
+    <h3>${escapeHtml(game)}</h3>
+    <p>아직 이용할 수 없습니다.</p>
+  `);
+}
+
+// 주사위 테이블
+function openB1Dice() {
+  showB1Unavailable("주사위");
+}
+
+// 공용 테이블
+function openB1Common() {
+  showB1Dialog(`
+    <h3>공용 테이블</h3>
+
+    <button onclick="setB1CommonMode('lounge')">
+      다과
+    </button>
+
+    <button onclick="setB1CommonMode('board')">
+      보드게임
+    </button>
+
+    <button onclick="setB1CommonMode('mahjong')">
+      마작
+    </button>
+  `);
+}
+
+// 공용 테이블 이미지 전환
+function setB1CommonMode(mode) {
+  const images = {
+    lounge: "b1_lounge.png",
+    board: "b1_board.png",
+    mahjong: "b1_mahjong.png"
+  };
+
+  if (!Object.prototype.hasOwnProperty.call(images, mode)) {
+    return;
+  }
+
+  b1CommonMode = mode;
+
+  byId("b1CommonArt").src = images[mode];
+
+  closeB1Dialog();
+}
+
+// 홀덤 방 현황 전광판
+async function refreshB1Board() {
+  const box = byId("b1RoomBoard");
+  const screen = byId("basementScreen");
+
+  if (!box || !screen || screen.classList.contains("hidden")) {
+    return;
+  }
+
+  const requestId = ++b1BoardRequestId;
+
+  const { data, error } =
+    await db.rpc("get_classic_waiting_rooms");
+
+  // 화면을 벗어났거나 더 최신 요청이 있으면 무시
+  if (
+    requestId !== b1BoardRequestId ||
+    screen.classList.contains("hidden")
+  ) {
+    return;
+  }
+
+  if (error) {
+    box.textContent = "방 현황을 불러올 수 없습니다.";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    box.textContent = "현재 참가 가능한 대기 방이 없습니다.";
+    return;
+  }
+
+  // 화면 전체를 다시 그리지 않고 전광판만 갱신
+  box.replaceChildren();
+
+  data.forEach(room => {
+    const item = document.createElement("div");
+    item.className = "b1RoomLine";
+
+    const name = document.createElement("strong");
+    name.textContent = room.room_name || "이름 없는 방";
+
+    const detail = document.createElement("div");
+    detail.textContent =
+      `대기 중 · ${Number(room.player_count) || 0}명 참가`;
+
+    item.append(name, detail);
+    box.appendChild(item);
+  });
 }
 
 function openBuildingElevator() {
