@@ -3436,34 +3436,43 @@ body.lobbyFullscreen #basementScreen {
   outline: 2px solid #f3ce88;
 }
 
+
+/* B1 계단 클릭 영역 */
 #basementScreen .b1Stairs {
   left: 2%;
-  top: 30%;
-  width: 13%;
-  height: 56%;
+  top: 37%;
+  width: 11%;
+  height: 46%;
 }
 
-#basementScreen .b1Cards {
-  left: 22%;
-  top: 44%;
-  width: 19%;
-  height: 39%;
+/* 카드 테이블 */
+#basementScreen .b1Cards,
+#basementScreen .b1CardsArt {
+  left: 23%;
+  top: 46%;
+  width: 18%;
+  height: 37%;
 }
 
-#basementScreen .b1Dice {
-  left: 45%;
-  top: 44%;
+/* 주사위 테이블 */
+#basementScreen .b1Dice,
+#basementScreen .b1DiceArt {
+  left: 46%;
+  top: 46%;
   width: 16%;
-  height: 39%;
+  height: 37%;
 }
 
-#basementScreen .b1Common {
-  left: 66%;
-  top: 44%;
-  width: 20%;
-  height: 39%;
+/* 공용 테이블 */
+#basementScreen .b1Common,
+#basementScreen .b1CommonArt {
+  left: 69%;
+  top: 46%;
+  width: 17%;
+  height: 37%;
 }
 
+/* 오브제 이미지 공통 설정 */
 #basementScreen .b1Object {
   position: absolute;
   pointer-events: none;
@@ -3471,72 +3480,43 @@ body.lobbyFullscreen #basementScreen {
   image-rendering: pixelated;
 }
 
-#basementScreen .b1CardsArt {
-  left: 22%;
-  top: 44%;
-  width: 19%;
+/* 파친코: 카드 테이블 왼쪽 */
+#basementScreen .b1Pachinko,
+#basementScreen .b1PachinkoArt {
+  left: 13%;
+  top: 42%;
+  width: 9%;
   height: 39%;
 }
 
-#basementScreen .b1DiceArt {
-  left: 45%;
-  top: 44%;
-  width: 16%;
-  height: 39%;
+#basementScreen .b1PachinkoArt {
+  z-index: 1;
 }
 
-#basementScreen .b1CommonArt {
-  left: 66%;
-  top: 44%;
-  width: 20%;
-  height: 39%;
-}
-
-/* B1 ATM — 오른쪽 */
+/* ATM: 오른쪽 끝 유지 */
+#basementScreen .b1Atm,
 #basementScreen .b1AtmArt {
   left: 87%;
   top: 36%;
   width: 9%;
   height: 38%;
+}
+
+#basementScreen .b1AtmArt {
   z-index: 1;
 }
 
-/* B1 파친코 — 왼쪽 */
-#basementScreen .b1PachinkoArt {
-  left: 12%;
-  top: 38%;
-  width: 11%;
-  height: 42%;
-  z-index: 1;
-}
-
-/* 파친코 클릭 영역 — 왼쪽 */
-#basementScreen .b1Pachinko {
-  left: 12%;
-  top: 38%;
-  width: 11%;
-  height: 42%;
-}
-
-/* ATM 클릭 영역 — 오른쪽 */
-#basementScreen .b1Atm {
-  left: 87%;
-  top: 36%;
-  width: 9%;
-  height: 38%;
-}
-
-
-/* 계단 위쪽 벽면 전광판 */
+/* B1 벽면 전광판 */
 #basementScreen .b1Board {
   position: absolute;
-  left: 2%;
-  top: 4%;
-  width: 12%;
-  max-height: 24%;
+  left: 14%;
+  top: 7%;
+  width: 11%;
+  height: 24%;
+  max-height: none;
   overflow-y: auto;
   box-sizing: border-box;
-  padding: 8px 10px;
+  padding: 6px 8px;
   border: 2px solid #9f754b;
   border-radius: 4px;
   background: rgba(22, 13, 19, 0.94);
@@ -3544,6 +3524,7 @@ body.lobbyFullscreen #basementScreen {
   z-index: 5;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
 }
+
 
 #basementScreen .b1BoardHeader {
   display: flex;
@@ -3632,7 +3613,7 @@ HOLDEM A
 </div>
 
 <div class="version">
-v1.0.0.6
+v1.0.0.7
 </div>
 
 <div class="subtitle">
@@ -3905,21 +3886,6 @@ class="message"
       
     </div>
   </div>
-
-
-<!-- 계단 위쪽 벽면 전광판 -->
-<section class="b1Board" aria-label="홀덤 방 현황">
-  <div class="b1BoardHeader">
-    <h3>홀덤 방 현황</h3>
-    <button type="button"
-            class="b1BoardRefresh"
-            onclick="refreshB1Board()"
-            aria-label="방 현황 새로고침"
-            title="새로고침">↻</button>
-  </div>
-
-  <div id="b1RoomBoard">불러오는 중...</div>
-</section>
 
 
   <!-- 게임 선택 팝업 -->
@@ -5618,7 +5584,7 @@ onerror="window.holdemCardsLoadFailed=true;"
 <script>
 
 const APP_VERSION =
-"v1.0.0.6";
+"v1.0.0.7";
 
 
 const SUPABASE_URL =
