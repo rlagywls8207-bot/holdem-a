@@ -13,7 +13,8 @@ const HoldemBotEngine = (() => {
   const PROFILE = {
     HONEST: "honest",
     MOTH: "moth",
-    MASTER: "master"
+MASTER: "master",
+SURVIVOR: "survivor"
   };
 
 
