@@ -9090,10 +9090,35 @@ return [];
 /* ==========================================================
    최종 아바타 SVG V3
 ========================================================== */
-
 function avatarSvg(
 avatar = {}
 ){
+
+const strategy =
+avatar.strategy_key ??
+avatar.character_key ??
+"";
+
+if(strategy === "survivor"){
+
+return `
+<svg
+viewBox="0 0 128 128"
+xmlns="http://www.w3.org/2000/svg"
+shape-rendering="crispEdges"
+preserveAspectRatio="xMidYMid meet"
+>
+<image
+href="./전문어.svg"
+x="0"
+y="0"
+width="128"
+height="128"
+/>
+</svg>
+`;
+
+}
 
 const isBotAvatar =
 avatar.is_bot === true ||
@@ -11125,21 +11150,12 @@ byId(
    봇 선택 메뉴
 ========================================================== */
 
-function openBotSeatMenu(
-seatNo
-){
+function openBotSeatMenu(seatNo){
 
-byId(
-"modalTitle"
-)
-.textContent =
-"봇 추가";
+  byId("modalTitle").textContent =
+    "봇 추가";
 
-
-byId(
-"modalText"
-)
-.innerHTML = `
+  byId("modalText").innerHTML = `
 
 <div style="margin:-6px 0 -5px 0; line-height:1.25">
 
@@ -11172,6 +11188,14 @@ onclick="addBotToSeat(${seatNo},'master')"
 </button>
 
 <button
+class="primary"
+style="margin-top:3px"
+onclick="addBotToSeat(${seatNo},'survivor')"
+>
+전지현
+</button>
+
+<button
 class="secondary"
 style="margin-top:3px"
 onclick="openEmptySeatMenu(${seatNo})"
@@ -11182,66 +11206,6 @@ onclick="openEmptySeatMenu(${seatNo})"
 `;
 
 }
-
-
-/* ==========================================================
-   봇 선택 메뉴
-========================================================== */
-
-function openBotSeatMenu(
-seatNo
-){
-
-byId(
-"modalTitle"
-)
-.textContent =
-"봇 추가";
-
-
-byId(
-"modalText"
-)
-.innerHTML = `
-
-<div style="margin-bottom:12px">
-
-${seatNo}번 자리에 추가할 봇을 선택하세요.
-
-</div>
-
-<button
-class="primary"
-onclick="addBotToSeat(${seatNo},'honest')"
->
-김용우
-</button>
-
-<button
-class="primary"
-onclick="addBotToSeat(${seatNo},'moth')"
->
-김효진
-</button>
-
-<button
-class="primary"
-onclick="addBotToSeat(${seatNo},'master')"
->
-재선팍
-</button>
-
-<button
-class="secondary"
-onclick="openEmptySeatMenu(${seatNo})"
->
-뒤로
-</button>
-
-`;
-
-}
-
 
 /* ==========================================================
    실제 봇 추가
@@ -13270,10 +13234,12 @@ players:
 currentHandPlayers,
 
 botId:
-bot.bot_instance_id
+bot.bot_instance_id,
+
+maxBuyinChips:
+currentRoom.max_buyin_chips
 
 });
-
 
 if(
 !decision ||
