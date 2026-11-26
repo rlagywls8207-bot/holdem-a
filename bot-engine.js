@@ -4140,7 +4140,411 @@ SURVIVOR: "survivor"
       action: "fold"
     };
 
-  }  /* ==========================================================
+  }
+     /* ==========================================================
+     SURVIVOR / 전지현
+
+     - 구사일생형 공격 전략
+     - 칩이 많으면 방어적인 플레이
+     - 칩이 적어질수록 공격성 증가
+     - 강한 패를 체크/콜로 숨김
+     - 적극적인 블러프 및 재레이즈
+     - 위기 상황에서 큰 승부
+     - 카드 배분 확률에는 관여하지 않음
+  ========================================================== */
+
+  function decideSurvivor(context) {
+
+    const {
+      equity,
+      options: o,
+      potOdds,
+      street,
+      opponentCount,
+      maxBuyinChips
+    } = context;
+
+    const chips = Math.max(
+      0,
+      num(o.my_chips)
+    );
+
+    const call = num(o.call_amount);
+
+    const max = num(o.max_raise_to);
+
+    const stackRatio = clamp(
+      chips / Math.max(
+        1,
+        num(maxBuyinChips) ||
+        chips + num(o.my_total_bet)
+      ),
+      0,
+      1
+    );
+
+    const callPressure =
+      call / Math.max(1, chips);
+
+    const lateStreet =
+      street === "turn" ||
+      street === "river";
+
+    const headsUp =
+      opponentCount <= 1;
+
+    let aggression;
+
+    if(stackRatio >= 0.75) {
+
+      aggression = 0.40;
+
+    } else if(stackRatio >= 0.40) {
+
+      aggression = 0.65;
+
+    } else if(stackRatio >= 0.15) {
+
+      aggression = 0.85;
+
+    } else {
+
+      aggression = 0.98;
+
+    }
+
+    const mood = Math.random();
+
+    const explosive =
+      mood >= 0.85;
+
+    const strong =
+      equity >= 0.62;
+
+    const veryStrong =
+      equity >= 0.78;
+
+    const weak =
+      equity < 0.32;
+
+    const critical =
+      stackRatio < 0.15;
+
+    const shortStack =
+      stackRatio < 0.40;
+
+
+    /* ======================================================
+       1. 구사일생 / 최대 승부
+    ====================================================== */
+
+    let allInChance = 0.002;
+
+    if(shortStack) {
+
+      allInChance += 0.025;
+
+      if(strong) {
+
+        allInChance += 0.10;
+
+      }
+
+    }
+
+    if(critical) {
+
+      allInChance += 0.12;
+
+      if(strong) {
+
+        allInChance += 0.28;
+
+      }
+
+      if(explosive) {
+
+        allInChance += 0.15;
+
+      }
+
+    }
+
+    if(
+      shortStack &&
+      callPressure >= 0.50
+    ) {
+
+      allInChance += 0.06;
+
+    }
+
+    if(
+      o.can_raise &&
+      max >= num(o.min_raise_to) &&
+      max > 0 &&
+      chance(
+        clamp(allInChance, 0, 0.80)
+      )
+    ) {
+
+      return {
+        action: "raise",
+        raiseTo: int(max)
+      };
+
+    }
+
+
+    /* ======================================================
+       2. 강한 패 숨기기
+    ====================================================== */
+
+    if(
+      strong &&
+      !critical
+    ) {
+
+      let trapChance =
+        veryStrong ? 0.62 : 0.40;
+
+      if(lateStreet) {
+
+        trapChance -= 0.18;
+
+      }
+
+      if(shortStack) {
+
+        trapChance -= 0.20;
+
+      }
+
+      if(
+        chance(
+          clamp(trapChance, 0.10, 0.70)
+        )
+      ) {
+
+        if(o.can_call && call > 0) {
+
+          return {
+            action: "call"
+          };
+
+        }
+
+        if(o.can_check) {
+
+          return {
+            action: "check"
+          };
+
+        }
+
+      }
+
+    }
+
+
+    /* ======================================================
+       3. 적극적인 공격 및 블러프
+    ====================================================== */
+
+    let raiseChance =
+      aggression * 0.55;
+
+    if(strong) {
+
+      raiseChance += 0.15;
+
+    }
+
+    if(headsUp) {
+
+      raiseChance += 0.10;
+
+    }
+
+    if(call === 0) {
+
+      raiseChance += 0.10;
+
+    }
+
+    if(
+      call > 0 &&
+      callPressure >= 0.10
+    ) {
+
+      raiseChance += 0.08;
+
+    }
+
+    if(lateStreet) {
+
+      raiseChance += 0.08;
+
+    }
+
+    if(explosive) {
+
+      raiseChance += 0.18;
+
+    }
+
+    if(
+      weak &&
+      stackRatio >= 0.75
+    ) {
+
+      raiseChance -= 0.18;
+
+    }
+
+    if(
+      weak &&
+      opponentCount >= 3
+    ) {
+
+      raiseChance -= 0.12;
+
+    }
+
+    if(
+      weak &&
+      callPressure >= 0.35 &&
+      !shortStack
+    ) {
+
+      raiseChance -= 0.15;
+
+    }
+
+    if(
+      o.can_raise &&
+      chance(
+        clamp(raiseChance, 0.05, 0.92)
+      )
+    ) {
+
+      let intensity =
+        randomBetween(0.15, 0.45);
+
+      if(shortStack) {
+
+        intensity =
+          randomBetween(0.40, 0.85);
+
+      }
+
+      if(explosive) {
+
+        intensity =
+          randomBetween(0.65, 0.98);
+
+      }
+
+      return {
+
+        action: "raise",
+
+        raiseTo: chooseRaiseTarget({
+
+          options: o,
+
+          intensity,
+
+          chaos: 0.005
+
+        })
+
+      };
+
+    }
+
+
+    /* ======================================================
+       4. 콜 및 버티기
+    ====================================================== */
+
+    if(
+      o.can_call &&
+      call > 0
+    ) {
+
+      let callChance =
+        0.48 +
+        aggression * 0.25 +
+        equity * 0.20;
+
+      if(strong) {
+
+        callChance += 0.10;
+
+      }
+
+      if(shortStack) {
+
+        callChance += 0.10;
+
+      }
+
+      if(
+        equity >= potOdds
+      ) {
+
+        callChance += 0.06;
+
+      }
+
+      if(
+        stackRatio >= 0.75 &&
+        weak
+      ) {
+
+        callChance -= 0.20;
+
+      }
+
+      callChance -=
+        callPressure *
+        (shortStack ? 0.10 : 0.35);
+
+      if(
+        chance(
+          clamp(callChance, 0.08, 0.98)
+        )
+      ) {
+
+        return {
+          action: "call"
+        };
+
+      }
+
+    }
+
+
+    /* ======================================================
+       5. 체크 및 폴드
+    ====================================================== */
+
+    if(o.can_check) {
+
+      return {
+        action: "check"
+      };
+
+    }
+
+    return {
+      action: "fold"
+    };
+
+  }
+   
+   /* ==========================================================
      생각 시간
   ========================================================== */
 
@@ -4216,7 +4620,8 @@ SURVIVOR: "survivor"
     options,
     pot,
     players,
-    botId
+    botId,
+    maxBuyinChips
 
   }) {
 
@@ -4336,7 +4741,9 @@ SURVIVOR: "survivor"
 
       equity,
 
-      potOdds
+      potOdds,
+
+      maxBuyinChips
 
     };
 
@@ -4383,6 +4790,18 @@ SURVIVOR: "survivor"
 
     }
 
+
+    if(
+      selectedProfile ===
+      PROFILE.SURVIVOR
+    ) {
+
+      decision =
+        decideSurvivor(
+          context
+        );
+
+    }
 
     decision =
       sanitizeDecision(
